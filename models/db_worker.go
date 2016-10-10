@@ -78,3 +78,18 @@ func DoInsertZldWorkerTableItem(item *ZldWorkerData) {
 		zllogs.WriteErrorLog("Insert a record to %s table ...... ERROR", ZLD_WORKER_TBL_NAME)
 	}		
 }
+
+func CheckWorkerLoginInfo(workerId, pwd string) bool {
+	s := fmt.Sprintf("SELECT * FROM `%s`", ZLD_WORKER_TBL_NAME)
+	s = fmt.Sprintf("%s WHERE (`WorkerId` = '%s' AND `Password` = '%s');", s, workerId, pwd)
+
+	var maps []orm.Params
+	o := orm.NewOrm()
+	num, err := o.Raw(s).Values(&maps)
+
+	if err == nil && num == 1 {
+		return true
+	} else {
+		return false
+	}
+}

@@ -15,7 +15,7 @@ func main() {
 	o.Using("default")
 	database.CreateTable()
 
-	beego.SetStaticPath("/mp", "static")
+	beego.SetStaticPath("/land", "static")
 	beego.SetStaticPath("/view", "views")
 	beego.Run()
 }

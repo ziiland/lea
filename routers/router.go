@@ -7,4 +7,9 @@ import (
 
 func init() {
     beego.Router("/", &controllers.MainController{})
+
+    beego.Router("/land", &controllers.LoginController{})
+    beego.Router(controllers.ZLD_LOGIN_PATH, &controllers.LoginController{})
+
+
 }
