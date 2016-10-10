@@ -5,13 +5,13 @@ import(
 	"github.com/astaxie/beego/orm"
 )
 
-type DgDummyData struct {
+type ZldDummyData struct {
 	Id		int32		`orm:"pk;auto"`
 	Comment string
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 func init() {
-	fmt.Println("register DgDummyData table")
-	orm.RegisterModel(new(DgDummyData))
+	fmt.Println("register ZldDummyData table")
+	orm.RegisterModel(new(ZldDummyData))
 }

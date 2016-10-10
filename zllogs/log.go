@@ -1,4 +1,4 @@
-package dglogs
+package zllogs
 
 import (
 	"fmt"

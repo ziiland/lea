@@ -34,7 +34,7 @@ func CreateTable() {
 	}
 
 	// create table by SQL
-	models.CreateOrderContentTable()
+	models.CreateZldWorkerTable()
 }
 
 
