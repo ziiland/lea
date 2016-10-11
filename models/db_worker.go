@@ -5,6 +5,7 @@ import(
 	"github.com/astaxie/beego/orm"
 	_ "github.com/go-sql-driver/mysql"
 	"lea/zllogs"
+	"strconv"
 	"time"
 )
 
@@ -58,7 +59,7 @@ func CreateZldWorkerTable() {
 	}	
 }
 
-func DoInsertZldWorkerTableItem(item *ZldWorkerData) {
+func DoInsertWorkerTableItem(item *ZldWorkerData) {
 	// insert data to the table
 	s := fmt.Sprintf("INSERT INTO `%s`", ZLD_WORKER_TBL_NAME)
 	s = fmt.Sprintf("%s (`WorkerId`, `Password`, `Name`, `Sex`, `IdentifyNo`, `Title`, `CheckInTime`)", s)
@@ -79,6 +80,21 @@ func DoInsertZldWorkerTableItem(item *ZldWorkerData) {
 	}		
 }
 
+func AlreadyHaveWorkerItem(id string) bool {
+	s := fmt.Sprintf("SELECT * FROM `%s`", ZLD_WORKER_TBL_NAME)
+	s = fmt.Sprintf("%s WHERE (`WorkerId` = '%s' );", s, id)
+
+	var maps []orm.Params
+	o := orm.NewOrm()
+	num, err := o.Raw(s).Values(&maps)
+
+	if err == nil && num > 0 {
+		return true
+	} else {
+		return false
+	}
+}
+
 func CheckWorkerLoginInfo(workerId, pwd string) bool {
 	s := fmt.Sprintf("SELECT * FROM `%s`", ZLD_WORKER_TBL_NAME)
 	s = fmt.Sprintf("%s WHERE (`WorkerId` = '%s' AND `Password` = '%s');", s, workerId, pwd)
@@ -92,4 +108,101 @@ func CheckWorkerLoginInfo(workerId, pwd string) bool {
 	} else {
 		return false
 	}
+}
+
+func SelectWorkerTableItem(item *ZldWorkerData) error{
+	s := fmt.Sprintf("SELECT * FROM `%s`", ZLD_WORKER_TBL_NAME)
+	s = fmt.Sprintf("%s WHERE (`WorkerId` = '%s');", s, item.WorkerId)
+	//fmt.Println("s=", s)
+
+	var maps []orm.Params
+	o := orm.NewOrm()
+	num, err := o.Raw(s).Values(&maps)
+	//fmt.Printf("num=%d, maps=%v\n", num, maps)
+
+	if err == nil && num > 0 {
+		stime := (maps[0]["CheckInTime"]).(string)
+		item.CheckInTime, _ = strconv.ParseInt(stime, 10, 64)
+		etime := (maps[0]["CheckOutTime"]).(string)
+		item.CheckOutTime, _ = strconv.ParseInt(etime, 10, 64)
+		item.Password = (maps[0]["Password"]).(string)
+		item.Name = (maps[0]["Name"]).(string)
+		item.Sex = (maps[0]["Sex"]).(string)
+		item.IdentifyNo = (maps[0]["IdentifyNo"]).(string)
+		item.Title = (maps[0]["Title"]).(string)
+		item.Comment = (maps[0]["Comment"]).(string)	
+		fmt.Println("SelectItem=", *item)
+	} else {
+		fmt.Println("Select NONE! Error=%v", err)
+	}
+
+	return err	
+}
+
+func InsertWorkerTableItem(item *ZldWorkerData) {
+	// first, try to create the table
+	CreateZldWorkerTable()
+
+	// No same sn item, do insert
+	if !AlreadyHaveWorkerItem(item.WorkerId) {
+		DoInsertWorkerTableItem(item)
+	}
+}
+
+func UpdateWorkerPassword(id, password string) error {
+	s := fmt.Sprintf("UPDATE `%s`", ZLD_WORKER_TBL_NAME)
+	s = fmt.Sprintf("%s SET ", s)
+	s = fmt.Sprintf("%s `Password` = '%v',", s, password)
+	s = fmt.Sprintf("%s WHERE (`WorkerId` = '%s');", s, id)	
+	//fmt.Println("s=", s)
+
+	o := orm.NewOrm()
+	_, err := o.Raw(s).Exec()
+	if err == nil {
+		zllogs.WriteDebugLog("Update password (WorkerId=%s) ...... SUCCESS!", id)
+	} else {
+		zllogs.WriteErrorLog("Update password (WorkerId=%s) ...... ERROR!", id)
+	}
+
+	return err	
+}
+
+func UpdateWorkerTitle(id, title string) error{
+	s := fmt.Sprintf("UPDATE `%s`", ZLD_WORKER_TBL_NAME)
+	s = fmt.Sprintf("%s SET ", s)
+	s = fmt.Sprintf("%s `Title` = '%v',", s, title)
+	s = fmt.Sprintf("%s WHERE (`WorkerId` = '%s');", s, id)	
+	//fmt.Println("s=", s)
+
+	o := orm.NewOrm()
+	_, err := o.Raw(s).Exec()
+	if err == nil {
+		zllogs.WriteDebugLog("Update Title (WorkerId=%s) ...... SUCCESS!", id)
+	} else {
+		zllogs.WriteErrorLog("Update Title (WorkerId=%s) ...... ERROR!", id)
+	}
+
+	return err		
+}
+
+func UpdateWorkerInfo(item *ZldWorkerData) error{
+	s := fmt.Sprintf("UPDATE `%s`", ZLD_WORKER_TBL_NAME)
+	s = fmt.Sprintf("%s SET ", s)
+	s = fmt.Sprintf("%s `Password` = '%s',", s, item.Password)
+	s = fmt.Sprintf("%s `Name` = '%s',", s, item.Name)
+	s = fmt.Sprintf("%s `Sex` = '%s',", s, item.Sex)
+	s = fmt.Sprintf("%s `IdentifyNo` = '%s'", s, item.IdentifyNo)
+	s = fmt.Sprintf("%s `Title` = '%s'", s, item.Title)
+	s = fmt.Sprintf("%s WHERE (`WorkerId` = '%s');", s, item.WorkerId)
+	//fmt.Println("s=", s)
+
+	o := orm.NewOrm()
+	_, err := o.Raw(s).Exec()
+	if err == nil {
+		zllogs.WriteDebugLog("Update record(WorkerId=%s) in table %s  ...... DONE", item.WorkerId, ZLD_WORKER_TBL_NAME)
+	} else {
+		zllogs.WriteErrorLog("Update record(WorkerId=%s) in table %s  ...... ERROR", item.WorkerId, ZLD_WORKER_TBL_NAME)
+	}
+
+	return err
 }

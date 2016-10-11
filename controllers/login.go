@@ -29,7 +29,7 @@ func createWorkerTableItemForTest() {
 	account.Name = "管理员"
 	account.Title = "管理员"
 	account.Comment = "管理员"
-	models.DoInsertZldWorkerTableItem(account)
+	models.InsertWorkerTableItem(account)
 
 	account.WorkerId = "ZLD00001"
 	account.Password = "888888"
@@ -37,7 +37,7 @@ func createWorkerTableItemForTest() {
 	account.Sex = "男"
 	account.IdentifyNo = "123456789012345678"
 	account.Title = "经理"
-	models.DoInsertZldWorkerTableItem(account)
+	models.InsertWorkerTableItem(account)
 
 	account.WorkerId = "ZLD00002"
 	account.Password = "888888"
@@ -45,7 +45,7 @@ func createWorkerTableItemForTest() {
 	account.Sex = "男"
 	account.IdentifyNo = "123456789012345678"
 	account.Title = "经理"
-	models.DoInsertZldWorkerTableItem(account)	
+	models.InsertWorkerTableItem(account)	
 
 	account.WorkerId = "ZLD00003"
 	account.Password = "888888"
@@ -53,7 +53,7 @@ func createWorkerTableItemForTest() {
 	account.Sex = "男"
 	account.IdentifyNo = "123456789012345678"
 	account.Title = "经理"
-	models.DoInsertZldWorkerTableItem(account)
+	models.InsertWorkerTableItem(account)
 
 	account.WorkerId = "ZLD00004"
 	account.Password = "888888"
@@ -61,7 +61,7 @@ func createWorkerTableItemForTest() {
 	account.Sex = "男"
 	account.IdentifyNo = "123456789012345678"
 	account.Title = "员工"
-	models.DoInsertZldWorkerTableItem(account)	
+	models.InsertWorkerTableItem(account)	
 	
 }
 
