@@ -16,10 +16,11 @@ type ZldTaskData struct {
 	TaskId			string		// 
 	SponsorId		string		// sponsor id: userid or workerid
 	FarmId			string		// farm no
+	CellId			string
 	PatchId			string		// 	
 	WorkerId 		string
 	CheckerId		string
-	State 			string		// task state: doing, pending
+	State 			string		// task state: idle, doing, check, finish
 	Type 			int64
 	CreateTime 		int64
 	StartTime 		int64
@@ -44,7 +45,8 @@ func CreateZldTaskTable() {
 	s = fmt.Sprintf("%s `TaskId` varchar(32) NOT NULL DEFAULT '' COMMENT '任务号',", s)
 	s = fmt.Sprintf("%s `SponsorId` varchar(10) NOT NULL DEFAULT '' COMMENT '发起人',", s)
 	s = fmt.Sprintf("%s `FarmId` varchar(8) NOT NULL DEFAULT '' COMMENT '农场Id',", s)
-	s = fmt.Sprintf("%s `PatchId` varchar(1) NOT NULL DEFAULT '' COMMENT '地块Id',", s)
+	s = fmt.Sprintf("%s `CellId` varchar(8) NOT NULL DEFAULT '' COMMENT '单元Id',", s)
+	s = fmt.Sprintf("%s `PatchId` varchar(1) NOT NULL DEFAULT '' COMMENT '小片Id',", s)
 	s = fmt.Sprintf("%s `WorkerId` varchar(10) NOT NULL DEFAULT '' COMMENT '施工员工',", s)
 	s = fmt.Sprintf("%s `CheckerId` varchar(10) NOT NULL DEFAULT '' COMMENT '检查员工',", s)
 	s = fmt.Sprintf("%s `State` varchar(32) NOT NULL DEFAULT '' COMMENT '任务状态',", s)
@@ -74,9 +76,9 @@ func CreateZldTaskTable() {
 func DoInsertTaskTableItem(item *ZldTaskData) {
 	// insert data to the table
 	s := fmt.Sprintf("INSERT INTO `%s`", ZLD_TASK_TBL_NAME)
-	s = fmt.Sprintf("%s (`TaskId`, `SponsorId`, `FarmId`, `PatchId`, `WorkerId`, `CheckerId`, `State`, `Type`, `CreateTime`, `StartTime`, `EndTime`, `CheckTime`, `Score`, `UserComment`, `Comment`)", s)
+	s = fmt.Sprintf("%s (`TaskId`, `SponsorId`, `FarmId`, `CellId`, `PatchId`, `WorkerId`, `CheckerId`, `State`, `Type`, `CreateTime`, `StartTime`, `EndTime`, `CheckTime`, `Score`, `UserComment`, `Comment`)", s)
 	s = fmt.Sprintf("%s VALUES ", s)
-	s = fmt.Sprintf("%s ('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%v', '%v', '%v', '%v', '%v', '%v', '%s', '%s');", s, item.TaskId, item.SponsorId, item.FarmId, item.PatchId, item.WorkerId, item.CheckerId, item.State, item.Type, time.Now().Unix(), item.StartTime, item.EndTime, item.CheckTime, item.Score, item.UserComment, item.Comment)
+	s = fmt.Sprintf("%s ('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%v', '%v', '%v', '%v', '%v', '%v', '%s', '%s');", s, item.TaskId, item.SponsorId, item.FarmId, item.CellId, item.PatchId, item.WorkerId, item.CheckerId, item.State, item.Type, time.Now().Unix(), item.StartTime, item.EndTime, item.CheckTime, item.Score, item.UserComment, item.Comment)
 	//fmt.Println("s=", s)
 
 	o := orm.NewOrm()
@@ -134,6 +136,7 @@ func SelectTaskTableItem(item *ZldTaskData) error{
 
 		item.SponsorId = (maps[0]["SponsorId"]).(string)
 		item.FarmId = (maps[0]["FarmId"]).(string)
+		item.CellId = (maps[0]["CellId"]).(string)
 		item.PatchId = (maps[0]["PatchId"]).(string)
 		item.WorkerId = (maps[0]["WorkerId"]).(string)
 		item.CheckerId = (maps[0]["CheckerId"]).(string)

@@ -1,8 +1,10 @@
 package controllers
 
 import (
+	"fmt"
 	"github.com/astaxie/beego"
 	"lea/models"
+	"lea/zllogs"
 )
 
 
@@ -65,6 +67,17 @@ func createWorkerTableItemForTest() {
 	
 }
 
+/////////////////////////////////////////////////////////////////////////////////
+func setSessionContent(c *LoginController) {
+	ip := c.Ctx.Request.RemoteAddr
+	id := c.GetString(ZLD_PARA_WORKERID)
+
+	fmt.Println("login: ip=", ip)
+	zllogs.WriteDebugLog("login: ip=%s, id=%s", ip, id)
+	//c.SetSession(ip, DG_STR_SESS_ON)
+	c.SetSession(ZLD_PARA_WORKERID, id)
+}
+
 func (c *LoginController) Get() {
 	// JUST FOR TEST
 	//createWorkerTableItemForTest()
@@ -74,16 +87,22 @@ func (c *LoginController) Get() {
 	password := c.GetString(ZLD_PARA_PWD)
 
 	item := new(LoginJsonData)
-	item.Errcode = 1;
 	// judgement the account
 	if models.CheckWorkerLoginInfo(workerId, password) {
 		// information correct!
-		item.Errcode = 0;
-	}
 
-	item.Page = ""
+		// create the session
+		setSessionContent(c)
+
+		// send back JSON data
+		item.Errcode = 0;
+		item.Page = "product.html"
+	} else {
+		item.Errcode = 1
+		item.Page = ""
+	}
 	c.Data["json"] = item
-	c.ServeJSON()	
+	c.ServeJSON()
 }
 
 func (c *LoginController) Post() {

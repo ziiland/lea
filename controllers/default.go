@@ -5,6 +5,8 @@ import (
 )
 
 const ZLD_LOGIN_PATH string  = "/land/login"
+const ZLD_WORKER_PATH string = "/land/worker"
+const ZLD_TASK_PATH string = "/land/task"
 
 const ZLD_PARA_WORKERID string = "WorkerId"
 const ZLD_PARA_PWD string = "Password"

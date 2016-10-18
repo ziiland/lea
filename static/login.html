@@ -10,9 +10,10 @@
     <!-- 可选的Bootstrap主题文件（一般不使用） -->
     <script src="./css/bootstrap-theme.min.css"></script>
     <!-- jQuery文件。务必在bootstrap.min.js 之前引入 -->
-    <script src=".js/jquery.min.js"></script>
+    <script src="./js/jquery-1.11.3.min.js"></script>
     <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
     <script src="./js/bootstrap.min.js"></script>
+    <script src="./js/login.js"></script>
     <style>
 .col-center-block {
     float: none;
@@ -37,17 +38,17 @@
               <div class ="col-md-4">
               </div>
           		<div class="col-md-4">
-          			<form class="form-horizontal" role="form">
+          			<form class="form-horizontal" role="form" id="form_login">
           				<div class="form-group">
           					 <label for="inputext" class="col-md-4 control-label">User name</label>
           					<div class="col-md-8">
-          						<input type="text" class="form-control" id="inputext1" />
+          						<input type="text" class="form-control" id="WorkerId" />
           					</div>
           				</div>
           				<div class="form-group">
           					 <label for="inputPassword3" class="col-md-4 control-label">Password</label>
           					<div class="col-md-8">
-          						<input type="password" class="form-control" id="inputPassword3" />
+          						<input type="password" class="form-control" id="Password" />
           					</div>
           				</div>
           				<div class="form-group">

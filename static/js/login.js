@@ -27,12 +27,12 @@ function DoSendLoginInfo() {
     });  
 }
 
-function  VerifyInfo(){
+function  AutoCursorMove(){
     $("#WorkerId").change(function(){
-    	  workerId = $("#WorkerId").val();
+    	workerId = $("#WorkerId").val();
         console.log("workerId=" + workerId + ", password=" + password);
         if (workerId != "" && password != "") {
-            DoSendLoginInfo();
+            //DoSendLoginInfo();
         } else {
             $("#WorkerId").blur();
             $("#Password").focus();
@@ -43,7 +43,7 @@ function  VerifyInfo(){
         password = $("#Password").val();
         console.log("workerId=" + workerId + ", password=" + password);
         if (workerId != "" && password != "") {
-            DoSendLoginInfo();
+            //DoSendLoginInfo();
         } else {           
             $("#Password").blur();
             $("#WorkerId").focus();
@@ -54,5 +54,10 @@ function  VerifyInfo(){
 $(document).ready(function(){
     console.log("ready");
     $("#workerId").focus();    
-    VerifyInfo();
+    AutoCursorMove();
+
+    $("#form_login").submit(function(event){
+        event.preventDefault();
+        DoSendLoginInfo();
+    });
 });
