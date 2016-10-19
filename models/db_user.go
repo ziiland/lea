@@ -6,7 +6,7 @@ import(
 	_ "github.com/go-sql-driver/mysql"
 	"lea/zllogs"
 	"strconv"
-	//"time"
+	"time"
 )
 
 const ZLD_USER_TBL_NAME string = "zld_user"
@@ -75,10 +75,10 @@ func CreateZldUserTable() {
 	s = fmt.Sprintf("%s `CurrentInvitors` int(4) NOT NULL DEFAULT 0 COMMENT '当前可用邀请数',", s)
 	s = fmt.Sprintf("%s `CreateTime` int(10) NOT NULL DEFAULT 0 COMMENT '加入时间',", s)
 
-	s = fmt.Sprintf("%s `Invitee` text NOT NULL DEFAULT '' COMMENT '邀请人'", s)
-	s = fmt.Sprintf("%s `Invitors` text NOT NULL DEFAULT '' COMMENT '被邀请人'", s)
-	s = fmt.Sprintf("%s `Signature` text NOT NULL DEFAULT '' COMMENT '签名'", s)
-	s = fmt.Sprintf("%s `Introduce` text NOT NULL DEFAULT '' COMMENT '介绍'", s)
+	s = fmt.Sprintf("%s `Invitee` text NOT NULL DEFAULT '' COMMENT '邀请人',", s)
+	s = fmt.Sprintf("%s `Invitors` text NOT NULL DEFAULT '' COMMENT '被邀请人',", s)
+	s = fmt.Sprintf("%s `Signature` text NOT NULL DEFAULT '' COMMENT '签名',", s)
+	s = fmt.Sprintf("%s `Introduce` text NOT NULL DEFAULT '' COMMENT '介绍',", s)
 	s = fmt.Sprintf("%s `Comment` text NOT NULL DEFAULT '' COMMENT '备注'", s)
 	s = fmt.Sprintf("%s) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='用户表';", s)
 	//fmt.Println("s=", s)
@@ -139,4 +139,54 @@ func SelectUserTableItem(item *ZldUserData) error{
 	return err	
 }
 
+func AlreadyHaveUserItem(id string) bool {
+	s := fmt.Sprintf("SELECT * FROM `%s`", ZLD_USER_TBL_NAME)
+	s = fmt.Sprintf("%s WHERE (`UserId` = '%s' );", s, id)
 
+	var maps []orm.Params
+	o := orm.NewOrm()
+	num, err := o.Raw(s).Values(&maps)
+
+	if err == nil && num > 0 {
+		return true
+	} else {
+		return false
+	}
+}
+
+func DoInsertUserTableItem(item *ZldUserData) {
+	// insert data to the table
+	s := fmt.Sprintf("INSERT INTO `%s`", ZLD_USER_TBL_NAME)
+	s = fmt.Sprintf("%s (`UserId`, `Password`, `Name`, `RealName`, `NickName`, `Mobile`", s)
+	s = fmt.Sprintf("%s, `Mobile2`, `Mailbox`, `Mailbox2`, `WechatId`, `Address`, `CellIds`", s)
+	s = fmt.Sprintf("%s, `Type`, `Rank`, `Fortune`, `CreateTime`, `TotalInvitors`, `CurrentInvitors`", s)
+	s = fmt.Sprintf("%s, `Invitee`, `Invitors`, `Signature`, `Introduce`, `Comment`)", s)
+	s = fmt.Sprintf("%s VALUES ", s)
+	s = fmt.Sprintf("%s ('%s', '%s', '%s', '%s', '%s', '%s'", s, item.UserId, item.Password, item.Name, item.RealName, item.NickName, item.Mobile)
+	s = fmt.Sprintf("%s , '%s', '%s', '%s', '%s', '%s', '%s'", s, item.Mobile2, item.Mailbox, item.Mailbox2, item.WechatId, item.Address, item.CellIds)
+	s = fmt.Sprintf("%s , '%v', '%v', '%v', '%v', '%v', '%v'", s, item.Type, item.Rank, item.Fortune, time.Now().Unix(), item.TotalInvitors, item.CurrentInvitors)
+	s = fmt.Sprintf("%s , '%s', '%s', '%s', '%s', '%s');", s, item.Invitee, item.Invitors, item.Signature, item.Introduce, item.Comment)
+	//fmt.Println("s=", s)
+
+	o := orm.NewOrm()
+	res, err := o.Raw(s).Exec()
+	if err == nil {
+		num, _ := res.RowsAffected()
+		fmt.Println("mysql row affected nums: ", num)
+		zllogs.WriteDebugLog("Insert a record to %s table ...... DONE", ZLD_USER_TBL_NAME)
+	} else {
+		fmt.Printf("err=%v\n", err)
+		fmt.Println("mysql insert data have an ERROR!")
+		zllogs.WriteErrorLog("Insert a record to %s table ...... ERROR", ZLD_USER_TBL_NAME)
+	}		
+}
+
+func InsertUserTableItem(item *ZldUserData) {
+	// first, try to create the table
+	CreateZldUserTable()
+
+	// No same sn item, do insert
+	if !AlreadyHaveUserItem(item.UserId) {
+		DoInsertUserTableItem(item)
+	}
+}

@@ -22,10 +22,17 @@ $(document).ready(function(){
     console.log("ready");
     getDataFromBackend();
 
-    $(window).on("unload", function() {
-        console.log("onfunc unload the window");
-        //alert("unload the window");
-        $.post("/land/worker", {Command:"unload"}, function(data){
-        });
-    });     
+    // $(window).on("unload", function() {
+    //     console.log("onfunc unload the window");
+    //     //alert("unload the window");
+    //     $.post("/land/worker", {Command:"unload"}, function(data){
+    //     });
+    // });     
+});
+
+$(window).unload(function(){ 
+    //alert("获取到了页面要关闭的事件了！"); 
+    console.log("onfunc unload the window");
+    $.post("/land/worker", {Command:"unload"}, function(data){
+    });    
 });

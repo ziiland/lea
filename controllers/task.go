@@ -1,8 +1,11 @@
 package controllers
 
 import (
+	"fmt"
 	"github.com/astaxie/beego"
 	"lea/models"
+	"strconv"
+	"time"
 )
 
 
@@ -20,50 +23,42 @@ type TaskJsonData struct {
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-// func createWorkerTableItemForTest() {
-// 	// create Admin account
-// 	account := models.NewZldWorkerDBData()
+func genTaskId(farm, cell, patch string) string{
+	id := farm
+	id += cell
+	id += patch
 
-// 	account.WorkerId = "Admin"
-// 	account.Password = "Admin"
-// 	account.Name = "管理员"
-// 	account.Title = "管理员"
-// 	account.Comment = "管理员"
-// 	models.InsertWorkerTableItem(account)
+	t := time.Now().Unix()
+	id += strconv.FormatInt(t, 10)
 
-// 	account.WorkerId = "ZLD00001"
-// 	account.Password = "888888"
-// 	account.Name = "王晓光"
-// 	account.Sex = "男"
-// 	account.IdentifyNo = "123456789012345678"
-// 	account.Title = "经理"
-// 	models.InsertWorkerTableItem(account)
-
-// 	account.WorkerId = "ZLD00002"
-// 	account.Password = "888888"
-// 	account.Name = "殷骏"
-// 	account.Sex = "男"
-// 	account.IdentifyNo = "123456789012345678"
-// 	account.Title = "经理"
-// 	models.InsertWorkerTableItem(account)	
-
-// 	account.WorkerId = "ZLD00003"
-// 	account.Password = "888888"
-// 	account.Name = "张召"
-// 	account.Sex = "男"
-// 	account.IdentifyNo = "123456789012345678"
-// 	account.Title = "经理"
-// 	models.InsertWorkerTableItem(account)
-
-// 	account.WorkerId = "ZLD00004"
-// 	account.Password = "888888"
-// 	account.Name = "张三"
-// 	account.Sex = "男"
-// 	account.IdentifyNo = "123456789012345678"
-// 	account.Title = "员工"
-// 	models.InsertWorkerTableItem(account)	
+	var index int = 0
+	for{
+		s := fmt.Sprintf("%07d", index)
+		if models.AlreadyHaveTaskItem(id + s) {
+			index += 10
+		} else {
+			id += s
+			break;
+		}
+	}
 	
-// }
+	fmt.Printf("id=%s\n", id)
+	return id
+}
+
+func createTaskTableItemForTest() {
+	// create some tasks
+	task := models.NewZldTaskDBData()
+	task.TaskId = genTaskId("SHA001", "000A0001", "B")
+	task.SponsorId = "ZLD00001"
+	task.FarmId = "SHA001"
+	task.CellId = "000A0001"
+	task.PatchId = "B"
+	task.CreateTime = time.Now().Unix()
+	task.Type = 1;
+
+	models.InsertTaskTableItem(task)
+}
 
 func (c *TaskController) Get() {
 	// JUST FOR TEST
