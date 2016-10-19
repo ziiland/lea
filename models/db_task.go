@@ -161,24 +161,34 @@ func InsertTaskTableItem(item *ZldTaskData) {
 	}
 }
 
-// func UpdateWorkerInfo(item *ZldWorkerData) error{
-// 	s := fmt.Sprintf("UPDATE `%s`", ZLD_WORKER_TBL_NAME)
-// 	s = fmt.Sprintf("%s SET ", s)
-// 	s = fmt.Sprintf("%s `Password` = '%s',", s, item.Password)
-// 	s = fmt.Sprintf("%s `Name` = '%s',", s, item.Name)
-// 	s = fmt.Sprintf("%s `Sex` = '%s',", s, item.Sex)
-// 	s = fmt.Sprintf("%s `IdentifyNo` = '%s'", s, item.IdentifyNo)
-// 	s = fmt.Sprintf("%s `Title` = '%s'", s, item.Title)
-// 	s = fmt.Sprintf("%s WHERE (`WorkerId` = '%s');", s, item.WorkerId)
-// 	//fmt.Println("s=", s)
+func UpdateTaskItemInfo(item *ZldTaskData) error{
+	s := fmt.Sprintf("UPDATE `%s`", ZLD_TASK_TBL_NAME)
+	s = fmt.Sprintf("%s SET ", s)
+	s = fmt.Sprintf("%s `SponsorId` = '%s',", s, item.SponsorId)
+	s = fmt.Sprintf("%s `FarmId` = '%s',", s, item.FarmId)
+	s = fmt.Sprintf("%s `CellId` = '%s',", s, item.CellId)
+	s = fmt.Sprintf("%s `PatchId` = '%s'", s, item.PatchId)
+	s = fmt.Sprintf("%s `WorkerId` = '%s'", s, item.WorkerId)
+	s = fmt.Sprintf("%s `CheckerId` = '%s'", s, item.CheckerId)
+	s = fmt.Sprintf("%s `State` = '%s'", s, item.State)
+	s = fmt.Sprintf("%s `Type` = '%v'", s, item.Type)
+	s = fmt.Sprintf("%s `CreateTime` = '%v'", s, item.CreateTime)
+	s = fmt.Sprintf("%s `StartTime` = '%v'", s, item.StartTime)
+	s = fmt.Sprintf("%s `EndTime` = '%v'", s, item.EndTime)
+	s = fmt.Sprintf("%s `CheckTime` = '%v'", s, item.CheckTime)
+	s = fmt.Sprintf("%s `Score` = '%v'", s, item.Score)
+	s = fmt.Sprintf("%s `UserComment` = '%s'", s, item.UserComment)
+	s = fmt.Sprintf("%s `Comment` = '%s'", s, item.Comment)
+	s = fmt.Sprintf("%s WHERE (`TaskId` = '%s');", s, item.TaskId)
+	//fmt.Println("s=", s)
 
-// 	o := orm.NewOrm()
-// 	_, err := o.Raw(s).Exec()
-// 	if err == nil {
-// 		zllogs.WriteDebugLog("Update record(WorkerId=%s) in table %s  ...... DONE", item.WorkerId, ZLD_WORKER_TBL_NAME)
-// 	} else {
-// 		zllogs.WriteErrorLog("Update record(WorkerId=%s) in table %s  ...... ERROR", item.WorkerId, ZLD_WORKER_TBL_NAME)
-// 	}
+	o := orm.NewOrm()
+	_, err := o.Raw(s).Exec()
+	if err == nil {
+		zllogs.WriteDebugLog("Update record(TaskId=%s) in table %s  ...... DONE", item.TaskId, ZLD_TASK_TBL_NAME)
+	} else {
+		zllogs.WriteErrorLog("Update record(TaskId=%s) in table %s  ...... ERROR", item.TaskId, ZLD_TASK_TBL_NAME)
+	}
 
-// 	return err
-// }
+	return err
+}

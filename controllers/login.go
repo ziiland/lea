@@ -74,7 +74,7 @@ func setSessionContent(c *LoginController) {
 
 	fmt.Println("login: ip=", ip)
 	zllogs.WriteDebugLog("login: ip=%s, id=%s", ip, id)
-	//c.SetSession(ip, DG_STR_SESS_ON)
+	c.SetSession(ip, ZLD_STR_ON)
 	c.SetSession(ZLD_PARA_WORKERID, id)
 }
 
@@ -96,7 +96,7 @@ func (c *LoginController) Get() {
 
 		// send back JSON data
 		item.Errcode = 0;
-		item.Page = "product.html"
+		item.Page = "task_list.html"
 	} else {
 		item.Errcode = 1
 		item.Page = ""

@@ -1,8 +1,10 @@
 package controllers
 
 import (
+	"fmt"
 	"github.com/astaxie/beego"
-	"lea/models"
+	//"lea/models"
+	"lea/zllogs"
 )
 
 
@@ -66,40 +68,29 @@ type WorkerJsonData struct {
 // }
 
 func (c *WorkerController) Get() {
-	// JUST FOR TEST
-	//createWorkerTableItemForTest()
-
 	// get the para
-	workerId := c.GetString(ZLD_PARA_WORKERID)
-	password := c.GetString(ZLD_PARA_PWD)
-
-	item := new(LoginJsonData)
-	item.Errcode = 1;
-	// judgement the account
-	if models.CheckWorkerLoginInfo(workerId, password) {
-		// information correct!
-		item.Errcode = 0;
-	}
-
-	item.Page = ""
-	c.Data["json"] = item
-	c.ServeJSON()	
+	command := c.GetString(ZLD_PARA_COMMAND) 
+	fmt.Println("worker command=", command)
+	zllogs.WriteDebugLog("GET request of worker page: command=%s", command)
+	
+	switch command {
+	case ZLD_CMD_LOAD_PARA:
+		handleLoadParaCmd(&c.Controller)
+	case ZLD_CMD_UNLOAD:
+		handleUnloadCmd(&c.Controller)
+	}		
 }
 
 func (c *WorkerController) Post() {
 	// get the para
-	workerId := c.GetString(ZLD_PARA_WORKERID)
-	password := c.GetString(ZLD_PARA_PWD)
-
-	item := new(LoginJsonData)
-	item.Errcode = 1;
-	// judgement the account
-	if models.CheckWorkerLoginInfo(workerId, password) {
-		// information correct!
-		item.Errcode = 0;
+	command := c.GetString(ZLD_PARA_COMMAND) 
+	fmt.Println("worker command=", command)
+	zllogs.WriteDebugLog("Post request of worker page: command=%s", command)
+	
+	switch command {
+	case ZLD_CMD_LOAD_PARA:
+		handleLoadParaCmd(&c.Controller)
+	case ZLD_CMD_UNLOAD:
+		handleUnloadCmd(&c.Controller)
 	}
-		
-	item.Page = ""
-	c.Data["json"] = item
-	c.ServeJSON()
 }

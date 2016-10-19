@@ -3,42 +3,139 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width" />
-    <title>用户登录</title>
-    <link rel="stylesheet" type="text/css" href="./css/jquery.mobile1.4.2.min.css" />
-    <link rel="stylesheet" type="text/css" href="./css/login.css">
-    <!-- <link rel="stylesheet" type="text/css" href="./css/header.css"> -->
-    <!-- <script src="http://libs.baidu.com/jquery/1.10.2/jquery.min.js"></script> -->
+    <title>生产管理</title>
+    <!-- 引入 Bootstrap -->
+    <!-- 新 Bootstrap 核心 CSS 文件 -->
+    <link rel="stylesheet" type="text/css" href="./css/bootstrap.min.css">
+    <!-- 可选的Bootstrap主题文件（一般不使用） -->
+    <script src="./css/bootstrap-theme.min.css"></script>
+    <!-- jQuery文件。务必在bootstrap.min.js 之前引入 -->
     <script src="./js/jquery-1.11.3.min.js"></script>
-    <script src="./js/jquery.mobile.1.4.2.min.js"></script>
-    <script src="./js/login.js"></script>
-    
+    <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+    <script src="./js/bootstrap.min.js"></script>
+    <script src="./js/task_list.js"></script>
   </head>
+
   <body>
-        <div class="style" >
-            <div text-align="center" id="header_div"><nobr>Ziiland生产管理软件  <strong><font size="2" color="#000">V1.0</font></strong></nobr></div>
-        </div>
-
-       <!--  <div id="header_png">
-            <img src="./img/Logo_deepglint_English_red_Small.png" id="">
-        </div> -->
-         <div align="center">
-            <div id="Main">
-              <form method="post"  id="form_login">
-              <div id="Heading">用户登录</div>
-              <div class="block">
-                <label class="label-line"><h2>工号:&nbsp&nbsp&nbsp<input data-role="none" type="text" id="WorkerId" name="WorkerId" value="" class="input-text"/></h2></label>
+    <div class="container">
+    	<div class="row clearfix">
+    		<div class="col-md-12 column">
+    			<div class="page-header">
+    				<h1 style="text-align:center;">
+    					Ziiland生产管理软件 <small>v1.0</small>
+    				</h1>
+    			</div>
+    			<div class="row clearfix">
+    				<div class="col-md-3">
+              <div class="btn-group-vertical">
+                  <button type="button" class="btn btn-default">用户管理</button>
+                  <button type="button" class="btn btn-default">任务管理</button>
               </div>
-              <div class="block">
-                <label class="label-line"><h2>密码:&nbsp&nbsp&nbsp<input data-role="none" type="password" id="Password" name="Password" value="" class="input-text"/></h2></label>
-              </div>
-
-              </form>
             </div>
-       </div>
-
-      <div class="bottom">
-            <div align="center">版权信息：上海自然技术有限公司</div>
-      </div>
-
+    				<div class="col-md-9">
+    					<table class="table">
+    						<thead>
+    							<tr>
+    								<th>
+    									编号
+    								</th>
+    								<th>
+    									产品
+    								</th>
+    								<th>
+    									交付时间
+    								</th>
+    								<th>
+    									状态
+    								</th>
+    							</tr>
+    						</thead>
+    						<tbody>
+    							<tr>
+    								<td>
+    									1
+    								</td>
+    								<td>
+    									TB - Monthly
+    								</td>
+    								<td>
+    									01/04/2012
+    								</td>
+    								<td>
+    									Default
+    								</td>
+    							</tr>
+    							<tr class="success">
+    								<td>
+    									1
+    								</td>
+    								<td>
+    									TB - Monthly
+    								</td>
+    								<td>
+    									01/04/2012
+    								</td>
+    								<td>
+    									Approved
+    								</td>
+    							</tr>
+    							<tr class="error">
+    								<td>
+    									2
+    								</td>
+    								<td>
+    									TB - Monthly
+    								</td>
+    								<td>
+    									02/04/2012
+    								</td>
+    								<td>
+    									Declined
+    								</td>
+    							</tr>
+    							<tr class="warning">
+    								<td>
+    									3
+    								</td>
+    								<td>
+    									TB - Monthly
+    								</td>
+    								<td>
+    									03/04/2012
+    								</td>
+    								<td>
+    									Pending
+    								</td>
+    							</tr>
+    							<tr class="info">
+    								<td>
+    									4
+    								</td>
+    								<td>
+    									TB - Monthly
+    								</td>
+    								<td>
+    									04/04/2012
+    								</td>
+    								<td>
+    									Call in to confirm
+    								</td>
+    							</tr>
+    						</tbody>
+    					</table>
+    				</div>
+    			</div>
+          <div id="footer" >
+            <nav class="navbar navbar-default navbar-fixed-bottom">
+                <div class="navbar-inner navbar-content-center">
+                    <p class="text-muted credit" style="padding: 10px;text-align:center;">
+                      	版权信息：上海自然技术有限公司
+                    </p>
+                </div>
+            </nav>
+          </div>
+    		</div>
+    	</div>
+    </div>
   </body>
 </html>
