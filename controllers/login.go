@@ -29,12 +29,20 @@ type LoginJsonData struct {
 /////////////////////////////////////////////////////////////////////////////////
 func setSessionContent(c *LoginController) {
 	ip := c.Ctx.Request.RemoteAddr
-	id := c.GetString(ZLD_PARA_WORKERID)
+	id := c.GetString(ZLD_PARA_WORKER)
 
 	fmt.Println("login: ip=", ip)
 	zllogs.WriteDebugLog("login: ip=%s, id=%s", ip, id)
 	c.SetSession(ip, ZLD_STR_ON)
-	c.SetSession(ZLD_PARA_WORKERID, id)
+	c.SetSession(ZLD_PARA_WORKER, id)
+
+	worker := models.NewZldWorkerDBData()
+	worker.WorkerId = id
+	if err := models.SelectWorkerTableItem(worker); err == nil {
+		fmt.Println("worker.Title=", worker.Title)
+		c.SetSession(ZLD_PARA_TITLE, worker.Title)
+		//c.SetSession(ZLD_PARA_FARM, worker.Farm)
+	}
 }
 
 func (c *LoginController) Get() {
@@ -43,7 +51,7 @@ func (c *LoginController) Get() {
 	//createTaskTableItemForTest()
 
 	// get the para
-	workerId := c.GetString(ZLD_PARA_WORKERID)
+	workerId := c.GetString(ZLD_PARA_WORKER)
 	password := c.GetString(ZLD_PARA_PWD)
 
 	item := new(LoginJsonData)
@@ -67,7 +75,7 @@ func (c *LoginController) Get() {
 
 func (c *LoginController) Post() {
 	// get the para
-	workerId := c.GetString(ZLD_PARA_WORKERID)
+	workerId := c.GetString(ZLD_PARA_WORKER)
 	password := c.GetString(ZLD_PARA_PWD)
 
 	item := new(LoginJsonData)

@@ -49,23 +49,25 @@ func genTaskId(farm, cell, patch string) string{
 func createTaskTableItemForTest() {
 	// create some tasks
 	task := models.NewZldTaskDBData()
-	task.TaskId = genTaskId("SHA001", "000A0001", "B")
 	task.SponsorId = "ZLD00001"
 	task.FarmId = "SHA001"
 	task.CellId = "000A0001"
 	task.PatchId = "B"
 	task.CreateTime = time.Now().Unix()
 	task.Type = 1;
+	task.TaskId = genTaskId("SHA001", "000A0001", "B")
+	models.InsertTaskTableItem(task)
 
+	task.TaskId = genTaskId("SHA001", "000A0001", "B")
+	models.InsertTaskTableItem(task)
+
+	task.TaskId = genTaskId("SHA001", "000A0001", "B")
 	models.InsertTaskTableItem(task)
 }
 
 func (c *TaskController) Get() {
-	// JUST FOR TEST
-	//createWorkerTableItemForTest()
-
 	// get the para
-	workerId := c.GetString(ZLD_PARA_WORKERID)
+	workerId := c.GetString(ZLD_PARA_WORKER)
 	password := c.GetString(ZLD_PARA_PWD)
 
 	item := new(LoginJsonData)
@@ -83,7 +85,7 @@ func (c *TaskController) Get() {
 
 func (c *TaskController) Post() {
 	// get the para
-	workerId := c.GetString(ZLD_PARA_WORKERID)
+	workerId := c.GetString(ZLD_PARA_WORKER)
 	password := c.GetString(ZLD_PARA_PWD)
 
 	item := new(LoginJsonData)

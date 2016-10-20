@@ -8,7 +8,9 @@ import (
 
 type CommonCmdJsonData struct {
 	Login  		string 
-	WorkerId	string
+	Worker  	string   // the worker who login 
+	Title		string   // the title
+	FarmId		string   // farm which worker belong
 
 	ACK         string
 }
@@ -25,9 +27,10 @@ func handleLoadParaCmd(c *beego.Controller) {
 	fmt.Println("ip=", ip)
 	if c.GetSession(ip) == ZLD_STR_ON {
 		item.Login = ZLD_STR_ON
-		item.WorkerId = (c.GetSession(ZLD_PARA_WORKERID)).(string)
-		fmt.Printf("%s is LOGIN!\n", item.WorkerId)
-		zllogs.WriteDebugLog("%s is LOGIN!", item.WorkerId)
+		item.Worker = (c.GetSession(ZLD_PARA_WORKER)).(string)
+		item.Title = (c.GetSession(ZLD_PARA_TITLE)).(string)
+		fmt.Printf("%s is LOGIN!\n", item.Worker)
+		zllogs.WriteDebugLog("%s is LOGIN!", item.Worker)
 	} else {
 		//item.Login = 
 		fmt.Println("worker not login!")

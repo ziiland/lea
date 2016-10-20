@@ -192,3 +192,73 @@ func UpdateTaskItemInfo(item *ZldTaskData) error{
 
 	return err
 }
+
+func DecodeOrmParamsToData(para orm.Params) (item ZldTaskData){
+	item.TaskId = (para["TaskId"]).(string)
+	id := (para["Id"]).(string)
+	nId, _ := strconv.Atoi(id)
+	item.Id = int32(nId)
+	ctime := (para["CreateTime"]).(string)
+	item.CreateTime, _ = strconv.ParseInt(ctime, 10, 64)
+	stime := (para["StartTime"]).(string)
+	item.StartTime, _ = strconv.ParseInt(stime, 10, 64)
+	etime := (para["EndTime"]).(string)
+	item.EndTime, _ = strconv.ParseInt(etime, 10, 64)
+	cktime := (para["CheckTime"]).(string)
+	item.CheckTime, _ = strconv.ParseInt(cktime, 10, 64)
+
+	ttype := (para["Type"]).(string)
+	item.Type, _ =  strconv.ParseInt(ttype, 10, 64)
+	score := (para["Score"]).(string)
+	item.Score, _ = strconv.ParseInt(score, 10, 64)
+
+	item.SponsorId = (para["SponsorId"]).(string)
+	item.FarmId = (para["FarmId"]).(string)
+	item.CellId = (para["CellId"]).(string)
+	item.PatchId = (para["PatchId"]).(string)
+	item.WorkerId = (para["WorkerId"]).(string)
+	item.CheckerId = (para["CheckerId"]).(string)
+	item.State = (para["State"]).(string)
+	item.UserComment = (para["UserComment"]).(string)
+	item.Comment = (para["Comment"]).(string)
+
+	return		
+}
+
+func QueryMatchItemNums(worker, farm, title string)(int64, error) {
+	s := fmt.Sprintf("SELECT * FROM `%s`", ZLD_TASK_TBL_NAME)
+	if title == "经理" {
+		s = fmt.Sprintf("%s WHERE (`FarmId` = '%s');", s, farm)			
+	} else {
+		//s := fmt.Sprintf("SELECT * FROM `%s`", ZLD_TASK_TBL_NAME)
+		s = fmt.Sprintf("%s WHERE (`FarmId` = '%s' AND `WorkerId` = '%s');", s, farm, worker)	
+	}
+	fmt.Println("s=", s)
+
+	var maps []orm.Params
+	o := orm.NewOrm()
+	return o.Raw(s).Values(&maps);
+}
+
+func SelectTaskTableItemsWithFarmId(worker, farm, title string, tasks *[]ZldTaskData)(num int64, err error) {
+	s := fmt.Sprintf("SELECT * FROM `%s`", ZLD_TASK_TBL_NAME)
+	if title == "经理" {
+		s = fmt.Sprintf("%s WHERE (`FarmId` = '%s');", s, farm)
+	} else {
+		s = fmt.Sprintf("%s WHERE (`FarmId` = '%s' AND `WorkerId` = '%s');", s, farm, worker)
+	}	
+	fmt.Println("s=", s)
+
+	var maps []orm.Params
+	o := orm.NewOrm()
+	num, err = o.Raw(s).Values(&maps);
+
+	if err == nil && num > 0 {
+		for i, v := range maps {
+			(*tasks)[i] = DecodeOrmParamsToData(v)
+		}
+	}
+
+	fmt.Println("tasks=", tasks)
+	return num, err	
+}

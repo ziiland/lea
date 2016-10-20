@@ -19,6 +19,7 @@ type ZldWorkerData struct {
 	Sex				string		// 
 	IdentifyNo		string		//
 	Title			string		// Admin/PM/PE
+	//Farm            string      // belong to which farm
 	CheckInTime		int64
 	CheckOutTime	int64
 	Comment   		string
@@ -98,6 +99,7 @@ func AlreadyHaveWorkerItem(id string) bool {
 func CheckWorkerLoginInfo(workerId, pwd string) bool {
 	s := fmt.Sprintf("SELECT * FROM `%s`", ZLD_WORKER_TBL_NAME)
 	s = fmt.Sprintf("%s WHERE (`WorkerId` = '%s' AND `Password` = '%s');", s, workerId, pwd)
+	fmt.Println("s=", s)
 
 	var maps []orm.Params
 	o := orm.NewOrm()
