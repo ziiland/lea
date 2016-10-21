@@ -3,6 +3,7 @@ package controllers
 import (
 	"fmt"
 	"github.com/astaxie/beego"
+	"lea/common"
 	"lea/models"
 	"lea/zllogs"
 )
@@ -69,8 +70,8 @@ func createWorkerTableItemForTest() {
 
 ///////////////////////////////////////////////////////////////////////////////
 func handleWorkerLoadTaskCmd(c *WorkerController) {
-	workerId := (c.GetSession(ZLD_PARA_WORKER)).(string)
-	title := (c.GetSession(ZLD_PARA_TITLE)).(string)
+	workerId := (c.GetSession(common.ZLD_PARA_WORKER)).(string)
+	title := (c.GetSession(common.ZLD_PARA_TITLE)).(string)
 
 	fmt.Println("handleWorkerLoadTaskCmd: worker=", workerId)
 	if title == "员工" {
@@ -95,32 +96,32 @@ func handleWorkerLoadTaskCmd(c *WorkerController) {
 ///////////////////////////////////////////////////////////////////////////////
 func (c *WorkerController) Get() {
 	// get the para
-	command := c.GetString(ZLD_PARA_COMMAND) 
+	command := c.GetString(common.ZLD_PARA_COMMAND) 
 	fmt.Println("worker command=", command)
 	zllogs.WriteDebugLog("GET request of worker page: command=%s", command)
 	
 	switch command {
-	case ZLD_CMD_LOAD_PARA:
+	case common.ZLD_CMD_LOAD_PARA:
 		handleLoadParaCmd(&c.Controller)
-	case ZLD_CMD_UNLOAD:
+	case common.ZLD_CMD_UNLOAD:
 		handleUnloadCmd(&c.Controller)
-	case ZLD_CMD_LOAD_TASK:
+	case common.ZLD_CMD_LOAD_TASK:
 		handleWorkerLoadTaskCmd(c)
 	}		
 }
 
 func (c *WorkerController) Post() {
 	// get the para
-	command := c.GetString(ZLD_PARA_COMMAND) 
+	command := c.GetString(common.ZLD_PARA_COMMAND) 
 	fmt.Println("worker command=", command)
 	zllogs.WriteDebugLog("Post request of worker page: command=%s", command)
 	
 	switch command {
-	case ZLD_CMD_LOAD_PARA:
+	case common.ZLD_CMD_LOAD_PARA:
 		handleLoadParaCmd(&c.Controller)
-	case ZLD_CMD_UNLOAD:
+	case common.ZLD_CMD_UNLOAD:
 		handleUnloadCmd(&c.Controller)
-	case ZLD_CMD_LOAD_TASK:
+	case common.ZLD_CMD_LOAD_TASK:
 		handleWorkerLoadTaskCmd(c)		
 	}
 }

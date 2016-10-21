@@ -3,7 +3,9 @@ package controllers
 import (
 	"fmt"
 	"github.com/astaxie/beego"
+	"lea/common"
 	"lea/models"
+	"lea/zllogs"
 	"strconv"
 	"time"
 )
@@ -65,38 +67,64 @@ func createTaskTableItemForTest() {
 	models.InsertTaskTableItem(task)
 }
 
-func (c *TaskController) Get() {
-	// get the para
-	workerId := c.GetString(ZLD_PARA_WORKER)
-	password := c.GetString(ZLD_PARA_PWD)
+///////////////////////////////////////////////////////////////////////////////
+func handleLoadTaskCmd(c *TaskController) {
+	// load task condition: worker, time
+	workerId := (c.GetSession(common.ZLD_PARA_WORKER)).(string)
+	title := (c.GetSession(common.ZLD_PARA_TITLE)).(string)
 
-	item := new(LoginJsonData)
-	item.Errcode = 1;
-	// judgement the account
-	if models.CheckWorkerLoginInfo(workerId, password) {
-		// information correct!
-		item.Errcode = 0;
+	// base the worker, get the farmers/title
+
+	fmt.Println("handleWorkerLoadTaskCmd: worker=", workerId)
+	if title == "员工" {
+		fmt.Println("title=", title)
+	} else if title == "经理" {
+		fmt.Println("title=", title)
 	}
 
-	item.Page = ""
+	item := new(WorkerJsonData)
+	//slice := make([]models.ZldTaskData, 1)
+	if num, err := models.QueryMatchItemNums(workerId, "SHA001", title); err == nil {
+		slice := make([]models.ZldTaskData, num)
+		item.Tasks = &slice
+		models.SelectTaskTableItemsWithFarmId(workerId, "SHA001", title, item.Tasks)
+	}	
+	item.Errcode = 0;
+
 	c.Data["json"] = item
-	c.ServeJSON()	
+	c.ServeJSON()
+}
+
+///////////////////////////////////////////////////////////////////////////////
+func (c *TaskController) Get() {
+	// get the para
+	// get the para
+	command := c.GetString(common.ZLD_PARA_COMMAND) 
+	fmt.Println("task command=", command)
+	zllogs.WriteDebugLog("GET request of task page: command=%s", command)
+	
+	switch command {
+	case common.ZLD_CMD_LOAD_PARA:
+		handleLoadParaCmd(&c.Controller)
+	case common.ZLD_CMD_UNLOAD:
+		handleUnloadCmd(&c.Controller)
+	case common.ZLD_CMD_LOAD_TASK:
+		handleLoadTaskCmd(c)
+	}	
 }
 
 func (c *TaskController) Post() {
 	// get the para
-	workerId := c.GetString(ZLD_PARA_WORKER)
-	password := c.GetString(ZLD_PARA_PWD)
-
-	item := new(LoginJsonData)
-	item.Errcode = 1;
-	// judgement the account
-	if models.CheckWorkerLoginInfo(workerId, password) {
-		// information correct!
-		item.Errcode = 0;
-	}
-		
-	item.Page = ""
-	c.Data["json"] = item
-	c.ServeJSON()
+	command := c.GetString(common.ZLD_PARA_COMMAND) 
+	fmt.Println("task command=", command)
+	zllogs.WriteDebugLog("POST request of task page: command=%s", command)
+	
+	switch command {
+	case common.ZLD_CMD_LOAD_PARA:
+		handleLoadParaCmd(&c.Controller)
+	case common.ZLD_CMD_UNLOAD:
+		handleUnloadCmd(&c.Controller)
+	case common.ZLD_CMD_LOAD_TASK:
+		handleLoadTaskCmd(c)
+	}	
 }

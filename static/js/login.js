@@ -6,7 +6,7 @@ var password = "";
 
 function DoSendLoginInfo() {
     //console.log("workerId=" + workerId + ", password=" + password);
-    $.get("/land/login", {Worker:workerId, Password:password}, function(data){
+    $.get(URL_LOGIN, {Command:CMD_LOGIN, Worker:workerId, Password:password}, function(data){
         $.each(data, function(key,value){
             if (key == "Errcode") {
                 errcode = value;
