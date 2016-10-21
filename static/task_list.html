@@ -1,141 +1,133 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width" />
-    <title>生产管理</title>
-    <!-- 引入 Bootstrap -->
-    <!-- 新 Bootstrap 核心 CSS 文件 -->
-    <link rel="stylesheet" type="text/css" href="./css/bootstrap.min.css">
-    <!-- 可选的Bootstrap主题文件（一般不使用） -->
-    <script src="./css/bootstrap-theme.min.css"></script>
-    <!-- jQuery文件。务必在bootstrap.min.js 之前引入 -->
-    <script src="./js/jquery-1.11.3.min.js"></script>
-    <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
-    <script src="./js/bootstrap.min.js"></script>
-    <script src="./js/task_list.js"></script>
-  </head>
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1, user-scalable=no">
+	<title>任务管理</title>
+	<!-- 引入 Bootstrap -->
+	<!-- 新 Bootstrap 核心 CSS 文件 -->
+	<link rel="stylesheet" type="text/css" href="./css/bootstrap.min.css">
+	<!-- 可选的Bootstrap主题文件（一般不使用） -->
+	<link rel="stylesheet" type="text/css" href="./css/bootstrap-theme.min.css">
+	<!-- jQuery文件。务必在bootstrap.min.js 之前引入 -->
+	<script src="./js/jquery-1.11.3.min.js"></script>
+	<!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+	<script src="./js/bootstrap.min.js"></script>
+	<script src="./js/login.js"></script>
+	<script src="./js/task_list.js"></script>
+	<link rel="stylesheet" type="text/css" href="./css/mystyle.css">
+</head>
 
-  <body>
-    <div class="container">
-    	<div class="row clearfix">
-    		<div class="col-md-12 column">
-    			<div class="page-header">
-    				<h1 style="text-align:center;">
-    					Ziiland生产管理软件 <small>v1.0</small>
-    				</h1>
-    			</div>
-    			<div class="row clearfix">
-    				<div class="col-md-3">
-              <div class="btn-group-vertical">
-                  <button type="button" class="btn btn-default">用户管理</button>
-                  <button type="button" class="btn btn-default">任务管理</button>
-              </div>
-            </div>
-    				<div class="col-md-9">
-    					<table class="table">
-    						<thead>
-    							<tr>
-    								<th>
-    									编号
-    								</th>
-    								<th>
-    									产品
-    								</th>
-    								<th>
-    									交付时间
-    								</th>
-    								<th>
-    									状态
-    								</th>
-    							</tr>
-    						</thead>
-    						<tbody>
-    							<tr>
-    								<td>
-    									1
-    								</td>
-    								<td>
-    									TB - Monthly
-    								</td>
-    								<td>
-    									01/04/2012
-    								</td>
-    								<td>
-    									Default
-    								</td>
-    							</tr>
-    							<tr class="success">
-    								<td>
-    									1
-    								</td>
-    								<td>
-    									TB - Monthly
-    								</td>
-    								<td>
-    									01/04/2012
-    								</td>
-    								<td>
-    									Approved
-    								</td>
-    							</tr>
-    							<tr class="error">
-    								<td>
-    									2
-    								</td>
-    								<td>
-    									TB - Monthly
-    								</td>
-    								<td>
-    									02/04/2012
-    								</td>
-    								<td>
-    									Declined
-    								</td>
-    							</tr>
-    							<tr class="warning">
-    								<td>
-    									3
-    								</td>
-    								<td>
-    									TB - Monthly
-    								</td>
-    								<td>
-    									03/04/2012
-    								</td>
-    								<td>
-    									Pending
-    								</td>
-    							</tr>
-    							<tr class="info">
-    								<td>
-    									4
-    								</td>
-    								<td>
-    									TB - Monthly
-    								</td>
-    								<td>
-    									04/04/2012
-    								</td>
-    								<td>
-    									Call in to confirm
-    								</td>
-    							</tr>
-    						</tbody>
-    					</table>
-    				</div>
-    			</div>
-          <div id="footer" >
-            <nav class="navbar navbar-default navbar-fixed-bottom">
-                <div class="navbar-inner navbar-content-center">
-                    <p class="text-muted credit" style="padding: 10px;text-align:center;">
-                      	版权信息：上海自然技术有限公司
-                    </p>
-                </div>
-            </nav>
-          </div>
-    		</div>
-    	</div>
-    </div>
-  </body>
+<body>
+<!-- 模态框（Modal）begin -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				<h4 class="modal-title" id="myModalLabel">任务增加</h4>
+			</div>
+			<div class="modal-body">
+				<form class="form-horizontal">
+					<fieldset>
+						<div class="control-group">
+							<label class="control-label">用户名</label><br>
+							<input type="text" placeholder="张三" class="input-xlarge">
+						</div>
+						<div class="control-group">
+							<label class="control-label">真实姓名</label><br>
+							<input type="text" placeholder="张三" class="input-xlarge">
+						</div>
+						<div class="control-group">
+							<label class="control-label">昵称</label><br>
+							<input type="text" placeholder="老张" class="input-xlarge">
+						</div>
+						<div class="control-group">
+							<label class="control-label">手机号</label><br>
+							<input type="text" placeholder="13333333333" class="input-xlarge">
+						</div>
+						<div class="control-group">
+							<label class="control-label">邮箱</label><br>
+							<input type="text" placeholder="xxx@xxx.com" class="input-xlarge">
+							<p class="help-block">Supporting help text</p>
+						</div>
+						<div class="control-group">
+							<label class="control-label">收货地址</label><br>
+							<input type="text" placeholder="placeholder" class="input-xlarge">
+						</div>
+						<div class="control-group">
+							<label class="control-label">邀请人</label><br>
+							<input type="text" placeholder="placeholder" class="input-xlarge">
+						</div>
+					</fieldset>
+				</form>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+				<button type="button" class="btn btn-primary">提交更改</button>
+			</div>
+		</div><!-- /.modal-content -->
+	</div><!-- /.modal -->
+</div>
+<!-- 模态框（Modal）end -->
+<div class="container">
+	<div class="row clearfix">
+		<div class="col-md-12 herder">
+			<h1>任务管理</h1>
+		</div>
+	</div>
+	<div class="row clearfix">
+		<div class="col-md-2 column">
+			<div id="left-menu">
+				<ul class="nav nav-pills nav-stacked">
+					<li><a href="./index.html">主页</a></li>
+					<li><a href="./usermange.html">用户管理</a></li>
+					<li class="active"><a href="./task_list.html">任务管理</a></li>
+				</ul>
+			</div>
+		</div>
+		<div class="col-md-10 column">
+			<div class="row clearfix">
+				<div class="col-md-12">
+					<form class="navbar-form navbar-left" role="search">
+						<div class="form-group">
+							<label>任务搜索</label>
+							<input type="text" class="form-control">
+						</div>
+						<button type="submit" class="btn btn-default">Submit</button>
+					</form>
+                    <div class="form-group">
+                    <button type="submit" class="btn btn-default" id="add" data-toggle="modal" data-target="#myModal">添加</button>
+                    <button type="submit" class="btn btn-default" id="delete">删除</button>
+                    </div>
+				</div>
+			</div>
+			<div class="row clearfix">
+				<div class="col-md-12"  id="user-table">
+					<table class="table">
+						<thead>
+						<tr>
+							<th>编号</th>
+							<th>ID</th>
+							<th>用户名</th>
+							<th>等级</th>
+							<th>财产数目</th>
+							<th>创建时间</th>
+							<th>详情</th>
+						</tr>
+						</thead>
+						<tbody id="userlist">
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="row clearfix">
+		<div class="col-md-12 footer">
+			<h5>版权信息：上海自然技术有限公司</h5>
+		</div>
+	</div>
+</div>
+</body>
 </html>
