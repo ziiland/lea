@@ -18,8 +18,14 @@ type TaskController struct {
 	beego.Controller
 }
 
+// type TaskJsonData struct {
+// 	Page 				string
+// 	//Title               string
+// 	Errcode             int
+// }
+
 type TaskJsonData struct {
-	Page 				string
+	Tasks 				*[]models.ZldTaskData
 	//Title               string
 	Errcode             int
 }
@@ -82,7 +88,7 @@ func handleLoadTaskCmd(c *TaskController) {
 		fmt.Println("title=", title)
 	}
 
-	item := new(WorkerJsonData)
+	item := new(TaskJsonData)
 	//slice := make([]models.ZldTaskData, 1)
 	if num, err := models.QueryMatchItemNums(workerId, "SHA001", title); err == nil {
 		slice := make([]models.ZldTaskData, num)

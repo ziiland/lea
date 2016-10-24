@@ -16,10 +16,15 @@ type WorkerController struct {
 	beego.Controller
 }
 
+// type WorkerJsonData struct {
+// 	Tasks 				*[]models.ZldTaskData
+// 	//Title               string
+// 	Errcode             int
+// }
+
 type WorkerJsonData struct {
-	Tasks 				*[]models.ZldTaskData
-	//Title               string
-	Errcode             int
+	Workers 			*[]models.ZldWorkerData
+	Errcode				int
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -69,28 +74,70 @@ func createWorkerTableItemForTest() {
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-func handleWorkerLoadTaskCmd(c *WorkerController) {
-	workerId := (c.GetSession(common.ZLD_PARA_WORKER)).(string)
-	title := (c.GetSession(common.ZLD_PARA_TITLE)).(string)
+// func handleWorkerLoadTaskCmd(c *WorkerController) {
+// 	workerId := (c.GetSession(common.ZLD_PARA_WORKER)).(string)
+// 	title := (c.GetSession(common.ZLD_PARA_TITLE)).(string)
 
-	fmt.Println("handleWorkerLoadTaskCmd: worker=", workerId)
-	if title == "员工" {
-		fmt.Println("title=", title)
-	} else if title == "经理" {
-		fmt.Println("title=", title)
-	}
+// 	fmt.Println("handleWorkerLoadTaskCmd: worker=", workerId)
+// 	if title == "员工" {
+// 		fmt.Println("title=", title)
+// 	} else if title == "经理" {
+// 		fmt.Println("title=", title)
+// 	}
+
+// 	item := new(WorkerJsonData)
+// 	//slice := make([]models.ZldTaskData, 1)
+// 	if num, err := models.QueryMatchItemNums(workerId, "SHA001", title); err == nil {
+// 		slice := make([]models.ZldTaskData, num)
+// 		item.Tasks = &slice
+// 		models.SelectTaskTableItemsWithFarmId(workerId, "SHA001", title, item.Tasks)
+// 	}	
+// 	item.Errcode = 0;
+
+// 	c.Data["json"] = item
+// 	c.ServeJSON()
+// }
+
+func loadOneWorkerInfo(c *WorkerController) {
+	workerId := (c.GetSession(common.ZLD_PARA_WORKER)).(string)
 
 	item := new(WorkerJsonData)
-	//slice := make([]models.ZldTaskData, 1)
-	if num, err := models.QueryMatchItemNums(workerId, "SHA001", title); err == nil {
-		slice := make([]models.ZldTaskData, num)
-		item.Tasks = &slice
-		models.SelectTaskTableItemsWithFarmId(workerId, "SHA001", title, item.Tasks)
+	slice := make([]models.ZldWorkerData, 1)
+	item.Workers = &slice
+	models.QueryWorkerTableItem(workerId, item.Workers)
+	item.Errcode = 0
+
+	c.Data["json"] = item
+	c.ServeJSON()
+}
+
+func loadAllWorkersInfo(c *WorkerController) {
+	workerId := (c.GetSession(common.ZLD_PARA_WORKER)).(string)
+
+	item := new(WorkerJsonData)
+	if num, err := models.QueryWorkerNumbers(workerId); err == nil {
+		fmt.Println("loadAllWorkersInfo: num=", num);
+		slice := make([]models.ZldWorkerData, num)
+		item.Workers = &slice
+		models.QueryAllWorkerTableItem(item.Workers)
 	}	
 	item.Errcode = 0;
 
 	c.Data["json"] = item
-	c.ServeJSON()
+	c.ServeJSON()	
+}
+
+func handleLoadWorkerInfo(c *WorkerController) {
+	//workerId := (c.GetSession(common.ZLD_PARA_WORKER)).(string)
+	title := (c.GetSession(common.ZLD_PARA_TITLE)).(string)
+
+	if title == "Admin" {
+		// list all the workers
+		loadAllWorkersInfo(c)
+	} else {
+		// only list self
+		loadOneWorkerInfo(c)
+	}
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -105,8 +152,10 @@ func (c *WorkerController) Get() {
 		handleLoadParaCmd(&c.Controller)
 	case common.ZLD_CMD_UNLOAD:
 		handleUnloadCmd(&c.Controller)
-	case common.ZLD_CMD_LOAD_TASK:
-		handleWorkerLoadTaskCmd(c)
+	// case common.ZLD_CMD_LOAD_TASK:
+	// 	handleWorkerLoadTaskCmd(c)
+	case common.ZLD_CMD_LOAD_WORKER:
+		handleLoadWorkerInfo(c)
 	}		
 }
 
@@ -121,7 +170,9 @@ func (c *WorkerController) Post() {
 		handleLoadParaCmd(&c.Controller)
 	case common.ZLD_CMD_UNLOAD:
 		handleUnloadCmd(&c.Controller)
-	case common.ZLD_CMD_LOAD_TASK:
-		handleWorkerLoadTaskCmd(c)		
+	// case common.ZLD_CMD_LOAD_TASK:
+	// 	handleWorkerLoadTaskCmd(c)
+	case common.ZLD_CMD_LOAD_WORKER:
+		handleLoadWorkerInfo(c)	
 	}
 }

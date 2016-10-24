@@ -8,6 +8,7 @@ var KEY_PASSWORD = "Password";
 
 var CMD_LOAD_PARA = "LoadPara";
 var CMD_LOAD_TASK = "LoadTask";
+var CMD_LOAD_WORKER = "LoadWorker";
 var CMD_UNLOAD = "UnLoad";
 var CMD_LOGIN = "Login";
 

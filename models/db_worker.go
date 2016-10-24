@@ -208,3 +208,73 @@ func UpdateWorkerInfo(item *ZldWorkerData) error{
 
 	return err
 }
+
+func DecodeWorkerOrmParamsToData(para orm.Params) (item ZldWorkerData){
+	id := (para["Id"]).(string)
+	nId, _ := strconv.Atoi(id)
+	item.Id = int32(nId)
+
+	ctime := (para["CheckInTime"]).(string)
+	item.CheckInTime, _ = strconv.ParseInt(ctime, 10, 64)
+	stime := (para["CheckOutTime"]).(string)
+	item.CheckOutTime, _ = strconv.ParseInt(stime, 10, 64)
+
+	item.WorkerId = (para["WorkerId"]).(string)
+	item.Password = (para["Password"]).(string)
+	item.Name = (para["Name"]).(string)
+	item.Sex = (para["Sex"]).(string)
+	item.IdentifyNo = (para["IdentifyNo"]).(string)
+	item.Title = (para["Title"]).(string)
+	item.Comment = (para["Comment"]).(string)
+
+	return		
+}
+
+func QueryWorkerNumbers(id string) (int64, error) {
+	s := fmt.Sprintf("SELECT * FROM `%s`;", ZLD_WORKER_TBL_NAME)
+	//s = fmt.Sprintf("%s WHERE (`WorkerId` = '%s');", s, id)
+	//fmt.Println("s=", s)
+
+	var maps []orm.Params
+	o := orm.NewOrm()
+	return  o.Raw(s).Values(&maps)
+}
+
+func QueryWorkerTableItem(id string, workers *[]ZldWorkerData) (num int64, err error){
+	s := fmt.Sprintf("SELECT * FROM `%s`", ZLD_WORKER_TBL_NAME)
+	s = fmt.Sprintf("%s WHERE (`WorkerId` = '%s');", s, id)
+	fmt.Println("s=", s)
+
+	var maps []orm.Params
+	o := orm.NewOrm()
+	num, err = o.Raw(s).Values(&maps)
+	//fmt.Printf("num=%d, maps=%v\n", num, maps)
+
+	if err == nil && num > 0 {
+		for i, v := range maps {
+			(*workers)[i] = DecodeWorkerOrmParamsToData(v)
+		}
+	}
+	fmt.Println("workers=", workers)
+
+	return 	
+}
+
+func QueryAllWorkerTableItem(workers *[]ZldWorkerData) (num int64, err error) {
+	s := fmt.Sprintf("SELECT * FROM `%s`;", ZLD_WORKER_TBL_NAME)
+	//s = fmt.Sprintf("%s WHERE (`WorkerId` = '%s');", s, id)
+	fmt.Println("s=", s)
+
+	var maps []orm.Params
+	o := orm.NewOrm()
+	num, err = o.Raw(s).Values(&maps)
+	//fmt.Printf("num=%d, maps=%v\n", num, maps)
+
+	if err == nil && num > 0 {
+		for i, v := range maps {
+			(*workers)[i] = DecodeWorkerOrmParamsToData(v)
+		}
+	}
+	fmt.Println("workers=", workers)
+	return 	
+}

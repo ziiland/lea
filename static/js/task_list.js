@@ -4,7 +4,7 @@ var title;
 var tasks = new Array();
 
 function getDataFromBackend() {
-  $.get(URL_WORKER, {Command:CMD_LOAD_PARA}, function(data){
+  $.get(URL_TASK, {Command:CMD_LOAD_PARA}, function(data){
       $.each(data, function(key, value){
           if(key == KEY_LOGIN) {
               login = value;
@@ -33,7 +33,7 @@ function getTaskList() {
     var stime = Date.UTC(today.getFullYear(), today.getMonth(), today.getDay(), 0, 0, 0, 0);
     console.log("get task list! time=" + stime/1000);
 
-    $.get(URL_WORKER, {Command:CMD_LOAD_TASK, StartTime:0}, function(data){
+    $.get(URL_TASK, {Command:CMD_LOAD_TASK, StartTime:0}, function(data){
         $.each(data, function(key, value){
             console.log("key=" + key + ", value=" + value);
             if (key == KEY_TASKS) {
@@ -63,6 +63,6 @@ $(document).ready(function(){
 $(window).unload(function(){ 
     //alert("获取到了页面要关闭的事件了！"); 
     console.log("onfunc unload the window");
-    $.post(URL_WORKER, {Command:CMD_UNLOAD}, function(data){
+    $.post(URL_TASK, {Command:CMD_UNLOAD}, function(data){
     });    
 });

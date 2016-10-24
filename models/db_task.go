@@ -193,7 +193,7 @@ func UpdateTaskItemInfo(item *ZldTaskData) error{
 	return err
 }
 
-func DecodeOrmParamsToData(para orm.Params) (item ZldTaskData){
+func DecodeTaskOrmParamsToData(para orm.Params) (item ZldTaskData){
 	item.TaskId = (para["TaskId"]).(string)
 	id := (para["Id"]).(string)
 	nId, _ := strconv.Atoi(id)
@@ -255,7 +255,7 @@ func SelectTaskTableItemsWithFarmId(worker, farm, title string, tasks *[]ZldTask
 
 	if err == nil && num > 0 {
 		for i, v := range maps {
-			(*tasks)[i] = DecodeOrmParamsToData(v)
+			(*tasks)[i] = DecodeTaskOrmParamsToData(v)
 		}
 	}
 
