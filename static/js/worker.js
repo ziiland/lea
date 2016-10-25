@@ -14,7 +14,7 @@ $(document).ready(function(){
 function getWorkersInfo() {
         $.get(URL_WORKER, {Command:CMD_LOAD_WORKER}, function(data){
             $.each(data, function(key, value){
-                if (key == KEY_WORKER) {
+                if (key == KEY_WORKERS) {
                     $.each(value, function(index, obj){
                         workers[index] = obj;
                         descriptionWorkers(obj);

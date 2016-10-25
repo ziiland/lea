@@ -60,9 +60,9 @@ $(document).ready(function(){
     // });     
 });
 
-$(window).unload(function(){ 
-    //alert("获取到了页面要关闭的事件了！"); 
-    console.log("onfunc unload the window");
-    $.post(URL_TASK, {Command:CMD_UNLOAD}, function(data){
-    });    
-});
+// $(window).unload(function(){ 
+//     //alert("获取到了页面要关闭的事件了！"); 
+//     console.log("onfunc unload the window");
+//     $.post(URL_TASK, {Command:CMD_UNLOAD}, function(data){
+//     });    
+// });
