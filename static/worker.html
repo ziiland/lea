@@ -13,14 +13,14 @@
   <script src="./js/jquery-1.11.3.min.js"></script>
   <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
   <script src="./js/bootstrap.min.js"></script>
-  <script src="./js/login.js"></script>
+  <script src="./js/common.js"></script>
   <script src="./js/worker.js"></script>
   <link rel="stylesheet" type="text/css" href="./css/mystyle.css">
 </head>
 
 <body>
 <!-- 模态框（Modal）begin -->
-<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div class="modal fade" id="registered" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
@@ -32,25 +32,25 @@
           <div class="form-group">
               <label class="col-sm-2 control-label">工号  </label>
             <div class="col-md-4">
-              <input type="text" placeholder="001" class="form-control">
+              <input type="text" placeholder="001" class="form-control" id ="WorkerId">
             </div>
           </div>
           <div class="form-group">
             <label class="col-sm-2 control-label">密码</label>
             <div class="col-md-4">
-              <input type="text" placeholder="001" class="form-control">
+              <input type="text" placeholder="001" class="form-control" id ="Password">
             </div>
           </div>
           <div class="form-group">
             <label class="col-sm-2 control-label">中文名</label>
             <div class="col-md-4">
-              <input type="text" placeholder="例如：张三" class="form-control">
+              <input type="text" placeholder="例如：张三" class="form-control"id ="Name">
             </div>
           </div>
           <div class="form-group">
             <label class="col-sm-2 control-label">性别</label>
             <div class="controls col-md-4">
-              <select class="form-control">
+              <select class="form-control" id ="Sex">
                 <option>男</option>
                 <option>女</option></select>
             </div>
@@ -58,13 +58,13 @@
           <div class="form-group">
             <label class="col-sm-2 control-label">身份证号</label>
             <div class="col-md-4">
-              <input type="text" placeholder="33100XXXXXXXXXXXXXXX" class="form-control">
+              <input type="text" placeholder="" class="form-control" id ="IdentifyNo">
             </div>
           </div>
           <div class="form-group">
             <label class="col-sm-2 control-label">角色</label>
             <div class="controls col-md-4">
-              <select class="form-control">
+              <select class="form-control" id ="Title">
                 <option>经理</option>
                 <option>员工</option></select>
             </div>
@@ -72,26 +72,26 @@
           <div class="form-group">
             <label class="col-sm-2 control-label">入职时间</label>
             <div class="col-md-4">
-              <input type="text" placeholder="例如：20161213" class="form-control">
+              <input type="text" placeholder="例如：20161213" class="form-control" id ="CheckInTime">
             </div>
           </div>
           <div class="form-group">
             <label class="col-sm-2 control-label">离职时间</label>
             <div class="col-md-4">
-              <input type="text" placeholder="例如：在职" class="form-control">
+              <input type="text" placeholder="例如：在职" class="form-control" id ="CheckOutTime">
             </div>
           </div>
           <div class="form-group">
             <label class="col-sm-2 control-label">备注</label>
             <div class="col-md-8">
-              <textarea  class="form-control input-lg"> </textarea>
+              <textarea  class="form-control input-lg" id ="Comment"> </textarea>
             </div>
           </div>
         </form>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-        <button type="button" class="btn btn-primary">提交更改</button>
+        <button type="button" class="btn btn-primary" id = "commit_worker">提交</button>
       </div>
     </div><!-- /.modal-content -->
   </div><!-- /.modal -->
@@ -124,8 +124,8 @@
             <button type="submit" class="btn btn-default">Submit</button>
           </form>
           <div class="form-group">
-          <button type="submit" class="btn btn-default navbar-btn" id="add" data-toggle="modal" data-target="#myModal">添加</button>
-          <button type="submit" class="btn btn-default navbar-btn" id="delete">删除</button>
+            <button type="submit" class="btn btn-default navbar-btn" id="add" data-toggle="modal" data-target="#registered">添加</button>
+            <button type="submit" class="btn btn-default navbar-btn" id="delete">删除</button>
           </div>
         </div>
 	  </div>

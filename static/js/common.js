@@ -1,5 +1,5 @@
 var KEY_LOGIN = "Login";
-var KEY_WORKER = "Worker";
+var KEY_WORKER = "Workers";
 var KEY_TITLE = "Title";
 var KEY_FARM = "Farm";
 var KEY_TASKS = "Tasks";
