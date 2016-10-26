@@ -66,9 +66,8 @@ function addWorker() {
                     alert("用户已存在");
                 }
                 else{
-
+                    $("#registered").modal("hide");
                     alert("新增成功");
-                    //$("#registered").modal("hide");
                 }
             });
     }
