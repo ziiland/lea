@@ -1,6 +1,6 @@
 #user-table{
     line-height: 20px;
     overflow:scroll;
-    height:800px;
+    height:auto;
     border:solid;
 }

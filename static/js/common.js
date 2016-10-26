@@ -12,6 +12,7 @@ var CMD_LOAD_TASK = "LoadTask";
 var CMD_LOAD_WORKER = "LoadWorker";
 var CMD_UNLOAD = "UnLoad";
 var CMD_LOGIN = "Login";
+var CMD_ADD_WORKER = "AddWorker"
 
 var URL_LOGIN = "/land/login";
 var URL_WORKER = "/land/worker";

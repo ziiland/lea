@@ -14,7 +14,7 @@ const ZLD_CMD_LOAD_TASK string = "LoadTask"
 const ZLD_CMD_LOAD_WORKER string = "LoadWorker"
 const ZLD_CMD_UNLOAD string = "UnLoad"
 const ZLD_CMD_LOGIN string = "Login"
-
+const ZLD_CMD_ADD_WORKER = "AddWorker"
 
 const ZLD_PARA_COMMAND string = "Command"
 const ZLD_PARA_WORKER string = "Worker"
