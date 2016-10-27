@@ -247,8 +247,8 @@ func DecodeWorkerOrmParamsToData(para orm.Params) (item ZldWorkerData){
 	return		
 }
 
-func QueryWorkerNumbers(id string) (int64, error) {
-	s := fmt.Sprintf("SELECT * FROM `%s`;", ZLD_WORKER_TBL_NAME)
+func QueryInSvcWorkerNumbers(id string) (int64, error) {
+	s := fmt.Sprintf("SELECT * FROM `%s` WHERE (`CheckOutTime` = 0);", ZLD_WORKER_TBL_NAME)
 	//s = fmt.Sprintf("%s WHERE (`WorkerId` = '%s');", s, id)
 	//fmt.Println("s=", s)
 
@@ -277,8 +277,8 @@ func QueryWorkerTableItem(id string, workers *[]ZldWorkerData) (num int64, err e
 	return 	
 }
 
-func QueryAllWorkerTableItem(workers *[]ZldWorkerData) (num int64, err error) {
-	s := fmt.Sprintf("SELECT * FROM `%s`;", ZLD_WORKER_TBL_NAME)
+func QueryInSvcAllWorkerTableItem(workers *[]ZldWorkerData) (num int64, err error) {
+	s := fmt.Sprintf("SELECT * FROM `%s` WHERE (`CheckOutTime` = 0);", ZLD_WORKER_TBL_NAME)
 	//s = fmt.Sprintf("%s WHERE (`WorkerId` = '%s');", s, id)
 	fmt.Println("s=", s)
 

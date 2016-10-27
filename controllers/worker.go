@@ -110,11 +110,11 @@ func loadAllWorkersInfo(c *WorkerController) {
 	workerId := (c.GetSession(common.ZLD_PARA_WORKER)).(string)
 
 	item := new(WorkerJsonData)
-	if num, err := models.QueryWorkerNumbers(workerId); err == nil {
+	if num, err := models.QueryInSvcWorkerNumbers(workerId); err == nil {
 		fmt.Println("loadAllWorkersInfo: num=", num);
 		slice := make([]models.ZldWorkerData, num)
 		item.Workers = &slice
-		models.QueryAllWorkerTableItem(item.Workers)
+		models.QueryInSvcAllWorkerTableItem(item.Workers)
 	}	
 	item.Errcode = 0;
 
