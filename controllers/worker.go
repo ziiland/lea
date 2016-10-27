@@ -6,7 +6,7 @@ import (
 	"lea/common"
 	"lea/models"
 	"lea/zllogs"
-	"strconv"
+	//"strconv"
 )
 
 
@@ -16,12 +16,6 @@ import (
 type WorkerController struct {
 	beego.Controller
 }
-
-// type WorkerJsonData struct {
-// 	Tasks 				*[]models.ZldTaskData
-// 	//Title               string
-// 	Errcode             int
-// }
 
 type WorkerJsonData struct {
 	Workers 			*[]models.ZldWorkerData
@@ -140,40 +134,37 @@ func handleLoadWorkerInfo(c *WorkerController) {
 		loadOneWorkerInfo(c)
 	}
 }
-func stringToInt(s string) int64 {
-	if value, err := strconv.ParseInt(s, 0, 0); err != nil {
-		return 0
-	} else {
-		return value
-	}
-}
-func handleAddWorkerInfo(c *WorkerController) {
 
-	date := new(WorkerJsonData)
+// func stringToInt(s string) int64 {
+// 	if value, err := strconv.ParseInt(s, 0, 0); err != nil {
+// 		return 0
+// 	} else {
+// 		return value
+// 	}
+// }
+
+func handleAddWorkerInfo(c *WorkerController) {
+	data := new(WorkerJsonData)
 	item := models.NewZldWorkerDBData()
 
 	item.WorkerId = c.GetString("WorkerId")
-	item.Password =c.GetString("Password")
-	item.Name =c.GetString("Name")
-	item.Sex =c.GetString("Sex")
-	item.IdentifyNo =c.GetString("IdentifyNo")
-	item.Title =c.GetString("Title")
-	item.CheckInTime = stringToInt(c.GetString("CheckInTime"))
-	item.CheckOutTime = stringToInt(c.GetString("CheckInTime"))
-	item.Comment =c.GetString("Comment")
+	item.Password = c.GetString("Password")
+	item.Name = c.GetString("Name")
+	item.Sex = c.GetString("Sex")
+	item.IdentifyNo = c.GetString("IdentifyNo")
+	item.Title = c.GetString("Title")
+	//item.CheckInTime = stringToInt(c.GetString("CheckInTime"))
+	//item.CheckOutTime = stringToInt(c.GetString("CheckInTime"))
+	item.Comment = c.GetString("Comment")
 
 	if !models.AlreadyHaveWorkerItem(item.WorkerId) {
 		models.InsertWorkerTableItem(item)
-		date.Errcode = 1;
-		c.Data["json"] = date
-		c.ServeJSON()
-
+		data.Errcode = 0;
 	}else{
-
-		date.Errcode = 0;
-		c.Data["json"] = date
-		c.ServeJSON()
+		data.Errcode = 1;
 	}
+	c.Data["json"] = data
+	c.ServeJSON()	
 }
 ///////////////////////////////////////////////////////////////////////////////
 func (c *WorkerController) Get() {

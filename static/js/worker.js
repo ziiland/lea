@@ -1,13 +1,11 @@
 var workers = new Array();
-var workerId="";
-var password="";
-var name="";
-var sex="";
-var identifyNo="";
-var title="";
-var checkInTime="";
-var checkOutTime="";
-var comment="";
+// var workerId="";
+// var password="";
+// var name="";
+// var sex="";
+// var identifyNo="";
+// var title="";
+// var comment="";
 
 $(document).ready(function(){
     getWorkersInfo();
@@ -30,7 +28,7 @@ function getWorkersInfo() {
 }
 
 function descriptionWorkers(workers) {
-    var worker_info ="";
+    var worker_info = "";
     for ( item in workers) {
         console.log("item =" + item + ", value=" + workers[item]);
         if((item != "Password")&&(item != "Id")) {
@@ -41,38 +39,36 @@ function descriptionWorkers(workers) {
 }
 
 function addWorker() {
-                    workerId=$("#WorkerId").val();
-                    password=$("#Password").val();
-                    name=$("#Name").val();
-                    sex=$("#Sex").val();
-                    identifyNo=$("#IdentifyNo").val();
-                    title=$("#Title").val();
-                    checkInTime=$("#CheckInTime").val();
-                    checkOutTime=$("#CheckOutTime").val();
-                    comment=$("#Comment").val();
-    console.log("workerId="+workerId);
-    if (workerId != "" && password!= "" && name!="" && title!="" && checkInTime!="") {
-            $.get(URL_WORKER, {
-                    Command: CMD_ADD_WORKER, WorkerId: workerId, Password: password, Name: name, Sex: sex,
-                    IdentifyNo: identifyNo, Title: title, CheckInTime: checkInTime, CheckOutTime: checkOutTime,
-                    Comment: comment
-                }, function (data) {
-                    $.each(data, function(key,value){
-                        if (key == "Errcode") {
-                            errcode = value;
-                        }
-                    });
-                if(errcode ==0){
+    var workerId = $("#WorkerId").val();
+    var password = $("#Password").val();
+    var name = $("#Name").val();
+    var sex = $("#Sex").val();
+    var identifyNo = $("#IdentifyNo").val();
+    var title = $("#Title").val();
+    // checkInTime = $("#CheckInTime").val();
+    // checkOutTime = $("#CheckOutTime").val();
+    var comment = $("#Comment").val();
+
+    console.log("workerId = " + workerId + ", password = " + password + ", name = " + name + ", title = " + title + ", identifyNo = ", + identifyNo);
+    if (workerId != "" && password!= "" && name!="" && title!="" && identifyNo!="") {
+        $.get(URL_WORKER, {
+                Command: CMD_ADD_WORKER, WorkerId: workerId, Password: password, Name: name, Sex: sex,
+                IdentifyNo: identifyNo, Title: title, Comment: comment
+            }, function (data) {
+                $.each(data, function(key,value){
+                    if (key == "Errcode") {
+                        errcode = value;
+                    }
+                });
+
+                if (errcode == 1) {
                     alert("用户已存在");
-                }
-                else{
+                } else {
                     $("#registered").modal("hide");
                     alert("新增成功");
-                }
-            });
-    }
-    else
-    {
+                }                
+        });
+    } else {
         alert("请输入正确的信息");
     }
 }

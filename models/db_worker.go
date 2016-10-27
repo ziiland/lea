@@ -63,9 +63,9 @@ func CreateZldWorkerTable() {
 func DoInsertWorkerTableItem(item *ZldWorkerData) {
 	// insert data to the table
 	s := fmt.Sprintf("INSERT INTO `%s`", ZLD_WORKER_TBL_NAME)
-	s = fmt.Sprintf("%s (`WorkerId`, `Password`, `Name`, `Sex`, `IdentifyNo`, `Title`, `CheckInTime`)", s)
+	s = fmt.Sprintf("%s (`WorkerId`, `Password`, `Name`, `Sex`, `IdentifyNo`, `Title`, `CheckInTime`, `Comment`)", s)
 	s = fmt.Sprintf("%s VALUES ", s)
-	s = fmt.Sprintf("%s ('%s', '%s', '%s', '%s', '%s', '%s', '%v');", s, item.WorkerId, item.Password, item.Name, item.Sex, item.IdentifyNo, item.Title, time.Now().Unix())
+	s = fmt.Sprintf("%s ('%s', '%s', '%s', '%s', '%s', '%s', '%v', '%s');", s, item.WorkerId, item.Password, item.Name, item.Sex, item.IdentifyNo, item.Title, time.Now().Unix(), item.Comment)
 	//fmt.Println("s=", s)
 
 	o := orm.NewOrm()
@@ -98,7 +98,7 @@ func AlreadyHaveWorkerItem(id string) bool {
 
 func CheckWorkerLoginInfo(workerId, pwd string) bool {
 	s := fmt.Sprintf("SELECT * FROM `%s`", ZLD_WORKER_TBL_NAME)
-	s = fmt.Sprintf("%s WHERE (`WorkerId` = '%s' AND `Password` = '%s');", s, workerId, pwd)
+	s = fmt.Sprintf("%s WHERE (`WorkerId` = '%s' AND `Password` = '%s' AND `CheckOutTime` = 0);", s, workerId, pwd)
 	fmt.Println("s=", s)
 
 	var maps []orm.Params
