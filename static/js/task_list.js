@@ -23,11 +23,27 @@ function getDataFromBackend() {
 }
 
 function descriptionTask(task) {
+
+    var task_info ="";
+    var task_id="";
+    var task_detail_info="";
     for ( item in task) {
         console.log("item =" + item + ", value=" + task[item]);
+        if((item == "SponsorId")||(item == "CreateTime")||(item == "Type")||(item == "State")) {
+            task_info = task_info + "<td>" + task[item] + "</td>";
+        }
+        else if(item == "TaskId"){
+            task_id = task[item];
+        }
+        task_detail_info = task_detail_info +"<dt style='color: red'>"+item+":</dt>"+ "<dd>"+task[item]+"</dd><hr>";
     }
+    console.log("task_id==="+task_id);
+    $("#tasklist").append("<tr>"+task_info+"<td><button class='btn btn-default' id="+task_id+">详情</button></td></tr>");
+    $("#"+task_id).click(function () {
+       $("#detailModal").modal('show');
+       $("#detail_show").append("<dl>"+task_detail_info+"</dl>")
+    });
 }
-
 function getTaskList() {
     var today = new Date();
     var stime = Date.UTC(today.getFullYear(), today.getMonth(), today.getDay(), 0, 0, 0, 0);

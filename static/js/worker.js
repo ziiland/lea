@@ -14,10 +14,6 @@ $(document).ready(function(){
     getDataFromBackend();
     getWorkersInfo();
 
-    $("#commit_worker").click(function(){
-        addWorker();
-    });
-
     $(document).on(EVT_HIDE_BTNADD, function(){
         console.log("EVT_HIDE_BTNADD: title=" + title);
         if (title != "Admin") { 
