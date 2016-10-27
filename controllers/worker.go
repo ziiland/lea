@@ -147,15 +147,13 @@ func handleAddWorkerInfo(c *WorkerController) {
 	data := new(WorkerJsonData)
 	item := models.NewZldWorkerDBData()
 
-	item.WorkerId = c.GetString("WorkerId")
-	item.Password = c.GetString("Password")
-	item.Name = c.GetString("Name")
-	item.Sex = c.GetString("Sex")
-	item.IdentifyNo = c.GetString("IdentifyNo")
-	item.Title = c.GetString("Title")
-	//item.CheckInTime = stringToInt(c.GetString("CheckInTime"))
-	//item.CheckOutTime = stringToInt(c.GetString("CheckInTime"))
-	item.Comment = c.GetString("Comment")
+	item.WorkerId = c.GetString(common.ZLD_PARA_WORKER)
+	item.Password = c.GetString(common.ZLD_PARA_PWD)
+	item.Name = c.GetString(common.ZLD_PARA_NAME)
+	item.Sex = c.GetString(common.ZLD_PARA_SEX)
+	item.IdentifyNo = c.GetString(common.ZLD_PARA_ID)
+	item.Title = c.GetString(common.ZLD_PARA_TITLE)
+	item.Comment = c.GetString(common.ZLD_PARA_COMMENT)
 
 	if !models.AlreadyHaveWorkerItem(item.WorkerId) {
 		models.InsertWorkerTableItem(item)
@@ -166,6 +164,20 @@ func handleAddWorkerInfo(c *WorkerController) {
 	c.Data["json"] = data
 	c.ServeJSON()	
 }
+
+func handleDelWorkerCmd(c *WorkerController) {
+	data := new(WorkerJsonData)
+	workerId := c.GetString(common.ZLD_PARA_WORKER)
+
+	data.Errcode = 1;
+	if err := models.UpdateWorkerCheckOutTime(workerId); err == nil{
+		data.Errcode = 0
+	}
+
+	c.Data["json"] = data
+	c.ServeJSON()	
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 func (c *WorkerController) Get() {
 	// get the para
@@ -184,6 +196,8 @@ func (c *WorkerController) Get() {
 		handleLoadWorkerInfo(c)
 	case common.ZLD_CMD_ADD_WORKER:
 		handleAddWorkerInfo(c)
+	case common.ZLD_CMD_DEL_WORKER:
+	 	handleDelWorkerCmd(c)
 	}		
 }
 
@@ -204,5 +218,7 @@ func (c *WorkerController) Post() {
 		handleLoadWorkerInfo(c)
 	case common.ZLD_CMD_ADD_WORKER:
 		handleAddWorkerInfo(c)
+	case common.ZLD_CMD_DEL_WORKER:
+		handleDelWorkerCmd(c)
 	}
 }

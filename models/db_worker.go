@@ -209,6 +209,23 @@ func UpdateWorkerInfo(item *ZldWorkerData) error{
 	return err
 }
 
+func UpdateWorkerCheckOutTime(id string) error {
+	s := fmt.Sprintf("UPDATE `%s`", ZLD_WORKER_TBL_NAME)
+	s = fmt.Sprintf("%s SET ", s)
+	s = fmt.Sprintf("%s `CheckOutTime` = '%v'", s, time.Now().Unix())
+	s = fmt.Sprintf("%s WHERE (`WorkerId` = '%s');", s, id)	
+
+	o := orm.NewOrm()
+	_, err := o.Raw(s).Exec()
+	if err == nil {
+		zllogs.WriteDebugLog("Update record(WorkerId=%s) in table %s  ...... DONE", id, ZLD_WORKER_TBL_NAME)
+	} else {
+		zllogs.WriteErrorLog("Update record(WorkerId=%s) in table %s  ...... ERROR", id, ZLD_WORKER_TBL_NAME)
+	}
+
+	return err	
+}
+
 func DecodeWorkerOrmParamsToData(para orm.Params) (item ZldWorkerData){
 	id := (para["Id"]).(string)
 	nId, _ := strconv.Atoi(id)

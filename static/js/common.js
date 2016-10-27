@@ -18,3 +18,5 @@ var URL_LOGIN = "/land/login";
 var URL_WORKER = "/land/worker";
 var URL_TASK = "/land/task";
 
+var EVT_HIDE_BTNADD = "HideBtnAdd";
+
