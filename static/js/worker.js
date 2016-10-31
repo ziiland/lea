@@ -24,7 +24,7 @@ $(document).ready(function(){
 });
 
 function getDataFromBackend() {
-    $.get(URL_TASK, {Command:CMD_LOAD_PARA}, function(data){
+    $.get(URL_WORKER, {Command:CMD_LOAD_PARA}, function(data){
         $.each(data, function(key, value){
             if(key == KEY_LOGIN) {
               login = value;
@@ -40,6 +40,10 @@ function getDataFromBackend() {
         console.log("login=" + login + ", workerId=" + workerId + ", title=" + title);
         if (login != "on") {
             window.location.assign("./login.html");
+        }
+        else{
+            $("#login_state").show();
+            $("#login_id").text("欢迎登录，"+workerId);
         }
     });
 }
@@ -100,4 +104,10 @@ function addWorker() {
     } else {
         alert("请输入正确的信息");
     }
+}
+
+function dropoutpage() {
+    $.post(URL_WORKER, {Command:CMD_UNLOAD}, function(data){
+            window.location.assign("./login.html");
+        });
 }

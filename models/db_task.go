@@ -262,3 +262,23 @@ func SelectTaskTableItemsWithFarmId(worker, farm, title string, tasks *[]ZldTask
 	fmt.Println("tasks=", tasks)
 	return num, err	
 }
+func SelectTaskTableItemsWithTaskId(taskid string, tasks *[]ZldTaskData)(num int64, err error) {
+	s := fmt.Sprintf("SELECT * FROM `%s`", ZLD_TASK_TBL_NAME)
+
+	s = fmt.Sprintf("%s WHERE (`TaskId` = '%s');", s, taskid)
+
+	fmt.Println("s=", s)
+
+	var maps []orm.Params
+	o := orm.NewOrm()
+	num, err = o.Raw(s).Values(&maps);
+
+	if err == nil && num > 0 {
+		for i, v := range maps {
+			(*tasks)[i] = DecodeTaskOrmParamsToData(v)
+		}
+	}
+
+	fmt.Println("tasks=", tasks)
+	return num, err
+}

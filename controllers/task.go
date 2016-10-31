@@ -100,7 +100,21 @@ func handleLoadTaskCmd(c *TaskController) {
 	c.Data["json"] = item
 	c.ServeJSON()
 }
+func handleQuerytaskCmd(c *TaskController){
 
+	data := new(TaskJsonData)
+
+	taskId := (c.GetSession(common.ZLD_PARA_TASKID)).(string)
+	if num, err := models.SelectTaskTableItemsWithTaskId(taskId,data.Tasks); err == nil {
+		slice := make([]models.ZldTaskData, num)
+		data.Tasks = &slice
+	}
+
+	data.Errcode = 0;
+
+	c.Data["json"] = data
+	c.ServeJSON()
+}
 ///////////////////////////////////////////////////////////////////////////////
 func (c *TaskController) Get() {
 	// get the para
@@ -116,6 +130,8 @@ func (c *TaskController) Get() {
 		handleUnloadCmd(&c.Controller)
 	case common.ZLD_CMD_LOAD_TASK:
 		handleLoadTaskCmd(c)
+	case common.ZLD_CMD_QUERY_TASK:
+		handleQuerytaskCmd(c)
 	}	
 }
 
@@ -132,5 +148,7 @@ func (c *TaskController) Post() {
 		handleUnloadCmd(&c.Controller)
 	case common.ZLD_CMD_LOAD_TASK:
 		handleLoadTaskCmd(c)
+	case common.ZLD_CMD_QUERY_TASK:
+		handleQuerytaskCmd(c)
 	}	
 }
