@@ -36,7 +36,7 @@ func CreateZldPriceTable() {
 	s = fmt.Sprintf("%s `Price` float NOT NULL DEFAULT 0.0 COMMENT '价格',", s)
 	s = fmt.Sprintf("%s `Discount` float NOT NULL DEFAULT 0.0 COMMENT '折扣',", s)
 	s = fmt.Sprintf("%s `Comment` text NOT NULL DEFAULT '' COMMENT '备注'", s)
-	s = fmt.Sprintf("%s) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='单元格表';", s)
+	s = fmt.Sprintf("%s) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='价格表';", s)
 	//fmt.Println("s=", s)
 
 	o := orm.NewOrm()

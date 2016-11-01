@@ -4,6 +4,7 @@ import(
 	"fmt"
 	"github.com/astaxie/beego/orm"
 	_ "github.com/go-sql-driver/mysql"
+	"lea/common"
 	"lea/zllogs"
 	"strconv"
 	"time"
@@ -49,7 +50,7 @@ func CreateZldTaskTable() {
 	s = fmt.Sprintf("%s `PatchId` varchar(1) NOT NULL DEFAULT '' COMMENT '小片号',", s)
 	s = fmt.Sprintf("%s `WorkerId` varchar(10) NOT NULL DEFAULT '' COMMENT '施工员工',", s)
 	s = fmt.Sprintf("%s `CheckerId` varchar(10) NOT NULL DEFAULT '' COMMENT '检查员工',", s)
-	s = fmt.Sprintf("%s `State` varchar(32) NOT NULL DEFAULT '' COMMENT '任务状态',", s)
+	s = fmt.Sprintf("%s `State` varchar(16) NOT NULL DEFAULT '' COMMENT '任务状态',", s)
 	s = fmt.Sprintf("%s `Type` int NOT NULL DEFAULT 0 COMMENT '任务种类',", s)	
 	s = fmt.Sprintf("%s `CreateTime` int(10) NOT NULL DEFAULT 0 COMMENT '创建时间',", s)
 	s = fmt.Sprintf("%s `StartTime` int(10) NOT NULL DEFAULT 0 COMMENT '开始时间',", s)
@@ -78,7 +79,7 @@ func DoInsertTaskTableItem(item *ZldTaskData) {
 	s := fmt.Sprintf("INSERT INTO `%s`", ZLD_TASK_TBL_NAME)
 	s = fmt.Sprintf("%s (`TaskId`, `SponsorId`, `FarmId`, `CellId`, `PatchId`, `WorkerId`, `CheckerId`, `State`, `Type`, `CreateTime`, `StartTime`, `EndTime`, `CheckTime`, `Score`, `UserComment`, `Comment`)", s)
 	s = fmt.Sprintf("%s VALUES ", s)
-	s = fmt.Sprintf("%s ('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%v', '%v', '%v', '%v', '%v', '%v', '%s', '%s');", s, item.TaskId, item.SponsorId, item.FarmId, item.CellId, item.PatchId, item.WorkerId, item.CheckerId, item.State, item.Type, time.Now().Unix(), item.StartTime, item.EndTime, item.CheckTime, item.Score, item.UserComment, item.Comment)
+	s = fmt.Sprintf("%s ('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%v', '%v', '%v', '%v', '%v', '%v', '%s', '%s');", s, item.TaskId, item.SponsorId, item.FarmId, item.CellId, item.PatchId, item.WorkerId, item.CheckerId, common.ZLD_TASK_CREATED, item.Type, time.Now().Unix(), item.StartTime, item.EndTime, item.CheckTime, item.Score, item.UserComment, item.Comment)
 	//fmt.Println("s=", s)
 
 	o := orm.NewOrm()
