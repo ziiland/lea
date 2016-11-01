@@ -100,21 +100,22 @@ func handleLoadTaskCmd(c *TaskController) {
 	c.Data["json"] = item
 	c.ServeJSON()
 }
-func handleQuerytaskCmd(c *TaskController){
 
+func handleQuerytaskCmd(c *TaskController) {
 	data := new(TaskJsonData)
+	slice := make([]models.ZldTaskData, 1)
+	data.Tasks = &slice
 
-	taskId := (c.GetSession(common.ZLD_PARA_TASKID)).(string)
-	if num, err := models.SelectTaskTableItemsWithTaskId(taskId,data.Tasks); err == nil {
-		slice := make([]models.ZldTaskData, num)
-		data.Tasks = &slice
-	}
-
-	data.Errcode = 0;
+	taskId := c.GetString(common.ZLD_PARA_TASKID) 
+	data.Errcode = 1;
+	if _, err := models.SelectTaskTableItemsWithTaskId(taskId, &slice[0]); err == nil {
+		data.Errcode = 0;
+	}	
 
 	c.Data["json"] = data
 	c.ServeJSON()
 }
+
 ///////////////////////////////////////////////////////////////////////////////
 func (c *TaskController) Get() {
 	// get the para

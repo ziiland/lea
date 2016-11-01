@@ -54,7 +54,6 @@ func handleLoginCmd(c *LoginController) {
 	// judgement the account
 	if models.CheckWorkerLoginInfo(workerId, password) {
 		// information correct!
-
 		// create the session
 		setSessionContent(c)
 

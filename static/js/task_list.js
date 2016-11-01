@@ -18,8 +18,7 @@ function getDataFromBackend() {
       console.log("login=" + login + ", workerId=" + workerId + ", title=" + title);
       if (login != "on") {
           window.location.assign("./login.html");
-      }
-      else{
+      } else {
           $("#login_state").show();
           $("#login_id").text("欢迎登录，"+workerId);
       }
@@ -27,14 +26,14 @@ function getDataFromBackend() {
 }
 
 function descriptionTask(task) {
-    var task_info ="";
-    var task_id="";
-    for ( item in task) {
+    var task_info = "";
+    var task_id = "";
+
+    for (item in task) {
         console.log("item =" + item + ", value=" + task[item]);
         if((item == "SponsorId")||(item == "CreateTime")||(item == "Type")||(item == "State")) {
             task_info = task_info + "<td>" + task[item] + "</td>";
-        }
-        else if(item == "TaskId"){
+        } else if(item == "TaskId"){
             task_id = task[item];
         }
     }
@@ -66,17 +65,18 @@ function getTaskList() {
 
 function displayDetailsTask(task_id){
     console.log("displayDetailsTask task_id==="+task_id);
-    var task_details_info="";
-    $.get(URL_TASK, {Command:CMD_QUERY_TASK,TaskId:task_id}, function(data){
+    var task_details_info = "";
+
+    $.get(URL_TASK, {Command:CMD_QUERY_TASK, TaskId:task_id}, function(data){
         $.each(data, function(key, value){
             console.log("displayDetailsTask key=" + key + ", value=" + value);
-            if (key ==KEY_TASKS)  {
+            if (key == KEY_TASKS)  {
                 $.each(value, function(index, obj){
                     for(item in obj){
                         task_detail_info = task_details_info +"<dt style='color: red'>"+item+":</dt>"+ "<dd>"+task[item]+"</dd><hr>";
                     }
-                        $("#detailModal").modal('show');
-                        $("#detail_show").append("<dl>"+task_details_info+"</dl>")
+                    $("#detailModal").modal('show');
+                    $("#detail_show").append("<dl>"+task_details_info+"</dl>")
                 });
             }
         });
