@@ -36,7 +36,7 @@ func CreateZldFarmTable() {
 	s := "CREATE TABLE IF NOT EXISTS"
 	s = fmt.Sprintf("%s `%s`", s, ZLD_FARM_TBL_NAME)
 	s = fmt.Sprintf("%s ( `Id` int(10) AUTO_INCREMENT NOT NULL PRIMARY KEY,", s)
-	s = fmt.Sprintf("%s `FarmId` varchar(10) NOT NULL DEFAULT '' COMMENT '农场号',", s)
+	s = fmt.Sprintf("%s `FarmId` varchar(6) NOT NULL DEFAULT '' COMMENT '农场号',", s)
 	s = fmt.Sprintf("%s `City` varchar(16) NOT NULL DEFAULT '' COMMENT '城市',", s)
 	s = fmt.Sprintf("%s `District` varchar(128) NOT NULL DEFAULT '' COMMENT '区县',", s)
 	s = fmt.Sprintf("%s `Village` varchar(8) NOT NULL DEFAULT '' COMMENT '村',", s)

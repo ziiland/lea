@@ -45,3 +45,10 @@ const ZLD_STR_ADMIN string = "Admin"
 const ZLD_STR_MANAGER string = "经理"
 const ZLD_STR_WORKER string = "员工"
 
+const ZLD_TASK_CREATED string = "Created"
+const ZLD_TASK_ASSIGNED string = "Assigned"
+const ZLD_TASK_FINISHED string = "Finished"
+const ZLD_TASK_CHECKED string = "Checked"
+const ZLD_TASK_CLOSED string = "Closed"
+const ZLD_TASK_ARCHIVED string = "Archived"
+
