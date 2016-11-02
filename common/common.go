@@ -19,6 +19,7 @@ const ZLD_CMD_DEL_WORKER = "DelWorker"
 const ZLD_CMD_UPD_WORKER = "UpdateWorker"
 const ZLD_CMD_CHGPWD_WORKER = "ChgPwd"
 const ZLD_CMD_ADD_TASK = "AddTask"
+const ZLD_CMD_ASSIGN_TASK = "AssignTask"
 const ZLD_CMD_SUBMIT_TASK= "SubmitTask"
 const ZLD_CMD_CHECK_TASK = "CheckTask"
 const ZLD_CMD_CLOSE_TASK = "CloseTask"
@@ -45,10 +46,43 @@ const ZLD_STR_ADMIN string = "Admin"
 const ZLD_STR_MANAGER string = "经理"
 const ZLD_STR_WORKER string = "员工"
 
-const ZLD_TASK_CREATED string = "Created"
-const ZLD_TASK_ASSIGNED string = "Assigned"
-const ZLD_TASK_FINISHED string = "Finished"
-const ZLD_TASK_CHECKED string = "Checked"
-const ZLD_TASK_CLOSED string = "Closed"
-const ZLD_TASK_ARCHIVED string = "Archived"
+// task action
+const ZLD_TASK_ACTION_ADD string = "Add"
+const ZLD_TASK_ACTION_LIST string = "List"
+const ZLD_TASK_ACTION_SEARCH string = "Search"
+const ZLD_TASK_ACTION_DETAIL string = "Detail"
+const ZLD_TASK_ACTION_SUBMIT string = "Submit"
+const ZLD_TASK_ACTION_CHECK string = "Check"
+const ZLD_TASK_ACTION_ASSIGN string = "Assign"
+const ZLD_TASK_ACTION_CLOSE string = "Close"
+const ZLD_TASK_ACTION_CANCEL string = "Cancel"
+const ZLD_TASK_ACTION_ARCHIVE string = "Archive" 
+const ZLD_TASK_ACTION_NOTIFY string = "Notify"
+
+// task states
+const ZLD_TASK_STATE_CREATED string = "Created"
+const ZLD_TASK_STATE_ASSIGNED string = "Assigned"
+const ZLD_TASK_STATE_STARTED string = "Started"
+const ZLD_TASK_STATE_FINISHED string = "Finished"
+const ZLD_TASK_STATE_CHECKED string = "Checked"
+const ZLD_TASK_STATE_CLOSED string = "Closed"
+const ZLD_TASK_STATE_ARCHIVED string = "Archived"
+
+// task type
+const ZLD_TASK_TYPE_SOIL = 0
+const ZLD_TASK_TYPE_SEED = 1
+const ZLD_TASK_TYPE_WATER = 2
+const ZLD_TASK_TYPE_FERTI = 3
+const ZLD_TASK_TYPE_SCAFFOLD = 4
+const ZLD_TASK_TYPE_TRANS = 5
+const ZLD_TASK_TYPE_GRAFTING = 6
+const ZLD_TASK_TYPE_WEEDING = 7
+const ZLD_TASK_TYPE_DEINSECT = 8
+const ZLD_TASK_TYPE_HARVEST = 9
+const ZLD_TASK_TYPE_EXPRESS = 10
+
+var ZldTaskType [11]string = [11]string{"翻地", "播种", "浇水", "施肥", "搭架子", "移栽", "嫁接", "除草", "除虫", "收割", "快递"}
+
+
+
 

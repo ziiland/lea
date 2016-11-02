@@ -43,7 +43,7 @@ func CreateZldTaskTable() {
 	s := "CREATE TABLE IF NOT EXISTS"
 	s = fmt.Sprintf("%s `%s`", s, ZLD_TASK_TBL_NAME)
 	s = fmt.Sprintf("%s ( `Id` int(10) AUTO_INCREMENT NOT NULL PRIMARY KEY,", s)
-	s = fmt.Sprintf("%s `TaskId` varchar(32) NOT NULL DEFAULT '' COMMENT '任务号',", s)
+	s = fmt.Sprintf("%s `TaskId` varchar(32) NOT NULL DEFAULT '' COMMENT '工作包号',", s)
 	s = fmt.Sprintf("%s `SponsorId` varchar(10) NOT NULL DEFAULT '' COMMENT '发起人',", s)
 	s = fmt.Sprintf("%s `FarmId` varchar(6) NOT NULL DEFAULT '' COMMENT '农场号',", s)
 	s = fmt.Sprintf("%s `CellId` varchar(8) NOT NULL DEFAULT '' COMMENT '单元号',", s)
@@ -59,7 +59,7 @@ func CreateZldTaskTable() {
 	s = fmt.Sprintf("%s `Score` int(10) NOT NULL DEFAULT 0 COMMENT '评分',", s)
 	s = fmt.Sprintf("%s `UserComment` text NOT NULL DEFAULT '' COMMENT '用户备注',", s)
 	s = fmt.Sprintf("%s `Comment` text NOT NULL DEFAULT '' COMMENT '备注'", s)
-	s = fmt.Sprintf("%s) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='任务表';", s)
+	s = fmt.Sprintf("%s) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='工作包表';", s)
 	//fmt.Println("s=", s)
 
 	o := orm.NewOrm()
@@ -79,7 +79,7 @@ func DoInsertTaskTableItem(item *ZldTaskData) {
 	s := fmt.Sprintf("INSERT INTO `%s`", ZLD_TASK_TBL_NAME)
 	s = fmt.Sprintf("%s (`TaskId`, `SponsorId`, `FarmId`, `CellId`, `PatchId`, `WorkerId`, `CheckerId`, `State`, `Type`, `CreateTime`, `StartTime`, `EndTime`, `CheckTime`, `Score`, `UserComment`, `Comment`)", s)
 	s = fmt.Sprintf("%s VALUES ", s)
-	s = fmt.Sprintf("%s ('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%v', '%v', '%v', '%v', '%v', '%v', '%s', '%s');", s, item.TaskId, item.SponsorId, item.FarmId, item.CellId, item.PatchId, item.WorkerId, item.CheckerId, common.ZLD_TASK_CREATED, item.Type, time.Now().Unix(), item.StartTime, item.EndTime, item.CheckTime, item.Score, item.UserComment, item.Comment)
+	s = fmt.Sprintf("%s ('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%v', '%v', '%v', '%v', '%v', '%v', '%s', '%s');", s, item.TaskId, item.SponsorId, item.FarmId, item.CellId, item.PatchId, item.WorkerId, item.CheckerId, common.ZLD_TASK_STATE_CREATED, item.Type, time.Now().Unix(), item.StartTime, item.EndTime, item.CheckTime, item.Score, item.UserComment, item.Comment)
 	//fmt.Println("s=", s)
 
 	o := orm.NewOrm()
