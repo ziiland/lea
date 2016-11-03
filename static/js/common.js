@@ -1,3 +1,4 @@
+//// key constant
 var KEY_LOGIN = "Login";
 var KEY_WORKER = "Worker";
 var KEY_WORKERS = "Workers";
@@ -7,6 +8,27 @@ var KEY_TASKS = "Tasks";
 var KEY_COMMAND = "Command";
 var KEY_PASSWORD = "Password";
 
+var KEY_TASK_TASKID = "TaskId";
+var KEY_TASK_SPONSORID = "SponsorId";
+var KEY_TASK_FARMID = "FarmId";
+var KEY_TASK_CELLID = "CellId";
+var KEY_TASK_PATCHID = "PatchId";
+var KEY_TASK_WORKERID = "WorkerId";
+var KEY_TASK_CHECKERID = "CheckerId";
+var KEY_TASK_STATE = "State";
+var KEY_TASK_TYPE = "Type";
+var KEY_TASK_CREATETIME = "CreateTime";
+var KEY_TASK_STARTTIME = "StartTime";
+var KEY_TASK_ENDTIME = "EndTime";
+var KEY_TASK_CHECKTIME = "CheckTime";
+var KEY_TASK_SCORE = "Score";
+var KEY_TASK_UCOMMENT = "UserComment";
+var KEY_TASK_COMMENT = "Comment";
+
+
+
+
+// command
 var CMD_LOAD_PARA = "LoadPara";
 var CMD_LOAD_TASK = "LoadTask";
 var CMD_LOAD_WORKER = "LoadWorker";
@@ -15,45 +37,55 @@ var CMD_LOGIN = "Login";
 var CMD_ADD_WORKER = "AddWorker"
 var CMD_QUERY_TASK = "QueryTask";
 
+// url
 var URL_LOGIN = "/land/login";
 var URL_WORKER = "/land/worker";
 var URL_TASK = "/land/task";
 
+// event
 var EVT_HIDE_BTNADD = "HideBtnAdd";
+var EVT_PARA_LOADED = "ParaLoaded";
+var EVT_TASKS_LOADED = "TaskLoaded";
 
+//
+var gTaskStateDes = {Created:"å·²åˆ›å»º", Assigned:"å·²åˆ†é…", Started:"è¿›è¡Œä¸­", Finished:"å·²å®Œæˆ", Checked:"å·²æ£€æŸ¥", Closed:"å·²å…³é—­", Archived:"å·²å½’æ¡£"};
+var gTaskTypes = ["ç¿»åœ°", "æ’­ç§", "æµ‡æ°´", "æ–½è‚¥", "æ­æ¶å­", "ç§»æ ½", "å«æ¥", "é™¤è‰", "é™¤è™«", "æ”¶å‰²", "å¿«é€’"];
+
+///////////////////////////////////////////////////////////////////////////////
 $(document).ready(function(){
     displayFooter();
     displayHeader();
 });
 
-/** ÏÔÊ¾Ò³Í·**/
+/** æ˜¾ç¤ºé¡µå¤´ **/
 function  displayHeader() {
-    var herder =  '<h1 style="text-align:center">ZiilandÉú²ú¹ÜÀíÈí¼ş <small>v1.0</small></h1>';
+    var herder =  '<h1 style="text-align:center">Ziilandç”Ÿäº§ç®¡ç†è½¯ä»¶ <small>v1.0</small></h1>';
 
     $("#myherder").append(herder);
 }
 
-/** ÏÔÊ¾Ò³½Å**/
+/** æ˜¾ç¤ºé¡µè„š **/
 function  displayFooter() {
     var footer = '<div class="col-md-12 column text-center"> ' +
-                    '<h5>°æÈ¨ĞÅÏ¢£ºÉÏº£×ÔÈ»¼¼ÊõÓĞÏŞ¹«Ë¾</h5> ' +
+                    '<h5>ç‰ˆæƒä¿¡æ¯ï¼šä¸Šæµ·è‡ªç„¶æŠ€æœ¯æœ‰é™å…¬å¸</h5> ' +
                 '</div>';
 
     $("#myfooter").append(footer);
 }
-/**xÏÔÊ¾µÇÂ¼µÄÓÃ»§**/
+
+/** æ˜¾ç¤ºç™»å½•çš„ç”¨æˆ· **/
 function displayWorkerId(login,workerid) {
     if (login != "on") {
         window.location.assign("./login.html");
     } else {
-        var Info ='<label>ÄúºÃ£¬'+ workerid+'</label>'+
-            '<button class="btn btn-sm" onclick="dropoutpage()">×¢Ïú</button>';
+        var Info ='<label>æ‚¨å¥½ï¼Œ'+ workerid+'</label>'+
+            '<button class="btn btn-sm" onclick="dropoutpage()">æ³¨é”€</button>';
 
         $("#login_info").append(Info);
     }
 }
 
-/** ÍË³öµÇÂ¼**/
+/** é€€å‡ºç™»å½• **/
 function dropoutpage() {
     $.post(URL_TASK, {Command:CMD_UNLOAD}, function(){
         window.location.assign("./login.html");
