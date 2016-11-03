@@ -36,15 +36,7 @@ function getDataFromBackend() {
         });
 
         $(document).trigger(EVT_HIDE_BTNADD);
-
-        console.log("login=" + login + ", workerId=" + workerId + ", title=" + title);
-        if (login != "on") {
-            window.location.assign("./login.html");
-        }
-        else{
-            $("#login_state").show();
-            $("#login_id").text("欢迎登录，"+workerId);
-        }
+        displayWorkerId(login,workerId);
     });
 }
 
@@ -104,10 +96,4 @@ function addWorker() {
     } else {
         alert("请输入正确的信息");
     }
-}
-
-function dropoutpage() {
-    $.post(URL_WORKER, {Command:CMD_UNLOAD}, function(data){
-            window.location.assign("./login.html");
-        });
 }

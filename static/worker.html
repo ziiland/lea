@@ -86,14 +86,7 @@
 </div>
 <!-- 模态框（Modal）end -->
 <div class="container">
-  <div class="row clearfix">
-    <div class="col-md-12 well">
-      <div  hidden id="login_state">
-        <label id="login_id"></label>
-        <button class="btn btn-sm" onclick="dropoutpage()">退出</button>
-        <h1 class=" text-center">用户管理</h1>
-      </div>
-    </div>
+  <div class="row clearfix" id="myherder" >
   </div>
   <div class="row clearfix">
     <div class="col-md-2 text-center well">
@@ -106,11 +99,11 @@
       </div>
     </div>
     <div class="col-md-10 column">
-      <div class="row clearfix">
-        <div class="col-md-12 column well">
-          <div class="form-group">
+      <div class="row clearfix well">
+        <div class="col-md-10">
             <button type="submit" class="btn btn-default navbar-btn" id="add" data-toggle="modal" data-target="#registered">添加</button>
-          </div>
+        </div>
+        <div class="col-md-2" id="login_info" >
         </div>
 	  </div>
       <div class="row clearfix">
@@ -135,10 +128,7 @@
       </div>
     </div>
   </div>
-  <div class="row clearfix">
-    <div class="col-md-12 column text-center well">
-      <h5>版权信息：上海自然技术有限公司</h5>
-    </div>
+  <div class="row clearfix" id="myfooter" >
   </div>
 </div>
 </body>

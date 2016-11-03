@@ -3,6 +3,17 @@ var workerId;
 var title;
 var tasks = new Array();
 
+$(document).ready(function(){
+    getDataFromBackend();
+    getTaskList(); /** 获取全部任务信息，并以table形式来显示**/
+    $("#myModal").on("hidden.bs.modal", function() {
+        $("#detail_show").empty();
+        $("#detail_show").hide();
+        $("#task_form").reset;
+        $("#task_form").hide();
+    });
+});
+
 function getDataFromBackend() {
   $.get(URL_TASK, {Command:CMD_LOAD_PARA}, function(data){
       $.each(data, function(key, value){
@@ -14,37 +25,10 @@ function getDataFromBackend() {
               title = value;
           }
       });
-
-      console.log("login=" + login + ", workerId=" + workerId + ", title=" + title);
-      if (login != "on") {
-          window.location.assign("./login.html");
-      } else {
-          $("#login_state").show();
-          $("#login_id").text("欢迎登录，"+workerId);
-      }
+      displayWorkerId(login,workerId);
   });
 }
-
-function descriptionTask(task) {
-    var task_info = "";
-    var task_id = "";
-
-    for (item in task) {
-        console.log("item =" + item + ", value=" + task[item]);
-        if((item == "SponsorId")||(item == "CreateTime")||(item == "Type")||(item == "State")) {
-            task_info = task_info + "<td>" + task[item] + "</td>";
-        } else if(item == "TaskId"){
-            task_id = task[item];
-        }
-    }
-    console.log("task_id==="+task_id);
-    task_info = "<tr>"+task_info+"<td><button class='btn btn-default' id="+task_id+">详情</button></td></tr>"
-    $("#tasklist").append(task_info);
-    $("#"+task_id).click(function () {
-        displayDetailsTask(task_id);
-    });
-
-}
+/** 获取全部任务信息**/
 function getTaskList() {
     var today = new Date();
     var stime = Date.UTC(today.getFullYear(), today.getMonth(), today.getDay(), 0, 0, 0, 0);
@@ -63,48 +47,53 @@ function getTaskList() {
     });
 }
 
-function displayDetailsTask(task_id){
-    console.log("displayDetailsTask task_id==="+task_id);
-    var task_details_info = "";
+/**解析全部任务对象数组
+ *创建任务table
+ *绑定每个任务详情按键event
+ **/
+function descriptionTask(task) {
+    var task_info = "";
+    var task_id = "";
 
+    for (item in task) {
+        console.log("item =" + item + ", value=" + task[item]);
+        if((item == "SponsorId")||(item == "CreateTime")||(item == "Type")||(item == "State")) {
+            task_info = task_info + "<td>" + task[item] + "</td>";
+        } else if(item == "TaskId"){
+            task_id = task[item];
+        }
+    }
+    console.log("task_id==="+task_id);
+    task_info = "<tr>"+task_info+"<td><button class='btn btn-default' data-toggle='modal' data-target='#myModal' id="+task_id+">详情</button></td></tr>"
+    /** 增加任务行*/
+    $("#tasklist").append(task_info);
+    /** 绑定任务详情click event**/
+    $("#"+task_id).click(function () {
+        displayDetailsTask(task_id);
+    });
+
+}
+/**查询并显示任务详情**/
+function displayDetailsTask(task_id){
+    var task_details_info = "";
     $.get(URL_TASK, {Command:CMD_QUERY_TASK, TaskId:task_id}, function(data){
         $.each(data, function(key, value){
-            console.log("displayDetailsTask key=" + key + ", value=" + value);
             if (key == KEY_TASKS)  {
                 $.each(value, function(index, obj){
+                    console.log("obj=" + obj );
                     for(item in obj){
-                        task_detail_info = task_details_info +"<dt style='color: red'>"+item+":</dt>"+ "<dd>"+task[item]+"</dd><hr>";
+                        task_details_info = task_details_info +"<dt style='color: red'>"+item+":</dt>"+ "<dd>"+obj[item]+"</dd><hr>";
                     }
-                    $("#detailModal").modal('show');
-                    $("#detail_show").append("<dl>"+task_details_info+"</dl>")
+                    $("#detail_show").show();
+                    $("#myModalLabel").text("任务详情");
+                    $("#detail_show").append("<dl>"+task_details_info+"</dl>")/** 显示详情模态框内容**/
                 });
             }
         });
     });
 }
-
-$(document).ready(function(){
-    console.log("ready");
-    getDataFromBackend();
-    //alert("Load task list!");
-    getTaskList();
-
-    // $(window).on("unload", function() {
-    //     console.log("onfunc unload the window");
-    //     //alert("unload the window");
-    //     $.post("/land/worker", {Command:"unload"}, function(data){
-    //     });
-    // });     
-});
-
-// $(window).unload(function(){ 
-//     //alert("获取到了页面要关闭的事件了！"); 
-//     console.log("onfunc unload the window");
-//     $.post(URL_TASK, {Command:CMD_UNLOAD}, function(data){
-//     });    
-// });
-function dropoutpage() {
-    $.post(URL_WORKER, {Command:CMD_UNLOAD}, function(data){
-        window.location.assign("./login.html");
-    });
+/**显示创建任务表单**/
+function displayAddTaskUi(){
+    $("#task_form").show();
+    $("#myModalLabel").text("新建任务");
 }
