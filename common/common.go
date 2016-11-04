@@ -38,13 +38,16 @@ const ZLD_PARA_SEX string = "Sex"
 const ZLD_PARA_ID string = "IdentifyNo"
 const ZLD_PARA_COMMENT string = "Comment"
 const ZLD_PARA_TASKID string = "TaskId"
+const ZLD_PARA_STIME string = "STime"
+const ZLD_PARA_ETIME string = "ETime"
+const ZLD_PARA_STATE string = "State"
 
 const ZLD_STR_ON string = "on"
 const ZLD_STR_OFF string = "off"
 const ZLD_STR_OK string = "ok"
 const ZLD_STR_ADMIN string = "Admin"
-const ZLD_STR_MANAGER string = "经理"
-const ZLD_STR_WORKER string = "员工"
+const ZLD_STR_MANAGER string = "Manager"
+const ZLD_STR_WORKER string = "Worker"
 
 // task action
 const ZLD_TASK_ACTION_ADD string = "Add"

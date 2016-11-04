@@ -122,7 +122,7 @@ function getTaskList() {
     var stime = Date.UTC(today.getFullYear(), today.getMonth(), today.getDay(), 0, 0, 0, 0);
     console.log("get task list! time=" + stime/1000);
 
-    $.get(URL_TASK, {Command:CMD_LOAD_TASK, StartTime:0}, function(data){
+    $.get(URL_TASK, {Command:CMD_LOAD_TASK, STime:0, ETime:0, Worker:"", State:"Assigned", Farm:"SHA001", Cell:"", Patch:""}, function(data){
         $.each(data, function(key, value){
             console.log("key=" + key + ", value=" + value);
             if (key == KEY_TASKS) {

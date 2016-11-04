@@ -74,27 +74,59 @@ func createTaskTableItemForTest() {
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+func queryMatchItemNums(workerId, title string) (int64, error){
+	if title == common.ZLD_STR_WORKER {
+		// only query task NOT CLOSED & worker/checker == workerId
+		return models.QueryWorkerItemNums(workerId)
+	} else {
+		// query task NOT CLOSED
+		return models.QueryAllOpenItemNums()
+	}
+}
+
 func handleLoadTaskCmd(c *TaskController) {
 	// load task condition: worker, time
 	workerId := (c.GetSession(common.ZLD_PARA_WORKER)).(string)
 	title := (c.GetSession(common.ZLD_PARA_TITLE)).(string)
+	fmt.Printf("handleWorkerLoadTaskCmd: worker=%s, title=%s\n", workerId, title)
 
-	// base the worker, get the farmers/title
+	// var v1 interface{} = etime
+	// switch v1.(type) {
+	// case int:
+	// 	fmt.Println("etime is integer")
+	// case string:
+	// 	fmt.Println("etime is string")
+	// default:
+	// 	fmt.Println("etime is not integer or string")
+	// }
+	stime, _ := c.GetInt(common.ZLD_PARA_STIME)
+	etime, _ := c.GetInt(common.ZLD_PARA_ETIME)	
+	state := c.GetString(common.ZLD_PARA_STATE)
+	worker := c.GetString(common.ZLD_PARA_WORKER)
+	farm := c.GetString(common.ZLD_PARA_FARM)
+	cell := c.GetString(common.ZLD_PARA_CELL)
+	patch := c.GetString(common.ZLD_PARA_PATCH)
 
-	fmt.Println("handleWorkerLoadTaskCmd: worker=", workerId)
-	if title == "员工" {
-		fmt.Println("title=", title)
-	} else if title == "经理" {
-		fmt.Println("title=", title)
+	fmt.Printf("stime=%d, etime=%d, state=%s, worker=%s farm=%s, cell=%s, patch=%s, title=%s\n", 
+		stime, etime, state, worker, farm, cell, patch, title)	
+	if title == common.ZLD_STR_WORKER {
+		worker = workerId
 	}
-
 	item := new(TaskJsonData)
 	//slice := make([]models.ZldTaskData, 1)
-	if num, err := models.QueryMatchItemNums(workerId, "SHA001", title); err == nil {
-		slice := make([]models.ZldTaskData, num)
-		item.Tasks = &slice
-		models.SelectTaskTableItemsWithFarmId(workerId, "SHA001", title, item.Tasks)
-	}	
+	// if num, err := queryMatchItemNums(worker, title); err == nil {
+	// 	slice := make([]models.ZldTaskData, num)
+	// 	item.Tasks = &slice
+	// 	models.SelectTaskTableItemsWithFarmId(workerId, "SHA001", title, item.Tasks)
+	// }	
+	if tasks, err := models.SelectTaskTableItemWithConds(int64(stime), int64(etime),
+	 worker, state, farm, cell, patch); err == nil {
+	 	slice := make([]models.ZldTaskData, 0)
+	 	for _, v := range tasks {
+	 		slice = append(slice, v)
+	 	}
+	 	item.Tasks = &slice
+	}
 	item.Errcode = 0;
 
 	c.Data["json"] = item

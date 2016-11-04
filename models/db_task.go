@@ -226,6 +226,26 @@ func DecodeTaskOrmParamsToData(para orm.Params) (item ZldTaskData){
 	return		
 }
 
+func QueryWorkerItemNums(worker string) (int64, error) {
+	s := fmt.Sprintf("SELECT * FROM `%s`", ZLD_TASK_TBL_NAME)
+	s = fmt.Sprintf("%s WHERE (`State` != '%s' AND (`WorkerId` = '%s' OR `CheckerId` = '%s'));", s, common.ZLD_TASK_STATE_CLOSED, worker, worker)
+	fmt.Println("s=", s)
+
+	var maps []orm.Params
+	o := orm.NewOrm()
+	return o.Raw(s).Values(&maps);
+}
+
+func QueryAllOpenItemNums() (int64, error) {
+	s := fmt.Sprintf("SELECT * FROM `%s`", ZLD_TASK_TBL_NAME)
+	s = fmt.Sprintf("%s WHERE (`State` != '%s');", s, common.ZLD_TASK_STATE_CLOSED)
+	fmt.Println("s=", s)
+
+	var maps []orm.Params
+	o := orm.NewOrm()
+	return o.Raw(s).Values(&maps);
+}
+
 func QueryMatchItemNums(worker, farm, title string)(int64, error) {
 	s := fmt.Sprintf("SELECT * FROM `%s`", ZLD_TASK_TBL_NAME)
 	if title == "经理" {
@@ -279,4 +299,58 @@ func SelectTaskTableItemsWithTaskId(taskid string, task *ZldTaskData)(num int64,
 
 	fmt.Println("task=", task)
 	return num, err
+}
+
+func SelectTaskTableItemWithConds(stime, etime int64, worker, state, farm, cell, patch string) ([]ZldTaskData, error){
+	//var cond bool = false;
+	s := fmt.Sprintf("SELECT * FROM `%s`", ZLD_TASK_TBL_NAME)
+	s = fmt.Sprintf("%s WHERE (", s)
+	//fmt.Println("s=", s)
+
+	// state always should be a condition
+	if state == "" {
+		s = fmt.Sprintf("%s `State` != '%s'", s, common.ZLD_TASK_STATE_CLOSED)
+	} else {
+		s = fmt.Sprintf("%s `State` = '%s'", s, state)
+	}	
+	//fmt.Println("s=", s)
+
+	if stime > 0 {
+		s = fmt.Sprintf("%s AND `CreateTime` > %v", s, stime)
+		if etime > 0 {
+			s = fmt.Sprintf("%s AND `CreateTime` < %v", s, etime)
+		}
+	}
+
+	if farm != "" {
+		s = fmt.Sprintf("%s AND `FarmId` = '%s'", s, farm)
+		if cell != "" {
+			s = fmt.Sprintf("%s AND `CellId` = '%s'", s, cell)
+			if patch != "" {
+				s = fmt.Sprintf("%s AND `PatchId` = '%s'", s, patch)
+			}
+		}
+	}
+
+	if worker != "" {
+		s = fmt.Sprintf("%s AND `WorkerId` = '%s'", s, worker)
+	}
+	s = fmt.Sprintf("%s );", s)
+	fmt.Println("s=", s)
+
+	var maps []orm.Params
+	var num int64 = 0
+	var err error
+	o := orm.NewOrm()
+	num, err = o.Raw(s).Values(&maps);
+
+	tasks := make([]ZldTaskData, num) 
+	if err == nil && num > 0 {
+		for i, v := range maps {
+			tasks[i] = DecodeTaskOrmParamsToData(v)
+		}
+	}
+
+	fmt.Println("tasks=", tasks)
+	return tasks, err	
 }
