@@ -57,7 +57,9 @@ function descriptionWorkers(workers) {
     var worker_info = "";
     for ( item in workers) {
         console.log("item =" + item + ", value=" + workers[item]);
-        if((item != "Password")&&(item != "Id")) {
+        if (item == KEY_TITLE) {
+            worker_info = worker_info + "<td>" + gRoleDes[workers[item]] + "</td>";
+        } else if ((item != KEY_PASSWORD) && (item != "Id")) {
             worker_info = worker_info + "<td>" + workers[item] + "</td>";
         }
     }

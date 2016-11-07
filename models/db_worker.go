@@ -193,8 +193,9 @@ func UpdateWorkerInfo(item *ZldWorkerData) error{
 	s = fmt.Sprintf("%s `Password` = '%s',", s, item.Password)
 	s = fmt.Sprintf("%s `Name` = '%s',", s, item.Name)
 	s = fmt.Sprintf("%s `Sex` = '%s',", s, item.Sex)
-	s = fmt.Sprintf("%s `IdentifyNo` = '%s'", s, item.IdentifyNo)
-	s = fmt.Sprintf("%s `Title` = '%s'", s, item.Title)
+	s = fmt.Sprintf("%s `IdentifyNo` = '%s',", s, item.IdentifyNo)
+	s = fmt.Sprintf("%s `Title` = '%s',", s, item.Title)
+	s = fmt.Sprintf("%s `Comment` = '%s'", s, item.Comment)
 	s = fmt.Sprintf("%s WHERE (`WorkerId` = '%s');", s, item.WorkerId)
 	//fmt.Println("s=", s)
 
@@ -257,60 +258,59 @@ func QueryInSvcWorkerNumbers(id string) (int64, error) {
 	return  o.Raw(s).Values(&maps)
 }
 
-func QueryWorkerTableItem(id string, workers *[]ZldWorkerData) (num int64, err error){
+func QueryWorkerTableItem(id string) (ZldWorkerData, error){
 	s := fmt.Sprintf("SELECT * FROM `%s`", ZLD_WORKER_TBL_NAME)
 	s = fmt.Sprintf("%s WHERE (`WorkerId` = '%s');", s, id)
 	fmt.Println("s=", s)
 
 	var maps []orm.Params
 	o := orm.NewOrm()
-	num, err = o.Raw(s).Values(&maps)
+	num, err := o.Raw(s).Values(&maps)
 	//fmt.Printf("num=%d, maps=%v\n", num, maps)
 
+	var worker ZldWorkerData
 	if err == nil && num > 0 {
-		for i, v := range maps {
-			(*workers)[i] = DecodeWorkerOrmParamsToData(v)
-		}
+		worker = DecodeWorkerOrmParamsToData(maps[0])
 	}
-	fmt.Println("workers=", workers)
+	fmt.Println("worker=", worker)
 
-	return 	
+	return worker, err
 }
 
-func QueryInSvcAllWorkerTableItem(workers *[]ZldWorkerData) (num int64, err error) {
+func QueryInSvcAllWorkerTableItem() ([]ZldWorkerData, error) {
 	s := fmt.Sprintf("SELECT * FROM `%s` WHERE (`CheckOutTime` = 0);", ZLD_WORKER_TBL_NAME)
-	//s = fmt.Sprintf("%s WHERE (`WorkerId` = '%s');", s, id)
 	fmt.Println("s=", s)
 
 	var maps []orm.Params
 	o := orm.NewOrm()
-	num, err = o.Raw(s).Values(&maps)
+	num, err := o.Raw(s).Values(&maps)
 	//fmt.Printf("num=%d, maps=%v\n", num, maps)
 
+	workers := make([]ZldWorkerData, num)
 	if err == nil && num > 0 {
 		for i, v := range maps {
-			(*workers)[i] = DecodeWorkerOrmParamsToData(v)
+			workers[i] = DecodeWorkerOrmParamsToData(v)
 		}
 	}
 	fmt.Println("workers=", workers)
-	return 	
+	return workers, err
 }
 
-func QueryAllWorkersTableItem(workers *[]ZldWorkerData) (num int64, err error) {
+func QueryAllWorkersTableItem() ([]ZldWorkerData, error) {
 	s := fmt.Sprintf("SELECT * FROM `%s`;", ZLD_WORKER_TBL_NAME)
-	//s = fmt.Sprintf("%s WHERE (`WorkerId` = '%s');", s, id)
 	fmt.Println("s=", s)
 
 	var maps []orm.Params
 	o := orm.NewOrm()
-	num, err = o.Raw(s).Values(&maps)
+	num, err := o.Raw(s).Values(&maps)
 	//fmt.Printf("num=%d, maps=%v\n", num, maps)
 
+	workers := make([]ZldWorkerData, num)
 	if err == nil && num > 0 {
 		for i, v := range maps {
-			(*workers)[i] = DecodeWorkerOrmParamsToData(v)
+			workers[i] = DecodeWorkerOrmParamsToData(v)
 		}
 	}
 	fmt.Println("workers=", workers)
-	return 	
+	return workers, err
 }

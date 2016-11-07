@@ -8,6 +8,8 @@ var KEY_TASKS = "Tasks";
 var KEY_COMMAND = "Command";
 var KEY_PASSWORD = "Password";
 var KEY_LOGS = "Logs";
+var KEY_CHECKINTIME = "CheckInTime";
+var KEY_CHECKOUTTIME = "CheckOutTime";
 
 var KEY_TASK_TASKID = "TaskId";
 var KEY_TASK_SPONSORID = "SponsorId";
@@ -30,7 +32,6 @@ var KEY_LOG_ACTION = "Action";
 var KEY_LOG_OPERATORID = "OperatorId";
 var KEY_LOG_ACTIONTIME = "ActionTime";
 
-
 // command
 var CMD_LOAD_PARA = "LoadPara";
 var CMD_LOAD_TASK = "LoadTask";
@@ -50,9 +51,15 @@ var EVT_HIDE_BTNADD = "HideBtnAdd";
 var EVT_PARA_LOADED = "ParaLoaded";
 var EVT_TASKS_LOADED = "TaskLoaded";
 
+// string
+var STR_DEFAULT_PWD = "888888";
+var STR_ADMIN = "Admin";
+var STR_MANAGER = "Manager";
+var STR_WORKER = "Worker";
 //
 var gTaskStateDes = {Created:"已创建", Assigned:"已分配", Started:"进行中", Finished:"已完成", Checked:"已检查", Closed:"已关闭", Archived:"已归档"};
 var gTaskTypes = ["翻地", "播种", "浇水", "施肥", "搭架子", "移栽", "嫁接", "除草", "除虫", "收割", "快递"];
+var gRoleDes = {Admin:"管理员", Manager:"经理", Worker:"职员"};
 
 ///////////////////////////////////////////////////////////////////////////////
 $(document).ready(function(){

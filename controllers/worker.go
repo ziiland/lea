@@ -97,26 +97,46 @@ func loadOneWorkerInfo(c *WorkerController) {
 	workerId := (c.GetSession(common.ZLD_PARA_WORKER)).(string)
 
 	item := new(WorkerJsonData)
-	slice := make([]models.ZldWorkerData, 1)
-	item.Workers = &slice
-	models.QueryWorkerTableItem(workerId, item.Workers)
-	item.Errcode = 0
+	item.Errcode = 1
+
+	if worker, err := models.QueryWorkerTableItem(workerId); err == nil {
+		slice := make([]models.ZldWorkerData, 1)
+		slice[0] = worker
+		item.Workers = &slice		
+		item.Errcode = 0
+	}
 
 	c.Data["json"] = item
 	c.ServeJSON()
 }
 
-func loadAllWorkersInfo(c *WorkerController) {
-	workerId := (c.GetSession(common.ZLD_PARA_WORKER)).(string)
-
+func loadAllInSvcWorkersInfo(c *WorkerController) {
 	item := new(WorkerJsonData)
-	if num, err := models.QueryInSvcWorkerNumbers(workerId); err == nil {
-		fmt.Println("loadAllWorkersInfo: num=", num);
-		slice := make([]models.ZldWorkerData, num)
+	item.Errcode = 1;
+	if workers, err := models.QueryInSvcAllWorkerTableItem(); err == nil {
+		slice := make([]models.ZldWorkerData, 0)
+		for _, v := range workers {
+			slice = append(slice, v)
+		}
 		item.Workers = &slice
-		models.QueryInSvcAllWorkerTableItem(item.Workers)
-	}	
-	item.Errcode = 0;
+		item.Errcode = 0
+	}
+
+	c.Data["json"] = item
+	c.ServeJSON()		
+}
+
+func loadAllWorkersInfo(c *WorkerController) {
+	item := new(WorkerJsonData)
+	item.Errcode = 1
+	if workers, err := models.QueryAllWorkersTableItem(); err == nil {
+		slice := make([]models.ZldWorkerData, 0)
+		for _, v := range workers {
+			slice = append(slice, v)
+		}
+		item.Workers = &slice
+		item.Errcode = 0
+	}
 
 	c.Data["json"] = item
 	c.ServeJSON()	
@@ -126,22 +146,49 @@ func handleLoadWorkerInfo(c *WorkerController) {
 	//workerId := (c.GetSession(common.ZLD_PARA_WORKER)).(string)
 	title := (c.GetSession(common.ZLD_PARA_TITLE)).(string)
 
-	if title == "Admin" {
+	if title == common.ZLD_STR_ADMIN {
 		// list all the workers
 		loadAllWorkersInfo(c)
+	} else if title == common.ZLD_STR_MANAGER{
+		// list all in service workers
+		loadAllInSvcWorkersInfo(c)
 	} else {
 		// only list self
 		loadOneWorkerInfo(c)
 	}
 }
 
-// func stringToInt(s string) int64 {
-// 	if value, err := strconv.ParseInt(s, 0, 0); err != nil {
-// 		return 0
-// 	} else {
-// 		return value
-// 	}
-// }
+func handleChangePassword(c *WorkerController) {
+	worker := c.GetString(common.ZLD_PARA_WORKER)
+	password := c.GetString(common.ZLD_PARA_PWD)
+
+	data := new(WorkerJsonData)
+	data.Errcode = 1
+	if err := models.UpdateWorkerPassword(worker, password); err == nil {
+		data.Errcode = 0
+	}
+	c.Data["json"] = data
+	c.ServeJSON()	
+}
+
+func handleUpdateWorkerInfo(c *WorkerController) {
+	item := models.NewZldWorkerDBData()
+	item.WorkerId = c.GetString(common.ZLD_PARA_WORKER)
+	item.Password = c.GetString(common.ZLD_PARA_PWD)
+	item.Name = c.GetString(common.ZLD_PARA_NAME)
+	item.Sex = c.GetString(common.ZLD_PARA_SEX)
+	item.IdentifyNo = c.GetString(common.ZLD_PARA_ID)
+	item.Title = c.GetString(common.ZLD_PARA_TITLE)
+	item.Comment = c.GetString(common.ZLD_PARA_COMMENT)
+
+	data := new(WorkerJsonData)
+	data.Errcode = 1
+	if err := models.UpdateWorkerInfo(item); err == nil {
+		data.Errcode = 0
+	}
+	c.Data["json"] = data
+	c.ServeJSON()			
+}
 
 func handleAddWorkerInfo(c *WorkerController) {
 	data := new(WorkerJsonData)
@@ -157,9 +204,9 @@ func handleAddWorkerInfo(c *WorkerController) {
 
 	if !models.AlreadyHaveWorkerItem(item.WorkerId) {
 		models.InsertWorkerTableItem(item)
-		data.Errcode = 0;
+		data.Errcode = 0
 	}else{
-		data.Errcode = 1;
+		data.Errcode = 1
 	}
 	c.Data["json"] = data
 	c.ServeJSON()	
@@ -190,14 +237,16 @@ func (c *WorkerController) Get() {
 		handleLoadParaCmd(&c.Controller)
 	case common.ZLD_CMD_UNLOAD:
 		handleUnloadCmd(&c.Controller)
-	// case common.ZLD_CMD_LOAD_TASK:
-	// 	handleWorkerLoadTaskCmd(c)
 	case common.ZLD_CMD_LOAD_WORKER:
 		handleLoadWorkerInfo(c)
 	case common.ZLD_CMD_ADD_WORKER:
 		handleAddWorkerInfo(c)
 	case common.ZLD_CMD_DEL_WORKER:
 	 	handleDelWorkerCmd(c)
+	case common.ZLD_CMD_CHGPWD_WORKER:
+	 	handleChangePassword(c)
+	case common.ZLD_CMD_UPD_WORKER:
+		handleUpdateWorkerInfo(c)
 	}		
 }
 
@@ -212,13 +261,15 @@ func (c *WorkerController) Post() {
 		handleLoadParaCmd(&c.Controller)
 	case common.ZLD_CMD_UNLOAD:
 		handleUnloadCmd(&c.Controller)
-	// case common.ZLD_CMD_LOAD_TASK:
-	// 	handleWorkerLoadTaskCmd(c)
 	case common.ZLD_CMD_LOAD_WORKER:
 		handleLoadWorkerInfo(c)
 	case common.ZLD_CMD_ADD_WORKER:
 		handleAddWorkerInfo(c)
 	case common.ZLD_CMD_DEL_WORKER:
 		handleDelWorkerCmd(c)
+	case common.ZLD_CMD_CHGPWD_WORKER:
+	 	handleChangePassword(c)	
+	case common.ZLD_CMD_UPD_WORKER:
+		handleUpdateWorkerInfo(c)	 		
 	}
 }
