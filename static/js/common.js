@@ -7,6 +7,7 @@ var KEY_FARM = "Farm";
 var KEY_TASKS = "Tasks";
 var KEY_COMMAND = "Command";
 var KEY_PASSWORD = "Password";
+var KEY_LOGS = "Logs";
 
 var KEY_TASK_TASKID = "TaskId";
 var KEY_TASK_SPONSORID = "SponsorId";
@@ -25,7 +26,9 @@ var KEY_TASK_SCORE = "Score";
 var KEY_TASK_UCOMMENT = "UserComment";
 var KEY_TASK_COMMENT = "Comment";
 
-
+var KEY_LOG_ACTION = "Action";
+var KEY_LOG_OPERATORID = "OperatorId";
+var KEY_LOG_ACTIONTIME = "ActionTime";
 
 
 // command

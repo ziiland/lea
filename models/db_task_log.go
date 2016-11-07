@@ -32,12 +32,12 @@ func CreateZldTaskLogTable() {
 	s = fmt.Sprintf("%s `%s`", s, ZLD_TASK_LOG_TBL_NAME)
 	s = fmt.Sprintf("%s ( `Id` int(10) AUTO_INCREMENT NOT NULL PRIMARY KEY,", s)
 	s = fmt.Sprintf("%s `TaskId` varchar(32) NOT NULL DEFAULT '' COMMENT '工作包号',", s)
-	s = fmt.Sprintf("%s `Action` varchar(12) NOT NULL DEFAULT '' COMMENT '动作',", s)
-	s = fmt.Sprintf("%s `OperatorId` varchar(10) NOT NULL DEFAULT '' COMMENT '工作员号',", s)
+	s = fmt.Sprintf("%s `Action` varchar(16) NOT NULL DEFAULT '' COMMENT '动作',", s)
+	s = fmt.Sprintf("%s `OperatorId` varchar(32) NOT NULL DEFAULT '' COMMENT '工作员号',", s)
 	s = fmt.Sprintf("%s `ActionTime` int(10) NOT NULL DEFAULT 0 COMMENT '动作时间',", s)
 	s = fmt.Sprintf("%s `Comment` text NOT NULL DEFAULT '' COMMENT '备注'", s)
 	s = fmt.Sprintf("%s) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='工作包日志表';", s)
-	//fmt.Println("s=", s)
+	fmt.Println("s=", s)
 
 	o := orm.NewOrm()
 	_, err := o.Raw(s).Exec()
@@ -56,8 +56,8 @@ func DoInsertTaskLogTableItem(item *ZldTaskLogData) {
 	s := fmt.Sprintf("INSERT INTO `%s`", ZLD_TASK_LOG_TBL_NAME)
 	s = fmt.Sprintf("%s (`TaskId`, `Action`, `OperatorId`, `ActionTime`, `Comment`)", s)
 	s = fmt.Sprintf("%s VALUES ", s)
-	s = fmt.Sprintf("%s ('%s', '%s', '%s', %v', '%s');", s, item.TaskId, item.Action, item.OperatorId, item.ActionTime, item.Comment)
-	//fmt.Println("s=", s)
+	s = fmt.Sprintf("%s ('%s', '%s', '%s', '%v', '%s');", s, item.TaskId, item.Action, item.OperatorId, item.ActionTime, item.Comment)
+	fmt.Println("s=", s)
 
 	o := orm.NewOrm()
 	res, err := o.Raw(s).Exec()
@@ -117,9 +117,10 @@ func InsertTaskLogTableItem(item *ZldTaskLogData) {
 	CreateZldTaskLogTable()
 
 	// No same sn item, do insert
-	if !AlreadyHaveTaskLogItem(item.TaskId) {
-		DoInsertTaskLogTableItem(item)
-	}
+	// if !AlreadyHaveTaskLogItem(item.TaskId) {
+	// 	DoInsertTaskLogTableItem(item)
+	// }
+	DoInsertTaskLogTableItem(item)
 }
 
 func DecodeTaskLogOrmParamsToData(para orm.Params) (item ZldTaskLogData){
@@ -147,19 +148,41 @@ func QueryMatchLogItemNums(id string)(int64, error) {
 	return o.Raw(s).Values(&maps);
 }
 
-func SelectTaskLogTableItemsWithTaskId(taskid string, logs *ZldTaskLogData)(num int64, err error) {
+// func SelectTaskLogTableItemsWithTaskId(taskid string, logs *ZldTaskLogData)(num int64, err error) {
+// 	s := fmt.Sprintf("SELECT * FROM `%s`", ZLD_TASK_LOG_TBL_NAME)
+// 	s = fmt.Sprintf("%s WHERE (`TaskId` = '%s');", s, taskid)
+// 	fmt.Println("s=", s)
+
+// 	var maps []orm.Params
+// 	o := orm.NewOrm()
+// 	num, err = o.Raw(s).Values(&maps);
+
+// 	if err == nil && num > 0 {
+// 		*logs = DecodeTaskLogOrmParamsToData(maps[0])
+// 	}
+
+// 	fmt.Println("task log=", logs)
+// 	return num, err
+// }
+
+func SelectTaskZLogTableItemsWithTaskId(taskid string) ([]ZldTaskLogData, error){
 	s := fmt.Sprintf("SELECT * FROM `%s`", ZLD_TASK_LOG_TBL_NAME)
-	s = fmt.Sprintf("%s WHERE (`TaskId` = '%s');", s, taskid)
+	s = fmt.Sprintf("%s WHERE (`TaskId` = '%s' );", s, taskid)
 	fmt.Println("s=", s)
 
 	var maps []orm.Params
+	var num int64
+	var err error
 	o := orm.NewOrm()
 	num, err = o.Raw(s).Values(&maps);
 
+	logs := make([]ZldTaskLogData, num) 
 	if err == nil && num > 0 {
-		*logs = DecodeTaskLogOrmParamsToData(maps[0])
+		for i, v := range maps {
+			logs[i] = DecodeTaskLogOrmParamsToData(v)
+		}
 	}
 
-	fmt.Println("task log=", logs)
-	return num, err
+	fmt.Println("logs=", logs)
+	return logs, err	
 }

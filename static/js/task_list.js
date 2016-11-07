@@ -170,21 +170,46 @@ function descriptionTask(task) {
     });
 
 }
+
+function PrintLog(data) {
+    var id, action, operate, actiontime, comment;
+    $.each(data, function(key, value){
+        //console.log("Print log: key=" + key + ", value=" + value);
+        if (key == KEY_TASK_TASKID) {
+            id = value;
+        } else if (key == KEY_LOG_ACTION) {
+            action = value;
+        } else if (key == KEY_LOG_OPERATORID) {
+            operate = value;
+        } else if (key == KEY_LOG_ACTIONTIME) {
+            actiontime = value;
+        } else if (key == KEY_TASK_COMMENT) {
+            comment = value;
+        }
+    });
+    console.log("Print Log: Id=" + id + ", Action=" + action + ", Operate=" + operate + ", ActionTime=" + actiontime + ", comment=" + comment);
+}
+
 /**查询并显示任务详情**/
 function displayDetailsTask(task_id){
     var task_details_info = "";
     $.get(URL_TASK, {Command:CMD_QUERY_TASK, TaskId:task_id}, function(data){
         $.each(data, function(key, value){
-            if (key == KEY_TASKS)  {
+            if (key == KEY_LOGS)  {
                 $.each(value, function(index, obj){
-                    console.log("obj=" + obj );
-                    for(item in obj){
-                        task_details_info = task_details_info +"<dt style='color: red'>"+item+":</dt>"+ "<dd>"+obj[item]+"</dd><hr>";
-                    }
-                    $("#detail_show").show();
-                    $("#myModalLabel").text("任务详情");
-                    $("#detail_show").append("<dl>"+task_details_info+"</dl>")/** 显示详情模态框内容**/
+                    // logs
+                    PrintLog(obj);
                 });
+                
+                // $.each(value, function(index, obj){
+                //     console.log("obj=" + obj );
+                //     for(item in obj){
+                //         task_details_info = task_details_info +"<dt style='color: red'>"+item+":</dt>"+ "<dd>"+obj[item]+"</dd><hr>";
+                //     }
+                //     $("#detail_show").show();
+                //     $("#myModalLabel").text("任务详情");
+                //     $("#detail_show").append("<dl>"+task_details_info+"</dl>")/** 显示详情模态框内容**/
+                // });
             }
         });
     });

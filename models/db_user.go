@@ -53,7 +53,7 @@ func CreateZldUserTable() {
 	s := "CREATE TABLE IF NOT EXISTS"
 	s = fmt.Sprintf("%s `%s`", s, ZLD_USER_TBL_NAME)
 	s = fmt.Sprintf("%s ( `Id` int(10) AUTO_INCREMENT NOT NULL PRIMARY KEY,", s)
-	s = fmt.Sprintf("%s `UserId` varchar(10) NOT NULL DEFAULT '' COMMENT '用户Id',", s)
+	s = fmt.Sprintf("%s `UserId` varchar(32) NOT NULL DEFAULT '' COMMENT '用户Id',", s)
 	s = fmt.Sprintf("%s `Password` varchar(16) NOT NULL DEFAULT '' COMMENT '密码',", s)
 	s = fmt.Sprintf("%s `Name` varchar(128) NOT NULL DEFAULT '' COMMENT '用户名',", s)
 	s = fmt.Sprintf("%s `RealName` varchar(128) NOT NULL DEFAULT '' COMMENT '真实姓名',", s)

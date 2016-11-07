@@ -18,16 +18,15 @@ type TaskController struct {
 	beego.Controller
 }
 
-// type TaskJsonData struct {
-// 	Page 				string
-// 	//Title               string
-// 	Errcode             int
-// }
-
 type TaskJsonData struct {
 	Tasks 				*[]models.ZldTaskData
 	//Title               string
 	Errcode             int
+}
+
+type TaskLogJsonData struct {
+	Logs 				*[]models.ZldTaskLogData
+	Errcode 			int
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -71,6 +70,20 @@ func createTaskTableItemForTest() {
 
 	task.TaskId = genTaskId("SHA001", "000A0001", "B")
 	models.InsertTaskTableItem(task)
+}
+
+func createTaskLogTableItemForTest() {
+	log := models.NewZldTaskLogDBData()
+	log.TaskId = "SHA001000A0001B14768647080000000"
+	log.Action = "Create" 
+	log.OperatorId = "williamzhang"
+	log.ActionTime = time.Now().Unix() - 367890
+	models.InsertTaskLogTableItem(log)
+
+	log.Action = "Assign"
+	log.OperatorId = "ZLD00001"
+	log.ActionTime = time.Now().Unix() - 95678
+	models.InsertTaskLogTableItem(log)
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -118,7 +131,8 @@ func handleLoadTaskCmd(c *TaskController) {
 	// 	slice := make([]models.ZldTaskData, num)
 	// 	item.Tasks = &slice
 	// 	models.SelectTaskTableItemsWithFarmId(workerId, "SHA001", title, item.Tasks)
-	// }	
+	// }
+	item.Errcode = 1	
 	if tasks, err := models.SelectTaskTableItemWithConds(int64(stime), int64(etime),
 	 worker, state, farm, cell, patch); err == nil {
 	 	slice := make([]models.ZldTaskData, 0)
@@ -126,31 +140,33 @@ func handleLoadTaskCmd(c *TaskController) {
 	 		slice = append(slice, v)
 	 	}
 	 	item.Tasks = &slice
-	}
-	item.Errcode = 0;
+	 	item.Errcode = 0
+	}	
 
 	c.Data["json"] = item
 	c.ServeJSON()
 }
 
 func handleQuerytaskCmd(c *TaskController) {
-	data := new(TaskJsonData)
-	slice := make([]models.ZldTaskData, 1)
-	data.Tasks = &slice
+	taskId := c.GetString(common.ZLD_PARA_TASKID)
 
-	taskId := c.GetString(common.ZLD_PARA_TASKID) 
-	data.Errcode = 1;
-	if _, err := models.SelectTaskTableItemsWithTaskId(taskId, &slice[0]); err == nil {
-		data.Errcode = 0;
+	item := new(TaskLogJsonData) 
+	item.Errcode = 1;
+	if logs, err := models.SelectTaskZLogTableItemsWithTaskId(taskId); err == nil {
+		slice := make([]models.ZldTaskLogData, 0)
+		for _, v := range(logs) {
+			slice = append(slice, v)
+		}
+		item.Logs = &slice
+		item.Errcode = 0;
 	}	
 
-	c.Data["json"] = data
+	c.Data["json"] = item
 	c.ServeJSON()
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 func (c *TaskController) Get() {
-	// get the para
 	// get the para
 	command := c.GetString(common.ZLD_PARA_COMMAND) 
 	fmt.Println("task command=", command)

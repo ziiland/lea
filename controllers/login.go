@@ -73,6 +73,7 @@ func (c *LoginController) Get() {
 	// JUST FOR TEST
 	//createWorkerTableItemForTest()
 	//createTaskTableItemForTest()
+	//createTaskLogTableItemForTest()
 	command := c.GetString(common.ZLD_PARA_COMMAND) 
 	fmt.Println("login command=", command)
 	zllogs.WriteDebugLog("GET request of login page: command=%s", command)

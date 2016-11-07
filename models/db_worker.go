@@ -295,3 +295,22 @@ func QueryInSvcAllWorkerTableItem(workers *[]ZldWorkerData) (num int64, err erro
 	fmt.Println("workers=", workers)
 	return 	
 }
+
+func QueryAllWorkersTableItem(workers *[]ZldWorkerData) (num int64, err error) {
+	s := fmt.Sprintf("SELECT * FROM `%s`;", ZLD_WORKER_TBL_NAME)
+	//s = fmt.Sprintf("%s WHERE (`WorkerId` = '%s');", s, id)
+	fmt.Println("s=", s)
+
+	var maps []orm.Params
+	o := orm.NewOrm()
+	num, err = o.Raw(s).Values(&maps)
+	//fmt.Printf("num=%d, maps=%v\n", num, maps)
+
+	if err == nil && num > 0 {
+		for i, v := range maps {
+			(*workers)[i] = DecodeWorkerOrmParamsToData(v)
+		}
+	}
+	fmt.Println("workers=", workers)
+	return 	
+}
