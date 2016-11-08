@@ -28,7 +28,7 @@
         <h4 class="modal-title text-center" id="myModalLabel">新增员工</h4>
       </div>
       <div class="modal-body">
-        <form class="form-horizontal" role="form">
+        <form class="form-horizontal" role="form" id="registered_from">
           <div class="form-group">
               <label class="col-sm-2 control-label">工号  </label>
             <div class="col-md-4">
@@ -89,26 +89,32 @@
   <div class="row clearfix" id="myherder" >
   </div>
   <div class="row clearfix">
-    <div class="col-md-2 text-center well">
-      <div class="nav">
-        <ul class="nav nav-pills nav-stacked">
-          <li><a href="./index.html">主页</a></li>
-          <li class="active"><a href="./worker.html">用户管理</a></li>
-          <li><a href="./task_list.html">任务管理</a></li>
-        </ul>
+    <div class="col-md-2 text-center">
+      <div class="row clearfix">
+        <div class="col-md-12 well" id="login_info">
+        </div>
+      </div>
+      <div class="row clearfix">
+        <div class="col-md-12 text-center well" id="mymenu">
+          <div class="nav">
+            <ul class="nav nav-pills nav-stacked">
+              <li><a href="./index.html">主页</a></li>
+              <li class="active"><a href="./worker.html">用户管理</a></li>
+              <li><a href="./task_list.html">任务管理</a></li>
+            </ul>
+          </div>
+        </div>
       </div>
     </div>
     <div class="col-md-10 column">
-      <div class="row clearfix well">
-        <div class="col-md-10">
-            <button type="submit" class="btn btn-default navbar-btn" id="add" data-toggle="modal" data-target="#registered">添加</button>
-        </div>
-        <div class="col-md-2" id="login_info" >
+      <div class="row clearfix">
+        <div class="col-md-2">
+            <button style="display:none" class="btn btn-default navbar-btn" id="add" data-toggle="modal" data-target="#registered">添加</button>
         </div>
 	  </div>
       <div class="row clearfix">
-	  	<div class="col-md-12  column well"  id="user-table">
-          <table class="table">
+	  	<div class="col-md-12  column well"  id="user_table">
+          <table class="table table-bordered table-hover table-condensed">
             <thead>
             <tr>
               <th>工号</th>

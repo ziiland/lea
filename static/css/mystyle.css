@@ -1,8 +1,7 @@
-#user-table{
+#user_table,#tasks_table{
     line-height: 20px;
     overflow:scroll;
-    height:800px;
-    border:solid;
+    height:400px;
 }
 
 #myherder,#myfooter{

@@ -1,42 +1,20 @@
 var workers = new Array();
-var login;
-var workerId;
-var title;
-// var workerId="";
-// var password="";
-// var name="";
-// var sex="";
-// var identifyNo="";
-// var title="";
-// var comment="";
-
 $(document).ready(function(){
     getDataFromBackend();
     getWorkersInfo();
-
+    setModalEvent();
     $(document).on(EVT_HIDE_BTNADD, function(){
         console.log("EVT_HIDE_BTNADD: title=" + title);
-        if (title != "Admin") { 
-            console.log("Not Admin!");
-            $("#add").hide();
-        }        
+        //显示添加用户按钮
+        if (title == "Admin") {
+        $("#add").show();
+       } 
     });
 });
-
-function getDataFromBackend() {
-    $.get(URL_WORKER, {Command:CMD_LOAD_PARA}, function(data){
-        $.each(data, function(key, value){
-            if(key == KEY_LOGIN) {
-              login = value;
-            } else if (key == KEY_WORKER) {
-              workerId = value;
-            } else if (key == KEY_TITLE) {
-              title = value;
-            }
-        });
-
-        $(document).trigger(EVT_HIDE_BTNADD);
-        displayWorkerId(login,workerId);
+//绑定模态框事件
+function setModalEvent(){
+    $("#registered").on("hidden.bs.modal", function() {
+        $("#registered_from").reset;
     });
 }
 
