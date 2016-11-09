@@ -25,6 +25,8 @@ const ZLD_CMD_CHECK_TASK = "CheckTask"
 const ZLD_CMD_CLOSE_TASK = "CloseTask"
 const ZLD_CMD_TRANS_TASK = "TransferTask"
 const ZLD_CMD_QUERY_TASK = "QueryTask"
+const ZLD_CMD_ARCHIVE_TASK = "ArchiveTask"
+const ZLD_CMD_CANCEL_TASK = "CancelTask"
 
 const ZLD_PARA_COMMAND string = "Command"
 const ZLD_PARA_WORKER string = "Worker"
@@ -69,6 +71,7 @@ const ZLD_TASK_STATE_STARTED string = "Started"
 const ZLD_TASK_STATE_FINISHED string = "Finished"
 const ZLD_TASK_STATE_CHECKED string = "Checked"
 const ZLD_TASK_STATE_CLOSED string = "Closed"
+const ZLD_TASK_STATE_CANCELED string = "Canceled"
 const ZLD_TASK_STATE_ARCHIVED string = "Archived"
 
 // task type

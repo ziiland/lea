@@ -43,7 +43,9 @@ var CMD_DEL_WORKER = "DelWorker"
 var CMD_UPD_WORKER = "UpdateWorker"
 var CMD_CHGPWD_WORKER = "ChgPwd"
 var CMD_QUERY_TASK = "QueryTask";
+var CMD_ARCHIVE_TASK= "ArchiveTask";
 var CMD_ADD_TASK = "AddTask"
+var CMD_CANCEL_TASK= "CancelTask"
 
 // url
 var URL_LOGIN = "/land/login";
@@ -61,7 +63,7 @@ var STR_ADMIN = "Admin";
 var STR_MANAGER = "Manager";
 var STR_WORKER = "Worker";
 //
-var gTaskStateDes = {Created:"已创建", Assigned:"已分配", Started:"进行中", Finished:"已完成", Checked:"已检查", Closed:"已关闭", Archived:"已归档"};
+var gTaskStateDes = {Created:"已创建", Assigned:"已分配", Started:"进行中", Finished:"已完成", Checked:"已检查", Closed:"已关闭", Canceled:"已取消", Archived:"已归档"};
 var gTaskTypes = ["翻地", "播种", "浇水", "施肥", "搭架子", "移栽", "嫁接", "除草", "除虫", "收割", "快递"];
 var gRoleDes = {Admin:"管理员", Manager:"经理", Worker:"职员"};
 var loginInfo={login:"",workerId:"",title:""};

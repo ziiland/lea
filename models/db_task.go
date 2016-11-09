@@ -284,21 +284,22 @@ func SelectTaskTableItemsWithFarmId(worker, farm, title string, tasks *[]ZldTask
 	return num, err	
 }
 
-func SelectTaskTableItemsWithTaskId(taskid string, task *ZldTaskData)(num int64, err error) {
+func SelectTaskTableItemsWithTaskId(taskid string)(*ZldTaskData, error) {
 	s := fmt.Sprintf("SELECT * FROM `%s`", ZLD_TASK_TBL_NAME)
 	s = fmt.Sprintf("%s WHERE (`TaskId` = '%s');", s, taskid)
 	fmt.Println("s=", s)
 
 	var maps []orm.Params
 	o := orm.NewOrm()
-	num, err = o.Raw(s).Values(&maps);
+	num, err := o.Raw(s).Values(&maps);
 
+	task := NewZldTaskDBData();
 	if err == nil && num > 0 {
 		*task = DecodeTaskOrmParamsToData(maps[0])
 	}
 
 	fmt.Println("task=", task)
-	return num, err
+	return task, err
 }
 
 func SelectTaskTableItemWithConds(stime, etime int64, worker, state, farm, cell, patch string) ([]ZldTaskData, error){
@@ -353,4 +354,31 @@ func SelectTaskTableItemWithConds(stime, etime int64, worker, state, farm, cell,
 
 	fmt.Println("tasks=", tasks)
 	return tasks, err	
+}
+
+func DeleteTaskItem(id string) (int64, error){
+	s := fmt.Sprintf("DELETE FROM `%s`", ZLD_TASK_TBL_NAME)
+	s = fmt.Sprintf("%s WHERE (`TaskId` = '%s');", s, id)
+	fmt.Println("s=", s)
+
+	var maps []orm.Params
+	o := orm.NewOrm()
+	return o.Raw(s).Values(&maps);	
+}
+
+func CancelTasksItem(ids []string) (int64, error) {
+	s := fmt.Sprintf("UPDATE `%s` SET ", ZLD_TASK_TBL_NAME)
+	s = fmt.Sprintf("%s `State`='%s' WHERE (", s, common.ZLD_TASK_STATE_CANCELED)
+	for i, id := range ids {
+		if i > 0 {
+			s = fmt.Sprintf("%s OR ", s)
+		}
+		s = fmt.Sprintf("%s`TaskId` = '%s' ", s, id)
+	}
+	s = fmt.Sprintf("%s);", s)
+	fmt.Println("s=", s)
+
+	var maps []orm.Params
+	o := orm.NewOrm()
+	return o.Raw(s).Values(&maps);		
 }

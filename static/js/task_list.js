@@ -1,5 +1,5 @@
 var tasks = new Array();
-var checkedtask = new Array();
+var selectedTasks = new Array();
 ///////////////////////////////////////////////////////////////////////////////
 // core-object constructor
 function TaskConstructor(taskId, sponsorId, farmId, cellId, patchId, workerId, checkerId,
@@ -22,20 +22,32 @@ function TaskConstructor(taskId, sponsorId, farmId, cellId, patchId, workerId, c
     this.Comment = comment;
 }
 
+//function TaskSearch
+function DeleteCmdParaConstructor() {
+    // delete the selected tasks
+    this.Tasks = selectedTasks;
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 $(document).ready(function(){
     getDataFromBackend();
     displayFooter();
     displayHeader();
     $(document).on(EVT_PARA_LOADED, function(){
-        task.getTaskList();
+        taskOper.getTaskList();
     });
 
     $(document).on(EVT_TASKS_LOADED, function() {
-        task.descriptionTask(tasks);
+        taskOper.descriptionTask(tasks);
     });
     bindMyModalClick();
     displayTaskAction();
+
+    $("#form_search").submit(function(event){
+        event.preventDefault();
+        //DoSendLoginInfo();
+        console.log("Press the search button");
+    });
 });
 
 //绑定各种click
@@ -49,7 +61,6 @@ function bindMyModalClick(){
 //task action
 function displayTaskAction() {
     btnAction.addTask();
-
 }
 
 function getTaskListItem(data) {
@@ -97,39 +108,42 @@ function getTaskListItem(data) {
         state, type, createTime, startTime, endTime, checkTime, score, userComment, comment);
     return item;
 }
-var task={
+var taskOper = {
     //获取全部任务信息
     getTaskList:function () {
-        var today = new Date();
-        var stime = Date.UTC(today.getFullYear(), today.getMonth(), today.getDay(), 0, 0, 0, 0);
-        console.log("get task list! time=" + stime/1000);
+        //var today = new Date();
+        //var stime = Date.UTC(today.getFullYear(), today.getMonth(), today.getDay(), 0, 0, 0, 0);
+        //console.log("get task list! time=" + stime/1000);
 
-        $.get(URL_TASK, {Command:CMD_LOAD_TASK, StartTime:0}, function(data){
-            $.each(data, function(key, value){
-                console.log("key=" + key + ", value=" + value);
-                if (key == KEY_TASKS) {
-                    $.each(value, function(index, obj){
-                        var item = getTaskListItem(obj);
-                        tasks.push(item);
-                    });
-                }
+        $.get(URL_TASK, {Command:CMD_LOAD_TASK, STime:0, ETime:0, Worker:"", State:"", Farm:"SHA001", Cell:"", Patch:""}, function(data){
+                $.each(data, function(key, value){
+                    console.log("key=" + key + ", value=" + value);
+                    if (key == KEY_TASKS) {
+                        $.each(value, function(index, obj){
+                            var item = getTaskListItem(obj);
+                            tasks.push(item);
+                        });
+                    }
+                });
+                $(document).trigger(EVT_TASKS_LOADED);
             });
-            $(document).trigger(EVT_TASKS_LOADED);
-        });
-    },
+        },
 
     //解析全部任务信息
     descriptionTask:function(data) {
         $.each(data, function(index, value){
             var task_info='<td><input type="checkbox" onclick="setCheckedId(this)"></td>';
             for (item in value) {
-                if((item == KEY_TASK_TASKID) ||(item == KEY_TASK_FARMID)|| (item == KEY_TASK_STATE)||
+                if((item == KEY_TASK_TASKID) ||(item == KEY_TASK_FARMID)|| 
                     (item == KEY_TASK_WORKERID)||(item == KEY_TASK_CHECKERID) || (item == KEY_TASK_COMMENT)) {
-                    task_info = task_info+ "<td>" + value[item] + "</td>";
+                    task_info += "<td>" + value[item] + "</td>";
+                } else if(item == KEY_TASK_STATE){
+                    //console.log("Task state=" + value[item] + "end");
+                    task_info += "<td>" + gTaskStateDes[value[item]] + "</td>";
                 } else if(item == KEY_TASK_TYPE) {
-                    var id = value[item];
-                    console.log("id=" +id);
-                    task_info =task_info+ "<td>" + gTaskTypes[id] + "</td>";
+                    //var id = value[item];
+                    //console.log("id=" +id);
+                    task_info += "<td>" + gTaskTypes[value[item]] + "</td>";
                 }
             }
             task_info =task_info+"<td><button class='btn btn-sm btn-info' onclick='TaskDetailsAction(this)' data-toggle='modal' data-target='#myModal'>详情</button></td>";
@@ -140,11 +154,42 @@ var task={
     }
 }
 
+function PrintLog(data) {
+    var id, action, operate, actiontime, comment;
+    $.each(data, function(key, value){
+        //console.log("Print log: key=" + key + ", value=" + value);
+        if (key == KEY_TASK_TASKID) {
+            id = value;
+        } else if (key == KEY_LOG_ACTION) {
+            action = value;
+        } else if (key == KEY_LOG_OPERATORID) {
+            operate = value;
+        } else if (key == KEY_LOG_ACTIONTIME) {
+            actiontime = value;
+        } else if (key == KEY_TASK_COMMENT) {
+            comment = value;
+        }
+    });
+    console.log("Print Log: Id=" + id + ", Action=" + action + ", Operate=" + operate + ", ActionTime=" + actiontime + ", comment=" + comment);
+}
+
 //查询并显示任务详情
 function TaskDetailsAction(o){
     var task_details_info = "";
-    var index=o.parentNode.parentNode.rowIndex;
+    var index = o.parentNode.parentNode.rowIndex;
     console.log("index=" + index);
+    // get task log
+    $.get(URL_TASK, {Command:CMD_QUERY_TASK, TaskId:task_id}, function(data){
+        $.each(data, function(key, value){
+            if (key == KEY_LOGS)  {
+                $.each(value, function(index, obj){
+                    // logs
+                    PrintLog(obj);
+                });
+            }
+        });
+    });
+
     var obj=tasks[index-1];
         for(item in obj){
             task_details_info = task_details_info +"<tr><td>"+item+"</td><td>"+obj[item]+"</td><tr>";
@@ -160,8 +205,17 @@ function TaskDetailsAction(o){
 var btnAction={
     //显示创建任务表单
     addTask:function () {
-        $("#task-action").append('<button class="btn btn-default"id="addTask"  data-toggle="modal" data-target="#myModal">添加</button>');
+        $("#task-action").append('<button class="btn btn-default" id="addTask" data-toggle="modal" data-target="#myModal">添加</button>');
         $("#addTask").click(function () {
+            // test, send the delete command
+            var item = new DeleteCmdParaConstructor();
+            console.log("delete cmd parameter = " + item);
+            var json = JSON.stringify(item);
+            console.log("json string = " + json);
+             $.get(URL_TASK, {Command:CMD_CANCEL_TASK, CmdPara:json}, function(data){
+                console.log("");
+             });
+
             $("#task_form").show().reset;
             $("#myModalLabel").text("新建任务");
             $("#modesavebtn").show();
@@ -229,23 +283,22 @@ var btnAction={
 
 //选中或者取消所有
 function choseAllBox(o){
-
     if($(o).prop("checked")==true) {
         $("input[type=checkbox]").prop("checked",true);
     }else{
         $("input[type=checkbox]").prop("checked",false);
     }
 }
+
 //checkebox event,如果选中，把taskid放到checkedtask数组里，如果取消选中则删除。
 function setCheckedId(data) {
     var taskId = $(data).parent().next().text();
     console.log("taskId=" + taskId );
-    if ($(data).prop("checked")==true)
-    {
-        checkedtask.push(taskId);
-    }else{
-        var index =checkedtask.indexOf(taskId);
-        checkedtask.splice(index,1);
+    if ($(data).prop("checked")) {
+        selectedTasks.push(taskId);
+    } else {
+        var index = selectedTasks.indexOf(taskId);
+        selectedTasks.splice(index, 1);
     }
-    console.log("checkedtask=" + checkedtask );
+    console.log("selectedTasks=" + selectedTasks );
 }

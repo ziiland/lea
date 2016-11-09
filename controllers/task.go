@@ -5,6 +5,7 @@ import (
 	"github.com/astaxie/beego"
 	"lea/common"
 	"lea/models"
+	"lea/utils/simplejson"
 	"lea/zllogs"
 	"strconv"
 	"time"
@@ -147,7 +148,26 @@ func handleLoadTaskCmd(c *TaskController) {
 	c.ServeJSON()
 }
 
-func handleQuerytaskCmd(c *TaskController) {
+func handleCancelTaskCmd(c *TaskController) {
+	strCmdPara := c.GetString("CmdPara")
+	bytesCmdPara := []byte(strCmdPara)
+	fmt.Println("bytesCmdPara=", bytesCmdPara);
+
+	item := new(TaskJsonData)
+	item.Errcode = 1
+	// para
+	paraJSON, _ := simplejson.NewJson(bytesCmdPara);
+	fmt.Println("paraJSON=", paraJSON)
+	if tasks, err := paraJSON.Get("Tasks").StringArray(); err == nil {
+		fmt.Println("tasks=", tasks)
+		models.CancelTasksItem(tasks)
+		item.Errcode = 0
+	}
+	c.Data["json"] = item
+	c.ServeJSON()
+}
+
+func handleQueryTaskCmd(c *TaskController) {
 	taskId := c.GetString(common.ZLD_PARA_TASKID)
 
 	item := new(TaskLogJsonData) 
@@ -159,6 +179,24 @@ func handleQuerytaskCmd(c *TaskController) {
 		}
 		item.Logs = &slice
 		item.Errcode = 0;
+	}	
+
+	c.Data["json"] = item
+	c.ServeJSON()
+}
+
+func handleArchiveTaskCmd(c *TaskController) {
+	taskId := c.GetString(common.ZLD_PARA_TASKID)
+
+	item := new(TaskJsonData)
+	item.Errcode = 1
+
+	// get data
+	if task, err := models.SelectTaskTableItemsWithTaskId(taskId); err == nil {
+		// add to task archive table
+		models.InsertTaskArchivedTableItem(task)
+		models.DeleteTaskItem(taskId)
+		item.Errcode = 0
 	}	
 
 	c.Data["json"] = item
@@ -180,7 +218,11 @@ func (c *TaskController) Get() {
 	case common.ZLD_CMD_LOAD_TASK:
 		handleLoadTaskCmd(c)
 	case common.ZLD_CMD_QUERY_TASK:
-		handleQuerytaskCmd(c)
+		handleQueryTaskCmd(c)
+	case common.ZLD_CMD_ARCHIVE_TASK:
+		handleArchiveTaskCmd(c)
+	case common.ZLD_CMD_CANCEL_TASK:
+		handleCancelTaskCmd(c)
 	}	
 }
 
@@ -198,6 +240,10 @@ func (c *TaskController) Post() {
 	case common.ZLD_CMD_LOAD_TASK:
 		handleLoadTaskCmd(c)
 	case common.ZLD_CMD_QUERY_TASK:
-		handleQuerytaskCmd(c)
+		handleQueryTaskCmd(c)
+	case common.ZLD_CMD_ARCHIVE_TASK:
+		handleArchiveTaskCmd(c)	
+	case common.ZLD_CMD_CANCEL_TASK:
+		handleCancelTaskCmd(c)			
 	}	
 }
