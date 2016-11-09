@@ -154,7 +154,7 @@ func InsertWorkerTableItem(item *ZldWorkerData) {
 func UpdateWorkerPassword(id, password string) error {
 	s := fmt.Sprintf("UPDATE `%s`", ZLD_WORKER_TBL_NAME)
 	s = fmt.Sprintf("%s SET ", s)
-	s = fmt.Sprintf("%s `Password` = '%v',", s, password)
+	s = fmt.Sprintf("%s `Password` = '%v'", s, password)
 	s = fmt.Sprintf("%s WHERE (`WorkerId` = '%s');", s, id)	
 	//fmt.Println("s=", s)
 
@@ -172,7 +172,7 @@ func UpdateWorkerPassword(id, password string) error {
 func UpdateWorkerTitle(id, title string) error{
 	s := fmt.Sprintf("UPDATE `%s`", ZLD_WORKER_TBL_NAME)
 	s = fmt.Sprintf("%s SET ", s)
-	s = fmt.Sprintf("%s `Title` = '%v',", s, title)
+	s = fmt.Sprintf("%s `Title` = '%v'", s, title)
 	s = fmt.Sprintf("%s WHERE (`WorkerId` = '%s');", s, id)	
 	//fmt.Println("s=", s)
 
