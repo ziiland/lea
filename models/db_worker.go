@@ -278,7 +278,8 @@ func QueryWorkerTableItem(id string) (ZldWorkerData, error){
 }
 
 func QueryInSvcAllWorkerTableItem() ([]ZldWorkerData, error) {
-	s := fmt.Sprintf("SELECT * FROM `%s` WHERE (`CheckOutTime` = 0);", ZLD_WORKER_TBL_NAME)
+	s := fmt.Sprintf("SELECT * FROM `%s` WHERE (`CheckOutTime` = 0 AND `Title` != 'Admin');", ZLD_WORKER_TBL_NAME)
+	//s = fmt.Sprintf("%s AND ")
 	fmt.Println("s=", s)
 
 	var maps []orm.Params
