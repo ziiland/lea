@@ -20,7 +20,7 @@
 
 <body>
 <!-- 模态框（Modal）begin -->
-<div class="modal fade" id="registered" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
@@ -28,7 +28,23 @@
         <h4 class="modal-title text-center" id="myModalLabel">新增员工</h4>
       </div>
       <div class="modal-body">
-        <form class="form-horizontal" role="form" id="registered_from">
+        <div hidden id="worker_detail">
+        </div>
+        <form hidden class="form-horizontal" role="form" id="person_password">
+          <div class="form-group">
+            <label class="col-sm-2 control-label">用户</label>
+            <div class="col-md-4">
+              <input type="text" readonly="true" class="form-control" id ="myid">
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-2 control-label">密码</label>
+            <div class="col-md-4">
+              <input type="password" class="form-control" id ="mypassword">
+            </div>
+          </div>
+        </form>
+        <form hidden class="form-horizontal" role="form" id="registered_from">
           <div class="form-group">
               <label class="col-sm-2 control-label">工号  </label>
             <div class="col-md-4">
@@ -65,21 +81,23 @@
             <label class="col-sm-2 control-label">角色</label>
             <div class="controls col-md-4">
               <select class="form-control" id ="Title">
-                <option>经理</option>
-                <option>员工</option></select>
+                <option>Manager</option>
+                <option>Worker</option></select>
             </div>
           </div>
           <div class="form-group">
             <label class="col-sm-2 control-label">备注</label>
             <div class="col-md-8">
-              <textarea  class="form-control input-lg" id ="Comment"> </textarea>
+              <textarea rows="6" class="form-control input-lg" id ="Comment"> </textarea>
             </div>
           </div>
         </form>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-        <button type="button" class="btn btn-primary" onclick="addWorker()">提交</button>
+        <button style="display:none" id="modesavebtn" type="button" class="btn btn-primary" onclick="addWorker()">提交</button>
+        <button style="display:none" id="modeupdatabtn" type="button" class="btn btn-primary" onclick="updataPersonInfo()">保存</button>
+        <button style="display:none" id="modechangebtn" type="button" class="btn btn-primary" onclick="changePersonPasswordEvent()">保存</button>
       </div>
     </div><!-- /.modal-content -->
   </div><!-- /.modal -->
@@ -109,7 +127,7 @@
     <div class="col-md-10 column">
       <div class="row clearfix">
         <div class="col-md-2">
-            <button style="display:none" class="btn btn-default navbar-btn" id="add" data-toggle="modal" data-target="#registered">添加</button>
+            <button style="display:none" onclick="addClickAction()" class="btn btn-default navbar-btn" id="add" data-toggle="modal" data-target="#myModal">添加</button>
         </div>
 	  </div>
       <div class="row clearfix">
@@ -120,11 +138,10 @@
               <th>工号</th>
               <th>中文名</th>
               <th>性别</th>
-              <th>身份证号</th>
               <th>角色</th>
               <th>入职时间</th>
               <th>离职时间</th>
-              <th>备注</th>
+              <th></th>
             </tr>
             </thead>
             <tbody id="userlist">

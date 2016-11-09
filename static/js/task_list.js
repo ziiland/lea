@@ -25,6 +25,8 @@ function TaskConstructor(taskId, sponsorId, farmId, cellId, patchId, workerId, c
 ///////////////////////////////////////////////////////////////////////////////
 $(document).ready(function(){
     getDataFromBackend();
+    displayFooter();
+    displayHeader();
     $(document).on(EVT_PARA_LOADED, function(){
         task.getTaskList();
     });
@@ -130,7 +132,7 @@ var task={
                     task_info =task_info+ "<td>" + gTaskTypes[id] + "</td>";
                 }
             }
-            task_info =task_info+"<td><button class='btn btn-sm' onclick='TaskDetailsAction(this)' data-toggle='modal' data-target='#myModal'>详情</button></td>";
+            task_info =task_info+"<td><button class='btn btn-sm btn-info' onclick='TaskDetailsAction(this)' data-toggle='modal' data-target='#myModal'>详情</button></td>";
             task_info = "<tr>"+task_info+"</tr>"
             /** 增加任务行*/
             $("#tasklist").append(task_info);
@@ -145,10 +147,13 @@ function TaskDetailsAction(o){
     console.log("index=" + index);
     var obj=tasks[index-1];
         for(item in obj){
-            task_details_info = task_details_info +"<dt style='color: red'>"+item+":</dt>"+ "<dd>"+obj[item]+"</dd><hr>";
+            task_details_info = task_details_info +"<tr><td>"+item+"</td><td>"+obj[item]+"</td><tr>";
         }
+        task_details_info= '<table class="table table-bordered table-hover table-condensed"><tbody>'+
+                             task_details_info+'<tbody></table>';
+
         $("#myModalLabel").text("任务详情");
-        $("#detail_show").show().append("<dl>"+task_details_info+"</dl>")/** 显示详情模态框内容**/
+        $("#detail_show").show().append(task_details_info)//显示详情模态框内容
 }
 
 //任务的各种action

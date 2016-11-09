@@ -53,6 +53,8 @@ function  AutoCursorMove(){
 
 $(document).ready(function(){
     console.log("ready");
+    displayFooter();
+    displayHeader();
     $("#workerId").focus();    
     AutoCursorMove();
 

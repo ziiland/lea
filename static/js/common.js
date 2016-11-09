@@ -39,6 +39,9 @@ var CMD_LOAD_WORKER = "LoadWorker";
 var CMD_UNLOAD = "UnLoad";
 var CMD_LOGIN = "Login";
 var CMD_ADD_WORKER = "AddWorker"
+var CMD_DEL_WORKER = "DelWorker"
+var CMD_UPD_WORKER = "UpdateWorker"
+var CMD_CHGPWD_WORKER = "ChgPwd"
 var CMD_QUERY_TASK = "QueryTask";
 var CMD_ADD_TASK = "AddTask"
 
@@ -61,43 +64,37 @@ var STR_WORKER = "Worker";
 var gTaskStateDes = {Created:"已创建", Assigned:"已分配", Started:"进行中", Finished:"已完成", Checked:"已检查", Closed:"已关闭", Archived:"已归档"};
 var gTaskTypes = ["翻地", "播种", "浇水", "施肥", "搭架子", "移栽", "嫁接", "除草", "除虫", "收割", "快递"];
 var gRoleDes = {Admin:"管理员", Manager:"经理", Worker:"职员"};
-
+var loginInfo={login:"",workerId:"",title:""};
 ///////////////////////////////////////////////////////////////////////////////
-$(document).ready(function(){
-    displayFooter();
-    displayHeader();
-});
 
 //获取登录信息,并显示。
 function getDataFromBackend() {
-    var login;
-    var workerId;
-    var title;
     $.get(URL_TASK, {Command:CMD_LOAD_PARA}, function(data){
         $.each(data, function(key, value){
             if(key == KEY_LOGIN) {
-                login = value;
+                loginInfo.login = value;
             } else if (key == KEY_WORKER) {
-                workerId = value;
+                loginInfo.workerId = value;
             } else if (key == KEY_TITLE) {
-                title = value;
+                loginInfo.title = value;
+                console.log("title =" + loginInfo.title);
             }
         });
-        if (login != "on") {
+        if (loginInfo.login != "on") {
             window.location.assign("./login.html");
         }
         else {
             console.log("login on");
             //显示登录信息
-            displayWorkerId(workerId);
+            displayWorkerId();
             $(document).trigger(EVT_PARA_LOADED);
         }
     });
 }
 
 //显示登录的用户
-function displayWorkerId(workerId) {
-        var Info ='<label>您好，'+ workerId+'</label>'+
+function displayWorkerId() {
+        var Info ='<label>您好，'+ loginInfo.workerId+'</label>'+
             '<button class="btn btn-sm" onclick="dropoutpage()">注销</button>';
 
         $("#login_info").append(Info);
