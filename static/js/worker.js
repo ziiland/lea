@@ -15,6 +15,7 @@ $(document).ready(function(){
 
 //添加用户按钮event
 function addClickAction() {
+    $("#WorkerId").attr("readonly",false);
     $("#registered_from").show();
     $("#myModalLabel").text("新增员工");
     $("#modesavebtn").show();
@@ -47,25 +48,38 @@ function getWorkersInfo() {
 //显示用户信息table
 function descriptionWorkers(workers) {
     var worker_info = "";
+    var btn_state='disabled="disabled"';
     for ( item in workers) {
         console.log("item =" + item + ", value=" + workers[item]);
         if (item == KEY_TITLE) {
             worker_info = worker_info + "<td>" + gRoleDes[workers[item]] + "</td>";
-        } else if ((item != KEY_PASSWORD) && (item != "Id")&&(item != "IdentifyNo")&&(item != "Comment")) {
+        } else if(item == KEY_CHECKOUTTIME){
+            if(workers[item]==0){
+                btn_state="";
+            }
+            worker_info = worker_info + "<td>" + workers[item] + "</td>";
+        }else if ((item != KEY_PASSWORD) && (item != "Id")&&(item != "IdentifyNo")&&(item != "Comment")) {
             worker_info = worker_info + "<td>" + workers[item] + "</td>";
         }
     }
     console.log("loginInfo.title"+loginInfo.title)
+    console.log("btn_state =" + btn_state);
+    var detail_btn='<button class="btn btn-sm btn-info" onclick="workerDetailsAction(this)" data-toggle="modal" data-target="#myModal">详情</button>';
+    var del_btn='<button class="btn btn-sm btn-danger"'+btn_state+'onclick="delWorkerAction(this)" >删除</button>';
+    var change_btn='<button class="btn btn-sm btn-warning" onclick="changeWorkerAction(this)" data-toggle="modal" data-target="#myModal">修改</button>';
+    var reset_btn='<button class="btn btn-sm btn-warning" onclick="resetPassword(this)" data-toggle="modal" data-target="#myModal">修改</button>';
+    var changePassword_btn='<button class="btn btn-sm btn-info"onclick="changePersonPasswordUi(this)" data-toggle="modal" data-target="#myModal">修改密码</button>';
     if(loginInfo.title== "Admin") {
-        worker_info = worker_info +
-            "<td><button class='btn btn-sm btn-info' onclick='workerDetailsAction(this)' data-toggle='modal' data-target='#myModal'>详情</button>" +
-            "<button class='btn btn-sm btn-danger' onclick='delWorkerAction(this)'>删除</button>" +
-            "<button class='btn btn-sm btn-warning' onclick='changeWorkerAction(this)' data-toggle='modal' data-target='#myModal'>修改</button>" +
-            "</td>";
-    }else{
-        worker_info = worker_info +
-            "<td><button class='btn btn-sm btn-info' onclick='changePersonPasswordUi(this)' data-toggle='modal' data-target='#myModal'>修改密码</button>" +
-            "</td>";
+       if(workers[KEY_TITLE]=="Admin") {
+           worker_info = worker_info + "<td>" + detail_btn + change_btn + "</td>"
+       }else{
+           worker_info = worker_info + "<td>" + detail_btn +del_btn+ change_btn + "</td>"
+       }
+    }else if(loginInfo.title== "Manager"){
+        worker_info = worker_info + "<td>" + detail_btn + reset_btn + "</td>"
+    }
+    else{
+        worker_info = worker_info +"<td>" +changePassword_btn+"</td>";
     }
     $("#userlist").append("<tr>"+worker_info+"</tr>");
 }
@@ -103,6 +117,8 @@ function delWorkerAction(data) {
             alert("删除失败");
         } else {
             alert("删除成功");
+            updataWorkerList();
+
         }
     })
 
@@ -151,6 +167,7 @@ function updataPersonInfo() {
         } else {
             $("#myModal").modal("hide");
             alert("修改成功");
+            updataWorkerList();
         }
     });
 }
@@ -186,6 +203,10 @@ function changePersonPasswordEvent() {
         }
     });
 }
+function updataWorkerList() {
+    $("#userlist").empty();
+    getWorkersInfo();//获取全部用户信息
+}
 //添加用户
 function addWorker() {
     var workerId = $("#WorkerId").val();
@@ -219,4 +240,22 @@ function addWorker() {
     } else {
         alert("请输入正确的信息");
     }
+}
+//恢复初始密码
+function resetPassword(data) {
+    var workerid=$(data).parent().parent().children("td").first().text();
+    var password="888888";
+    $.get(URL_WORKER, {
+        Command: CMD_CHGPWD_WORKER, Worker: workerid, Password: password}, function (data) {
+        $.each(data, function(key,value){
+            if (key == "Errcode") {
+                errcode = value;
+            }
+        });
+        if (errcode == 1) {
+            alert("修改失败");
+        } else {
+            alert("修改成功");
+        }
+    });
 }
