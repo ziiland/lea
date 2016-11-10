@@ -80,14 +80,18 @@ function descriptionWorkers(workers) {
     var change_btn='<button class="btn btn-sm btn-warning"'+btn_state+' onclick="changeWorkerAction(this)" data-toggle="modal" data-target="#myModal">ÐÞ¸Ä</button>';
     var reset_btn='<button class="btn btn-sm btn-warning" onclick="resetPassword(this)" data-toggle="modal" data-target="#myModal">»Ö¸´ÃÜÂë</button>';
     var changePassword_btn='<button class="btn btn-sm btn-info"onclick="changePersonPasswordUi(this)" data-toggle="modal" data-target="#myModal">ÐÞ¸ÄÃÜÂë</button>';
-    if(gLoginInfo.title == "Admin") {
+    if(gLoginInfo.title == STR_ADMIN) {
        if(workers[KEY_WORKERID] == STR_ADMIN) {
            worker_info = worker_info + "<td>" + detail_btn + change_btn + "</td>"
        }else{
            worker_info = worker_info + "<td>" + detail_btn + del_btn+ change_btn + "</td>"
        }
     } else if(gLoginInfo.title == STR_MANAGER){
-        worker_info = worker_info + "<td>" + detail_btn + reset_btn + "</td>"
+        if (workers[KEY_WORKERID] == gLoginInfo.workerId.toUpperCase()) {
+            worker_info += "<td>" + detail_btn + changePassword_btn + "</td>";
+        } else {
+            worker_info = worker_info + "<td>" + detail_btn + reset_btn + "</td>"
+        }        
     } else {
         worker_info = worker_info +"<td>" + changePassword_btn +"</td>";
     }
@@ -102,7 +106,9 @@ function workerDetailsAction(o) {
 
     var obj = workers[index-1];
     for(item in obj){
-        worker_details_info += "<tr><td>" + item + "</td><td>" + obj[item] + "</td><tr>";
+        if (item != KEY_PASSWORD && item != KEY_ID) {
+            worker_details_info += "<tr><td>" + item + "</td><td>" + obj[item] + "</td><tr>";
+        }        
     }
     worker_details_info = '<table class="table table-bordered table-hover table-condensed bg-info"><tbody>'+
                          worker_details_info + '<tbody></table>';

@@ -1,4 +1,5 @@
 //// key constant
+var KEY_ID = "Id";
 var KEY_LOGIN = "Login";
 var KEY_WORKER = "Worker";
 var KEY_WORKERS = "Workers";
@@ -118,7 +119,7 @@ function  displayHeader() {
 //显示页脚
 function  displayFooter() {
     var footer = '<div class="col-md-12 column text-center"> ' +
-                    '<h5>版权信息：上海自然技术有限公司</h5> ' +
+                    '<h5>版权信息：寸田尺园网络科技(上海)有限公司</h5> ' +
                 '</div>';
 
     $("#myfooter").append(footer);
