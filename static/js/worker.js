@@ -9,14 +9,17 @@ $(document).ready(function(){
     $(document).on(EVT_PARA_LOADED, function(){
         getWorkersInfo();//获取全部用户信息
         setModalEvent();//绑定模态框事件
+        displayAddButton();
     });
+});
 
-    console.log("gLoginInfo.title=" + gLoginInfo.title)
+//显示添加用户按钮
+function displayAddButton() {
+    console.log("gLoginInfo.title=displayAddButton_" + gLoginInfo.title)
     if (gLoginInfo.title == STR_ADMIN) {
         $("#add").show(); //显示添加用户按钮
     }
-});
-
+}
 //添加用户按钮event
 function addClickAction() {
     $("#WorkerId").attr("readonly",false);
@@ -74,7 +77,7 @@ function descriptionWorkers(workers) {
 
     var detail_btn='<button class="btn btn-sm btn-info" onclick="workerDetailsAction(this)" data-toggle="modal" data-target="#myModal">详情</button>';
     var del_btn='<button class="btn btn-sm btn-danger"'+btn_state+'onclick="delWorkerAction(this)" >删除</button>';
-    var change_btn='<button class="btn btn-sm btn-warning" onclick="changeWorkerAction(this)" data-toggle="modal" data-target="#myModal">修改</button>';
+    var change_btn='<button class="btn btn-sm btn-warning"'+btn_state+' onclick="changeWorkerAction(this)" data-toggle="modal" data-target="#myModal">修改</button>';
     var reset_btn='<button class="btn btn-sm btn-warning" onclick="resetPassword(this)" data-toggle="modal" data-target="#myModal">恢复密码</button>';
     var changePassword_btn='<button class="btn btn-sm btn-info"onclick="changePersonPasswordUi(this)" data-toggle="modal" data-target="#myModal">修改密码</button>';
     if(gLoginInfo.title == "Admin") {

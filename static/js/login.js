@@ -25,7 +25,7 @@ function  AutoCursorMove(){
         }
     });
 }
-//»ñÈ¡ÓÃ»§ÃûÃÜÂë
+//è·å–ç”¨æˆ·åå¯†ç 
 function getCookies() {
     if (localStorage.getItem("rmbUser") == "true") {
         $("#remall").prop("checked", true);
@@ -38,12 +38,12 @@ function getCookies() {
     }
 }
 
-//¼Ç×¡ÓÃ»§ÃûÃÜÂë
+//è®°ä½ç”¨æˆ·åå¯†ç 
 function save() {
     if ($("#remall").prop("checked")) {
         var username = $("#WorkerId").val();
         var password = $("#Password").val();
-        localStorage.setItem("rmbUser", "true"); //´æ´¢Ò»¸ö´ø7ÌìÆÚÏŞµÄcookie
+        localStorage.setItem("rmbUser", "true"); //å­˜å‚¨ä¸€ä¸ªå¸¦7å¤©æœŸé™çš„cookie
         localStorage.setItem("username", username);
         localStorage.setItem("password", password);
     }else{
@@ -59,14 +59,14 @@ function DoSendLoginInfo() {
     console.log("workerId=" + workerId + ", password=" + password);
     if((workerId =="")&&(password != "")){
         $("#WorkerId").focus()
-        alert("ÇëÊäÈëÓÃ»§Ãû");
+        alert("è¯·è¾“å…¥ç”¨æˆ·å");
     }
     else if((workerId !="")&&(password == "")){
         $("#Password").focus()
-        alert("ÇëÊäÈëÃÜÂë");
+        alert("è¯·è¾“å…¥å¯†ç ");
     }else if((workerId =="")&&(password == "")){
         $("#WorkerId").focus()
-        alert("ÇëÊäÈëÓÃ»§ÃûºÍÃÜÂë");
+        alert("è¯·è¾“å…¥ç”¨æˆ·åå’Œå¯†ç ");
     }
     if((workerId!="")&&(password!="")){
         $.get(URL_LOGIN, {Command: CMD_LOGIN, Worker: workerId, Password: password}, function (data) {
@@ -86,7 +86,7 @@ function DoSendLoginInfo() {
                 $("#Password").val("");
                 workerId = "";
                 password = "";
-                alert("ÇëÊäÈëÕıÈ·µÄÓÃ»§ÃûºÍÃÜÂë");
+                alert("è¯·è¾“å…¥æ­£ç¡®çš„ç”¨æˆ·åå’Œå¯†ç ");
             }
         });
     }
