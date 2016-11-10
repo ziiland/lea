@@ -112,7 +112,7 @@ func loadOneWorkerInfo(c *WorkerController) {
 
 func loadAllInSvcWorkersInfo(c *WorkerController) {
 	item := new(WorkerJsonData)
-	item.Errcode = 1;
+	item.Errcode = 1
 	if workers, err := models.QueryInSvcAllWorkerTableItem(); err == nil {
 		slice := make([]models.ZldWorkerData, 0)
 		for _, v := range workers {

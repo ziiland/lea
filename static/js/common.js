@@ -2,6 +2,7 @@
 var KEY_LOGIN = "Login";
 var KEY_WORKER = "Worker";
 var KEY_WORKERS = "Workers";
+var KEY_WORKERID = "WorkerId";
 var KEY_TITLE = "Title";
 var KEY_FARM = "Farm";
 var KEY_TASKS = "Tasks";
@@ -10,6 +11,7 @@ var KEY_PASSWORD = "Password";
 var KEY_LOGS = "Logs";
 var KEY_CHECKINTIME = "CheckInTime";
 var KEY_CHECKOUTTIME = "CheckOutTime";
+var KEY_ERRCODE = "Errcode";
 
 var KEY_TASK_TASKID = "TaskId";
 var KEY_TASK_SPONSORID = "SponsorId";
@@ -62,30 +64,34 @@ var STR_DEFAULT_PWD = "888888";
 var STR_ADMIN = "Admin";
 var STR_MANAGER = "Manager";
 var STR_WORKER = "Worker";
+var STR_ON = "on";
+var STR_OFF = "off";
+
 //
 var gTaskStateDes = {Created:"已创建", Assigned:"已分配", Started:"进行中", Finished:"已完成", Checked:"已检查", Closed:"已关闭", Canceled:"已取消", Archived:"已归档"};
 var gTaskTypes = ["翻地", "播种", "浇水", "施肥", "搭架子", "移栽", "嫁接", "除草", "除虫", "收割", "快递"];
 var gRoleDes = {Admin:"管理员", Manager:"经理", Worker:"职员"};
-var loginInfo={login:"",workerId:"",title:""};
+var gLoginInfo = {workerId:"", title:""};
 ///////////////////////////////////////////////////////////////////////////////
 
 //获取登录信息,并显示。
 function getDataFromBackend() {
+	var login = "";
     $.get(URL_TASK, {Command:CMD_LOAD_PARA}, function(data){
         $.each(data, function(key, value){
             if(key == KEY_LOGIN) {
-                loginInfo.login = value;
+                login = value;
             } else if (key == KEY_WORKER) {
-                loginInfo.workerId = value;
+                gLoginInfo.workerId = value;
             } else if (key == KEY_TITLE) {
-                loginInfo.title = value;
-                console.log("title =" + loginInfo.title);
+                gLoginInfo.title = value;
+                console.log("title =" + gLoginInfo.title);
             }
         });
-        if (loginInfo.login != "on") {
+
+        if (login != STR_ON) {
             window.location.assign("./login.html");
-        }
-        else {
+        } else {
             console.log("login on");
             //显示登录信息
             displayWorkerId();
@@ -96,10 +102,10 @@ function getDataFromBackend() {
 
 //显示登录的用户
 function displayWorkerId() {
-        var Info ='<label>您好，'+ loginInfo.workerId+'</label>'+
-            '<button class="btn btn-sm" onclick="dropoutpage()">注销</button>';
+    var Info ='<label>您好，'+ gLoginInfo.workerId+'</label>'+
+        '<button class="btn btn-sm" onclick="dropoutpage()">注销</button>';
 
-        $("#login_info").append(Info);
+    $("#login_info").append(Info);
 }
 
 //显示页头
