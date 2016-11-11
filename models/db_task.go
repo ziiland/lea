@@ -310,7 +310,7 @@ func SelectTaskTableItemWithConds(stime, etime int64, worker, state, farm, cell,
 
 	// state always should be a condition
 	if state == "" {
-		s = fmt.Sprintf("%s `State` != '%s'", s, common.ZLD_TASK_STATE_CLOSED)
+		s = fmt.Sprintf("%s `State` != '%s' AND `State` != '%s'", s, common.ZLD_TASK_STATE_CLOSED, common.ZLD_TASK_STATE_CANCELED)
 	} else {
 		s = fmt.Sprintf("%s `State` = '%s'", s, state)
 	}	

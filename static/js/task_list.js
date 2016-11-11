@@ -47,6 +47,29 @@ $(document).ready(function(){
         event.preventDefault();
         //DoSendLoginInfo();
         console.log("Press the search button");
+        var stime = $("#starttime").val();
+        var etime = $("#endtime").val();
+        var worker = $("#searchworkerid").val();
+        var state = $("#searchtype").val();
+        var farm = $("#searchfarmid").val();
+
+        console.log("type: stime=" + typeof(stime) + ", etime=" + typeof(etime) + ", worker=" + typeof(worker) 
+            + ", state=" + typeof(state) + ", farm=" + typeof(farm));
+
+        tasks.length = 0;
+        $("#tasklist").empty();
+        $.get(URL_TASK, {Command:CMD_LOAD_TASK, STime:stime, ETime:etime, Worker:worker, State:state, Farm:farm, Cell:"", Patch:""}, function(data){
+            $.each(data, function(key, value){
+                console.log("key=" + key + ", value=" + value);
+                if (key == KEY_TASKS) {
+                    $.each(value, function(index, obj){
+                        var item = getTaskListItem(obj);
+                        tasks.push(item);
+                    });
+                }
+            });
+            $(document).trigger(EVT_TASKS_LOADED);
+        });        
     });
 });
 
@@ -111,20 +134,19 @@ function getTaskListItem(data) {
 var taskOper = {
     //获取全部任务信息
     getTaskList:function () {
-
-        $.get(URL_TASK, {Command:CMD_LOAD_TASK, STime:0, ETime:0, Worker:"", State:"", Farm:"SHA001", Cell:"", Patch:""}, function(data){
-                $.each(data, function(key, value){
-                    console.log("key=" + key + ", value=" + value);
-                    if (key == KEY_TASKS) {
-                        $.each(value, function(index, obj){
-                            var item = getTaskListItem(obj);
-                            tasks.push(item);
-                        });
-                    }
-                });
-                $(document).trigger(EVT_TASKS_LOADED);
+        $.get(URL_TASK, {Command:CMD_LOAD_TASK, STime:0, ETime:0, Worker:"", State:"", Farm:"", Cell:"", Patch:""}, function(data){
+            $.each(data, function(key, value){
+                console.log("key=" + key + ", value=" + value);
+                if (key == KEY_TASKS) {
+                    $.each(value, function(index, obj){
+                        var item = getTaskListItem(obj);
+                        tasks.push(item);
+                    });
+                }
             });
-        },
+            $(document).trigger(EVT_TASKS_LOADED);
+        });
+    },
 
     //解析全部任务信息
     descriptionTask:function(data) {
@@ -143,7 +165,7 @@ var taskOper = {
                     task_info += "<td>" + gTaskTypes[value[item]] + "</td>";
                 }
             }
-            task_info =task_info+"<td><button class='btn btn-sm btn-info' onclick='TaskDetailsAction(this)' data-toggle='modal' data-target='#myModal'>详情</button></td>";
+            task_info = task_info+"<td><button class='btn btn-sm btn-info' onclick='TaskDetailsAction(this)' data-toggle='modal' data-target='#myModal'>详情</button></td>";
             task_info = "<tr>"+task_info+"</tr>"
             /** 增加任务行*/
             $("#tasklist").append(task_info);
@@ -152,10 +174,10 @@ var taskOper = {
 }
 
 function PrintLog(data) {
-    var action="";
-    var operate="";
-    var actiontime=";"
-    var comment="";
+    var action = "";
+    var operate = "";
+    var actiontime = "";
+    var comment = "";
 
     $.each(data, function(key, value){
         //console.log("Print log: key=" + key + ", value=" + value);
@@ -173,7 +195,7 @@ function PrintLog(data) {
 
     return logInfo;
 
-    console.log("Print Log: Id=" + id + ", Action=" + action + ", Operate=" + operate + ", ActionTime=" + actiontime + ", comment=" + comment);
+    //console.log("Print Log: Id=" + id + ", Action=" + action + ", Operate=" + operate + ", ActionTime=" + actiontime + ", comment=" + comment);
 }
 
 //查询并显示任务详情
@@ -265,19 +287,19 @@ var btnAction={
     },
     //保存，创建任务begin
     modeSaveBtn:function () {
-        var farmid=$("#task-farm").val();
-        var cellid=$("#task-cell").val();
-        var patchid=$("#task-patch").val();
-        var workerid=$("#task-worker").val();
-        var type=$("#task-type").val();
-        var usercomment=$("#user-comment").val();
-        var comment=$("#task-comment").val();
+        var farmid = $("#task-farm").val();
+        var cellid = $("#task-cell").val();
+        var patchid = $("#task-patch").val();
+        var workerid = $("#task-worker").val();
+        var type = $("#task-type").val();
+        var usercomment = $("#user-comment").val();
+        var comment = $("#task-comment").val();
 
-        if (farmid != "" && cellid!= "" && patchid!="" && workerid!="" && type!="") {
+        if (farmid != "" && cellid != "" && patchid != "" && workerid != "" && type != "") {
             $.post(URL_TASK, { Command: CMD_ADD_TASK, FarmId: farmid, CellId: cellid, PatchId: patchid, WorkerId: workerid,
                 Type: type, UserComment: usercomment, Comment: comment}, function (data) {
-                $.each(data, function(key,value){
-                    if (key == "Errcode") {
+                $.each(data, function(key, value){
+                    if (key == KEY_ERRCODE) {
                         errcode = value;
                     }
                 });
