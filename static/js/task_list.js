@@ -111,9 +111,6 @@ function getTaskListItem(data) {
 var taskOper = {
     //获取全部任务信息
     getTaskList:function () {
-        //var today = new Date();
-        //var stime = Date.UTC(today.getFullYear(), today.getMonth(), today.getDay(), 0, 0, 0, 0);
-        //console.log("get task list! time=" + stime/1000);
 
         $.get(URL_TASK, {Command:CMD_LOAD_TASK, STime:0, ETime:0, Worker:"", State:"", Farm:"SHA001", Cell:"", Patch:""}, function(data){
                 $.each(data, function(key, value){
@@ -155,12 +152,14 @@ var taskOper = {
 }
 
 function PrintLog(data) {
-    var id, action, operate, actiontime, comment;
+    var action="";
+    var operate="";
+    var actiontime=";"
+    var comment="";
+
     $.each(data, function(key, value){
         //console.log("Print log: key=" + key + ", value=" + value);
-        if (key == KEY_TASK_TASKID) {
-            id = value;
-        } else if (key == KEY_LOG_ACTION) {
+        if (key == KEY_LOG_ACTION) {
             action = value;
         } else if (key == KEY_LOG_OPERATORID) {
             operate = value;
@@ -170,6 +169,10 @@ function PrintLog(data) {
             comment = value;
         }
     });
+    var logInfo ='<tr><td>'+action+'</td><td>'+operate+'</td><td>'+actiontime+'</td><td>'+comment+'</td></tr>';
+
+    return logInfo;
+
     console.log("Print Log: Id=" + id + ", Action=" + action + ", Operate=" + operate + ", ActionTime=" + actiontime + ", comment=" + comment);
 }
 
@@ -177,6 +180,8 @@ function PrintLog(data) {
 function TaskDetailsAction(o){
     var task_details_info = "";
     var index = o.parentNode.parentNode.rowIndex;
+    var task_id = $(o).parent().next().text();
+    var logInfo ="";
     console.log("index=" + index);
     // get task log
     $.get(URL_TASK, {Command:CMD_QUERY_TASK, TaskId:task_id}, function(data){
@@ -184,16 +189,24 @@ function TaskDetailsAction(o){
             if (key == KEY_LOGS)  {
                 $.each(value, function(index, obj){
                     // logs
-                    PrintLog(obj);
+                    logInfo += PrintLog(obj);
                 });
             }
         });
     });
+    logInfo = '<table class="table table-bordered table-hover table-condensed">' +
+                '<thead><th>action</th>' +
+                '<th>operate</th>'+
+                '<th>actiontime</th>'+
+                '<th>comment</th>'+
+                '</thead><tbody>'+ logInfo+'<tbody></table>';
+
 
     var obj=tasks[index-1];
         for(item in obj){
-            task_details_info = task_details_info +"<tr><td>"+item+"</td><td>"+obj[item]+"</td><tr>";
+            task_details_info +="<tr><td>"+item+"</td><td>"+obj[item]+"</td><tr>";
         }
+       task_details_info +='<tr>'+logInfo+'</tr>';
         task_details_info= '<table class="table table-bordered table-hover table-condensed"><tbody>'+
                              task_details_info+'<tbody></table>';
 
