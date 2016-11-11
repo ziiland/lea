@@ -57,23 +57,30 @@ function getWorkersInfo() {
 //显示用户信息table
 function descriptionWorkers(workers) {
     var worker_info = "";
-    var btn_state='disabled="disabled"';
+    var btn_state = 'disabled="disabled"';
 
     for ( item in workers) {
-        console.log("item =" + item + ", value=" + workers[item]);
+        //console.log("item =" + item + ", value=" + workers[item]);
         if (item == KEY_TITLE) {
             worker_info = worker_info + "<td>" + gRoleDes[workers[item]] + "</td>";
         } else if(item == KEY_CHECKOUTTIME){
-            if(workers[item]==0){
+            //console.log("btn_state =" + btn_state);
+            if(workers[item] == 0){
                 btn_state = "";
             }
-            worker_info = worker_info + "<td>" + workers[item] + "</td>";
-        }else if ((item != KEY_PASSWORD) && (item != "Id")&&(item != "IdentifyNo")&&(item != "Comment")) {
-            worker_info = worker_info + "<td>" + workers[item] + "</td>";
+            //worker_info = worker_info + "<td>" + workers[item] + "</td>";
+        } else if(item == KEY_CHECKINTIME) {
+            var checkindate = new Date(workers[item] * 1000);
+            // console.log("year = " + checkindate.getFullYear() + ", month = " + (checkindate.getMonth() 
+            //     + 1) + ", day = " + checkindate.getDate());
+            worker_info += "<td>" + checkindate.getFullYear() + "-" + (checkindate.getMonth() + 1) + "-" 
+            + checkindate.getDate() + "</td>";
+        } else if ((item != KEY_PASSWORD) && (item != KEY_ID) && (item != "IdentifyNo") && (item != "Comment")) {
+            worker_info += "<td>" + workers[item] + "</td>";
         }
     }
-    console.log("gLoginInfo.title"+ gLoginInfo.title)
-    console.log("btn_state =" + btn_state);
+    console.log("gLoginInfo.title = "+ gLoginInfo.title)
+    console.log("btn_state = " + btn_state);
 
     var detail_btn='<button class="btn btn-sm btn-info" onclick="workerDetailsAction(this)" data-toggle="modal" data-target="#myModal">详情</button>';
     var del_btn='<button class="btn btn-sm btn-danger"'+btn_state+'onclick="delWorkerAction(this)" >删除</button>';
@@ -242,7 +249,7 @@ function addWorker() {
     var errcode = 1;
 
     console.log("workerId = " + workerId + ", password = " + password + ", name = " + name + ", title = " + title + ", identifyNo = ", + identifyNo);
-    if (workerId != "" && password!= "" && name!="" && title!="" && identifyNo!="") {
+    if (workerId != "" && password!= "" && name!= "" && title!="" && identifyNo != "") {
         $.get(URL_WORKER, {
                 Command: CMD_ADD_WORKER, Worker: workerId, Password: password, Name: name, Sex: sex,
                 IdentifyNo: identifyNo, Title: title, Comment: comment}, function (data) {
