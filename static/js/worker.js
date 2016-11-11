@@ -1,5 +1,7 @@
 var workers = new Array();
-
+var gWrokerKey = {"WorkerId":"工号", "Password":"密码", "Name":"姓名"
+                , "Sex":"性别", "IdentifyNo":"身份证号", "Title":"角色"
+                , "CheckInTime":"入职时间", "CheckOutTime":"离职时间", "Comment":"备注"};
 ///////////////////////////////////////////////////////////////////////////////
 $(document).ready(function(){
     getDataFromBackend();
@@ -22,6 +24,14 @@ function displayAddButton() {
 }
 //添加用户按钮event
 function addClickAction() {
+    console.log("Press Add Button!");
+    $("#WorkerId").val("");
+    $("#Password").val("");
+    $("#Name").val("");
+    $("#Sex").val("");
+    $("#IdentifyNo").val("");
+    $("#Title").val("");
+
     $("#WorkerId").attr("readonly",false);
     $("#registered_from").show();
     $("#myModalLabel").text("新增员工");
@@ -113,8 +123,23 @@ function workerDetailsAction(o) {
 
     var obj = workers[index-1];
     for(item in obj){
-        if (item != KEY_PASSWORD && item != KEY_ID) {
-            worker_details_info += "<tr><td>" + item + "</td><td>" + obj[item] + "</td><tr>";
+        if (item == KEY_TITLE) {
+            worker_details_info += "<tr><td>" + gWrokerKey[item] + "</td><td>" + gRoleDes[obj[item]] + "</td><tr>";
+        } else if (item == KEY_CHECKINTIME) {
+            var checkindate = new Date(obj[item] * 1000);
+            worker_details_info += "<tr><td>" + gWrokerKey[item] + "</td><td>" 
+                                 + checkindate.getFullYear() + "-" + (checkindate.getMonth() + 1)
+                                 + "-" + checkindate.getDate() + "</td><tr>";
+        } else if (item == KEY_CHECKOUTTIME) {
+            var checkoutdate = new Date(obj[item] * 1000);
+            worker_details_info += "<tr><td>" + gWrokerKey[item] + "</td><td>";
+            if (obj[item] != 0) {
+                worker_details_info += checkoutdate.getFullYear() + "-" + (checkoutdate.getMonth() + 1)
+                                 + "-" + checkoutdate.getDate();
+            }
+            worker_details_info += "</td><tr>";
+        } else if (item != KEY_PASSWORD && item != KEY_ID) {
+            worker_details_info += "<tr><td>" + gWrokerKey[item] + "</td><td>" + obj[item] + "</td><tr>";
         }        
     }
     worker_details_info = '<table class="table table-bordered table-hover table-condensed bg-info"><tbody>'+
@@ -149,9 +174,10 @@ function delWorkerAction(data) {
 
 //显示Admin修改用户信息界面
 function changeWorkerAction(data) {
-    var index=data.parentNode.parentNode.rowIndex;
-    console.log("index"+index);
-    var obj=workers[index-1];
+    var index = data.parentNode.parentNode.rowIndex;
+    var obj = workers[index-1];
+
+    console.log("index = " + index);
     $("#WorkerId").val(obj.WorkerId).attr("readonly",true);
     $("#Password").val(obj.Password);
     $("#Name").val(obj.Name);
@@ -230,6 +256,7 @@ function changePersonPasswordEvent() {
         }
     });
 }
+
 function updataWorkerList() {
     $("#userlist").empty();
     getWorkersInfo();//获取全部用户信息

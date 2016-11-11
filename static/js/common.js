@@ -71,7 +71,7 @@ var STR_OFF = "off";
 //
 var gTaskStateDes = {Created:"已创建", Assigned:"已分配", Started:"进行中", Finished:"已完成", Checked:"已检查", Closed:"已关闭", Canceled:"已取消", Archived:"已归档"};
 var gTaskTypes = ["翻地", "播种", "浇水", "施肥", "搭架子", "移栽", "嫁接", "除草", "除虫", "收割", "快递"];
-var gRoleDes = {Admin:"管理员", Manager:"经理", Worker:"职员"};
+var gRoleDes = {"Admin":"管理员", "Manager":"经理", "Worker":"职员"};
 var gLoginInfo = {workerId:"", title:""};
 ///////////////////////////////////////////////////////////////////////////////
 
