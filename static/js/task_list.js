@@ -296,10 +296,22 @@ var btnAction={
 
 //选中或者取消所有
 function choseAllBox(o){
+    var taskId = "";
+    console.log("length=" + $("#tasks_table").find("tr").length );
+
     if($(o).prop("checked")==true) {
         $("input[type=checkbox]").prop("checked",true);
+        selectedTasks.length=0;//先清空，再添加全部taskid
+        for(var i=0;i<$("#tasks_table").find("tr").length;i++) {
+            taskId = $("#tasks_table").find("tr").eq(i).find("td:eq(1)").text();
+           // console.log("taskId=" + taskId );
+            selectedTasks.push(taskId);
+            console.log("selectedTasks=" + selectedTasks );
+        }
     }else{
         $("input[type=checkbox]").prop("checked",false);
+        selectedTasks.length=0;
+        console.log("selectedTasks=" + selectedTasks );
     }
 }
 
@@ -310,8 +322,9 @@ function setCheckedId(data) {
     if ($(data).prop("checked")) {
         selectedTasks.push(taskId);
     } else {
-        var index = selectedTasks.indexOf(taskId);
+        var index = data.parentNode.parentNode.rowIndex;
         selectedTasks.splice(index, 1);
+        $("#checkAll").removeAttr("checked");
     }
     console.log("selectedTasks=" + selectedTasks );
 }
