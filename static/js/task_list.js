@@ -180,9 +180,9 @@ function PrintLog(data) {
 function TaskDetailsAction(o){
     var task_details_info = "";
     var index = o.parentNode.parentNode.rowIndex;
-    var task_id = $(o).parent().next().text();
+    var task_id = $(o).parent().parent().children("td").eq(1).text();
     var logInfo ="";
-    console.log("index=" + index);
+    console.log("task_id=" + task_id);
     // get task log
     $.get(URL_TASK, {Command:CMD_QUERY_TASK, TaskId:task_id}, function(data){
         $.each(data, function(key, value){
@@ -194,14 +194,15 @@ function TaskDetailsAction(o){
             }
         });
     });
+   
+    console.log("logInfo=" + logInfo);
+
     logInfo = '<table class="table table-bordered table-hover table-condensed">' +
-                '<thead><th>action</th>' +
-                '<th>operate</th>'+
-                '<th>actiontime</th>'+
-                '<th>comment</th>'+
-                '</thead><tbody>'+ logInfo+'<tbody></table>';
+        '<thead><th>action</th><th>operate</th><th>actiontime</th><th>comment</th></thead>' +
+        '<tbody>'+ logInfo +'</tbody>' +
+        '</table>';
 
-
+    console.log("logInfo=" + logInfo);
     var obj=tasks[index-1];
         for(item in obj){
             task_details_info +="<tr><td>"+item+"</td><td>"+obj[item]+"</td><tr>";
