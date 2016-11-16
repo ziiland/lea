@@ -1,28 +1,28 @@
 var workers = new Array();
-var gWrokerKey = {"WorkerId":"¹¤ºÅ", "Password":"ÃÜÂë", "Name":"ĞÕÃû"
-                , "Sex":"ĞÔ±ğ", "IdentifyNo":"Éí·İÖ¤ºÅ", "Title":"½ÇÉ«"
-                , "CheckInTime":"ÈëÖ°Ê±¼ä", "CheckOutTime":"ÀëÖ°Ê±¼ä", "Comment":"±¸×¢"};
+var gWrokerKey = {"WorkerId":"å·¥å·", "Password":"å¯†ç ", "Name":"å§“å"
+                , "Sex":"æ€§åˆ«", "IdentifyNo":"èº«ä»½è¯å·", "Title":"è§’è‰²"
+                , "CheckInTime":"å…¥èŒæ—¶é—´", "CheckOutTime":"ç¦»èŒæ—¶é—´", "Comment":"å¤‡æ³¨"};
 ///////////////////////////////////////////////////////////////////////////////
 $(document).ready(function(){
     getDataFromBackend();
-    displayFooter();//ÏÔÊ¾Ò³Í·
-    displayHeader();//ÏÔÊ¾Ò³Î²
+    displayFooter();//æ˜¾ç¤ºé¡µå¤´
+    displayHeader();//æ˜¾ç¤ºé¡µå°¾
 
     $(document).on(EVT_PARA_LOADED, function(){
-        getWorkersInfo();//»ñÈ¡È«²¿ÓÃ»§ĞÅÏ¢
-        setModalEvent();//°ó¶¨Ä£Ì¬¿òÊÂ¼ş
+        getWorkersInfo();//è·å–å…¨éƒ¨ç”¨æˆ·ä¿¡æ¯
+        setModalEvent();//ç»‘å®šæ¨¡æ€æ¡†äº‹ä»¶
         displayAddButton();
     });
 });
 
-//ÏÔÊ¾Ìí¼ÓÓÃ»§°´Å¥
+//æ˜¾ç¤ºæ·»åŠ ç”¨æˆ·æŒ‰é’®
 function displayAddButton() {
     console.log("gLoginInfo.title=displayAddButton_" + gLoginInfo.title)
     if (gLoginInfo.title == STR_ADMIN) {
-        $("#add").show(); //ÏÔÊ¾Ìí¼ÓÓÃ»§°´Å¥
+        $("#add").show(); //æ˜¾ç¤ºæ·»åŠ ç”¨æˆ·æŒ‰é’®
     }
 }
-//Ìí¼ÓÓÃ»§°´Å¥event
+//æ·»åŠ ç”¨æˆ·æŒ‰é’®event
 function addClickAction() {
     console.log("Press Add Button!");
     $("#WorkerId").val("");
@@ -34,22 +34,22 @@ function addClickAction() {
 
     $("#WorkerId").attr("readonly",false);
     $("#registered_from").show();
-    $("#myModalLabel").text("ĞÂÔöÔ±¹¤");
+    $("#myModalLabel").text("æ–°å¢å‘˜å·¥");
     $("#modesavebtn").show();
 }
 
-//°ó¶¨Ä£Ì¬¿òÊÂ¼ş
+//ç»‘å®šæ¨¡æ€æ¡†äº‹ä»¶
 function setModalEvent(){
     $("#myModal").on("hidden.bs.modal", function() {
         $("#worker_detail").empty().hide();
         $("#registered_from").hide().reset;
         $("#modesavebtn").hide();
         $("#modeupdatabtn").hide();
-        $("#person_password").hide();//ÏÔÊ¾ÏêÇéÄ£Ì¬¿òÄÚÈİ
+        $("#person_password").hide();//æ˜¾ç¤ºè¯¦æƒ…æ¨¡æ€æ¡†å†…å®¹
         $("#modechangebtn").hide();
     });
 }
-//»ñÈ¡È«²¿ÓÃ»§ĞÅÏ¢
+//è·å–å…¨éƒ¨ç”¨æˆ·ä¿¡æ¯
 function getWorkersInfo() {
     workers.length = 0;
     $.get(URL_WORKER, {Command:CMD_LOAD_WORKER}, function(data){
@@ -64,7 +64,7 @@ function getWorkersInfo() {
     });
 }
 
-//ÏÔÊ¾ÓÃ»§ĞÅÏ¢table
+//æ˜¾ç¤ºç”¨æˆ·ä¿¡æ¯table
 function descriptionWorkers(workers) {
     var worker_info = "";
     var btn_state = 'disabled="disabled"';
@@ -92,11 +92,11 @@ function descriptionWorkers(workers) {
     console.log("gLoginInfo.title = "+ gLoginInfo.title)
     console.log("btn_state = " + btn_state);
 
-    var detail_btn='<button class="btn btn-sm btn-info" onclick="workerDetailsAction(this)" data-toggle="modal" data-target="#myModal">ÏêÇé</button>';
-    var del_btn='<button class="btn btn-sm btn-danger"'+btn_state+'onclick="delWorkerAction(this)" >É¾³ı</button>';
-    var change_btn='<button class="btn btn-sm btn-warning"'+btn_state+' onclick="changeWorkerAction(this)" data-toggle="modal" data-target="#myModal">ĞŞ¸Ä</button>';
-    var reset_btn='<button class="btn btn-sm btn-warning" onclick="resetPassword(this)" data-toggle="modal" data-target="#myModal">»Ö¸´ÃÜÂë</button>';
-    var changePassword_btn='<button class="btn btn-sm btn-info"onclick="changePersonPasswordUi(this)" data-toggle="modal" data-target="#myModal">ĞŞ¸ÄÃÜÂë</button>';
+    var detail_btn='<button class="btn btn-sm btn-info" onclick="workerDetailsAction(this)" data-toggle="modal" data-target="#myModal">è¯¦æƒ…</button>';
+    var del_btn='<button class="btn btn-sm btn-danger"'+btn_state+'onclick="delWorkerAction(this)" >åˆ é™¤</button>';
+    var change_btn='<button class="btn btn-sm btn-warning"'+btn_state+' onclick="changeWorkerAction(this)" data-toggle="modal" data-target="#myModal">ä¿®æ”¹</button>';
+    var reset_btn='<button class="btn btn-sm btn-warning" onclick="resetPassword(this)" data-toggle="modal" data-target="#myModal">æ¢å¤å¯†ç </button>';
+    var changePassword_btn='<button class="btn btn-sm btn-info"onclick="changePersonPasswordUi(this)" data-toggle="modal" data-target="#myModal">ä¿®æ”¹å¯†ç </button>';
     if(gLoginInfo.title == STR_ADMIN) {
        if(workers[KEY_WORKERID] == STR_ADMIN) {
            worker_info = worker_info + "<td>" + detail_btn + change_btn + "</td>"
@@ -115,7 +115,7 @@ function descriptionWorkers(workers) {
     $("#userlist").append("<tr>"+worker_info+"</tr>");
 }
 
-//ÏÔÊ¾ÓÃ»§ÏêÇé
+//æ˜¾ç¤ºç”¨æˆ·è¯¦æƒ…
 function workerDetailsAction(o) {
     var worker_details_info = "";
     var index = o.parentNode.parentNode.rowIndex;
@@ -145,11 +145,11 @@ function workerDetailsAction(o) {
     worker_details_info = '<table class="table table-bordered table-hover table-condensed bg-info"><tbody>'+
                          worker_details_info + '<tbody></table>';
 
-    $("#myModalLabel").text("¸öÈËÏêÇé");
-    $("#worker_detail").show().append(worker_details_info);//ÏÔÊ¾ÏêÇéÄ£Ì¬¿òÄÚÈİ
+    $("#myModalLabel").text("ä¸ªäººè¯¦æƒ…");
+    $("#worker_detail").show().append(worker_details_info);//æ˜¾ç¤ºè¯¦æƒ…æ¨¡æ€æ¡†å†…å®¹
 }
 
-//É¾³ıÓÃ»§
+//åˆ é™¤ç”¨æˆ·
 function delWorkerAction(data) {
     var workerid = $(data).parent().parent().children("td").first().text();
     var errcode = 1;
@@ -163,16 +163,16 @@ function delWorkerAction(data) {
         });
 
         if (errcode == 1) {
-            alert("É¾³ıÊ§°Ü");
+            alert("åˆ é™¤å¤±è´¥");
         } else {
-            alert("É¾³ı³É¹¦");
+            alert("åˆ é™¤æˆåŠŸ");
             updataWorkerList();
         }
     })
 
 }
 
-//ÏÔÊ¾AdminĞŞ¸ÄÓÃ»§ĞÅÏ¢½çÃæ
+//æ˜¾ç¤ºAdminä¿®æ”¹ç”¨æˆ·ä¿¡æ¯ç•Œé¢
 function changeWorkerAction(data) {
     var index = data.parentNode.parentNode.rowIndex;
     var obj = workers[index-1];
@@ -186,12 +186,12 @@ function changeWorkerAction(data) {
     $("#Title").val(obj.Title);
     $("#Comment").val(obj.Comment);
 
-    $("#myModalLabel").text("¸öÈËĞÅÏ¢ĞŞ¸Ä");
-    $("#registered_from").show();//ÏÔÊ¾ÏêÇéÄ£Ì¬¿òÄÚÈİ
+    $("#myModalLabel").text("ä¸ªäººä¿¡æ¯ä¿®æ”¹");
+    $("#registered_from").show();//æ˜¾ç¤ºè¯¦æƒ…æ¨¡æ€æ¡†å†…å®¹
     $("#modeupdatabtn").show();
 }
 
-//adminÌá½»ĞŞ¸ÄÓÃ»§ĞÅÏ¢
+//adminæäº¤ä¿®æ”¹ç”¨æˆ·ä¿¡æ¯
 function updataPersonInfo() {
     var workerId = $("#WorkerId").val();
     var password = $("#Password").val();
@@ -212,28 +212,28 @@ function updataPersonInfo() {
         });
 
         if (errcode == 1) {
-            alert("ĞŞ¸ÄÊ§°Ü");
+            alert("ä¿®æ”¹å¤±è´¥");
         } else {
             $("#myModal").modal("hide");
-            alert("ĞŞ¸Ä³É¹¦");
+            alert("ä¿®æ”¹æˆåŠŸ");
             updataWorkerList();
         }
     });
 }
 
-//ÏÔÊ¾ĞŞ¸Ä¸öÈËÃÜÂë½çÃæ
+//æ˜¾ç¤ºä¿®æ”¹ä¸ªäººå¯†ç ç•Œé¢
 function changePersonPasswordUi(data) {
     var workerid=$(data).parent().parent().children("td").first().text();
     console.log("workerid"+workerid);
 
     $("#myid").val(workerid);
     $("#mypassword").val("");
-    $("#myModalLabel").text("ĞŞ¸ÄÃÜÂë");
-    $("#person_password").show();//ÏÔÊ¾ÏêÇéÄ£Ì¬¿òÄÚÈİ
+    $("#myModalLabel").text("ä¿®æ”¹å¯†ç ");
+    $("#person_password").show();//æ˜¾ç¤ºè¯¦æƒ…æ¨¡æ€æ¡†å†…å®¹
     $("#modechangebtn").show();
 }
 
-//ĞŞ¸Ä¸öÈËÃÜÂëevent
+//ä¿®æ”¹ä¸ªäººå¯†ç event
 function changePersonPasswordEvent() {
     var workerid = $("#myid").val();
     var password = $("#mypassword").val();
@@ -249,20 +249,20 @@ function changePersonPasswordEvent() {
             }
         });
         if (errcode == 1) {
-            alert("ĞŞ¸ÄÊ§°Ü");
+            alert("ä¿®æ”¹å¤±è´¥");
         } else {
             $("#myModal").modal("hide");
-            alert("ĞŞ¸Ä³É¹¦");
+            alert("ä¿®æ”¹æˆåŠŸ");
         }
     });
 }
 
 function updataWorkerList() {
     $("#userlist").empty();
-    getWorkersInfo();//»ñÈ¡È«²¿ÓÃ»§ĞÅÏ¢
+    getWorkersInfo();//è·å–å…¨éƒ¨ç”¨æˆ·ä¿¡æ¯
 }
 
-//Ìí¼ÓÓÃ»§
+//æ·»åŠ ç”¨æˆ·
 function addWorker() {
     var workerId = $("#WorkerId").val();
     var password = $("#Password").val();
@@ -287,18 +287,18 @@ function addWorker() {
             });
 
             if (errcode == 1) {
-                alert("ÓÃ»§ÒÑ´æÔÚ");
+                alert("ç”¨æˆ·å·²å­˜åœ¨");
             } else {
                 $("#myModal").modal("hide");
-                alert("ĞÂÔö³É¹¦");
+                alert("æ–°å¢æˆåŠŸ");
             }                
         });
     } else {
-        alert("ÇëÊäÈëÕıÈ·µÄĞÅÏ¢");
+        alert("è¯·è¾“å…¥æ­£ç¡®çš„ä¿¡æ¯");
     }
 }
 
-//»Ö¸´³õÊ¼ÃÜÂë
+//æ¢å¤åˆå§‹å¯†ç 
 function resetPassword(data) {
     var errcode = 1;
     var workerid=$(data).parent().parent().children("td").first().text();
@@ -311,9 +311,9 @@ function resetPassword(data) {
         });
 
         if (errcode == 1) {
-            alert("ĞŞ¸ÄÊ§°Ü");
+            alert("ä¿®æ”¹å¤±è´¥");
         } else {
-            alert("ĞŞ¸Ä³É¹¦");
+            alert("ä¿®æ”¹æˆåŠŸ");
         }
     });
 }

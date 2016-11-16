@@ -229,12 +229,12 @@ function TaskDetailsAction(o){
         for(item in obj){
             task_details_info +="<tr><td>"+item+"</td><td>"+obj[item]+"</td><tr>";
         }
-       task_details_info +='<tr>'+logInfo+'</tr>';
+        task_details_info +='<tr>'+logInfo+'</tr>';
         task_details_info= '<table class="table table-bordered table-hover table-condensed"><tbody>'+
                              task_details_info+'<tbody></table>';
 
         $("#myModalLabel").text("任务详情");
-        $("#detail_show").show().append(task_details_info)//显示详情模态框内容
+        $("#detail_show").show().append(task_details_info); //显示详情模态框内容
 }
 
 //任务的各种action
