@@ -22,10 +22,20 @@ function TaskConstructor(taskId, sponsorId, farmId, cellId, patchId, workerId, c
     this.Comment = comment;
 }
 
-//function TaskSearch
-function DeleteCmdParaConstructor() {
+function AssignCmdParaConstructor(worker, checker) {
+    this.Tasks = selectedTasks;
+    this.Worker = worker;        // use workerId
+    this.Checker = checker;      // use checkerId
+}
+
+// delete/submit/close command use this 
+function TasksCmdParaConstructor() {
     // delete the selected tasks
     this.Tasks = selectedTasks;
+}
+
+function SearchCmdParaConstructor() {
+    // 
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -244,13 +254,22 @@ var btnAction={
         $("#task-action").append('<button class="btn btn-default" id="addTask" data-toggle="modal" data-target="#myModal">添加</button>');
         $("#addTask").click(function () {
             // test, send the delete command
-            var item = new DeleteCmdParaConstructor();
-            console.log("delete cmd parameter = " + item);
-            var json = JSON.stringify(item);
-            console.log("json string = " + json);
-             $.get(URL_TASK, {Command:CMD_CANCEL_TASK, CmdPara:json}, function(data){
-                console.log("");
-             });
+            // var item = new TasksCmdParaConstructor();
+            // console.log("delete cmd parameter = " + item);
+            // var json = JSON.stringify(item);
+            // console.log("json string = " + json);
+            //  $.get(URL_TASK, {Command:CMD_CLOSE_TASK, CmdPara:json}, function(data){
+            //     console.log("");
+            //  });
+
+            // test, send the assign command
+            // var item = new AssignCmdParaConstructor("ZLD00004", "ZLD00003");
+            // console.log("Assign cmd parameter = " + item);
+            // var json = JSON.stringify(item);
+            // console.log("json string = " + json);
+            // $.get(URL_TASK, {Command:CMD_ASSIGN_TASK, CmdPara:json}, function(data){
+            //     console.log("");
+            // });
 
             $("#task_form").show().reset;
             $("#myModalLabel").text("新建任务");

@@ -30,6 +30,7 @@ const ZLD_CMD_CANCEL_TASK = "CancelTask"
 
 const ZLD_PARA_COMMAND string = "Command"
 const ZLD_PARA_WORKER string = "Worker"
+const ZLD_PARA_CHECKER string = "Checker"
 const ZLD_PARA_PWD string = "Password"
 const ZLD_PARA_TITLE string = "Title"
 const ZLD_PARA_FARM string = "Farm"

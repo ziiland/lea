@@ -63,19 +63,19 @@ func createTaskTableItemForTest() {
 	task.PatchId = "B"
 	task.CreateTime = time.Now().Unix()
 	task.Type = 1;
-	task.TaskId = genTaskId("SHA001", "000A0001", "B")
+	task.TaskId = genTaskId("SHA01A", "000A0001", "B")
 	models.InsertTaskTableItem(task)
 
-	task.TaskId = genTaskId("SHA001", "000A0001", "B")
+	task.TaskId = genTaskId("SHA01A", "000A0001", "B")
 	models.InsertTaskTableItem(task)
 
-	task.TaskId = genTaskId("SHA001", "000A0001", "B")
+	task.TaskId = genTaskId("SHA01A", "000A0001", "B")
 	models.InsertTaskTableItem(task)
 }
 
 func createTaskLogTableItemForTest() {
 	log := models.NewZldTaskLogDBData()
-	log.TaskId = "SHA001000A0001B14768647080000000"
+	log.TaskId = "SHA01A000A0001B14768647080000000"
 	log.Action = "Create" 
 	log.OperatorId = "williamzhang"
 	log.ActionTime = time.Now().Unix() - 367890
@@ -121,7 +121,7 @@ func handleLoadTaskCmd(c *TaskController) {
 	cell := c.GetString(common.ZLD_PARA_CELL)
 	patch := c.GetString(common.ZLD_PARA_PATCH)
 
-	fmt.Printf("stime=%d, etime=%d, state=%s, worker=%s farm=%s, cell=%s, patch=%s, title=%s\n", 
+	fmt.Printf("stime=%d, etime=%d, state=%s, worker=%s, farm=%s, cell=%s, patch=%s, title=%s\n", 
 		stime, etime, state, worker, farm, cell, patch, title)	
 	if title == common.ZLD_STR_WORKER {
 		worker = workerId
@@ -148,15 +148,54 @@ func handleLoadTaskCmd(c *TaskController) {
 	c.ServeJSON()
 }
 
+func handleAssignTaskCmd(c *TaskController) {
+	strCmdPara := c.GetString("CmdPara")
+	bytesCmdPara := []byte(strCmdPara)
+	fmt.Println("bytesCmdPara=", bytesCmdPara)
+
+	item := new(TaskJsonData)
+	item.Errcode = 1
+	paraJSON, _ := simplejson.NewJson(bytesCmdPara)
+	if tasks, err := paraJSON.Get("Tasks").StringArray(); err == nil {
+		worker, _ := paraJSON.Get("Worker").String()
+		checker, _ := paraJSON.Get("Checker").String()
+
+		models.AssignTasksItem(tasks, worker, checker)
+	}
+
+	c.Data["json"] = item
+	c.ServeJSON()
+}
+
+func handleCheckTaskCmd(c *TaskController) {
+	strCmdPara := c.GetString("CmdPara")
+	bytesCmdPara := []byte(strCmdPara)
+	fmt.Println("bytesCmdPara=", bytesCmdPara)
+
+	item := new(TaskJsonData)
+	item.Errcode = 1	
+
+	// para
+	paraJSON, _ := simplejson.NewJson(bytesCmdPara)
+	fmt.Println("paraJSON=", paraJSON)
+	if tasks, err := paraJSON.Get("Tasks").StringArray(); err == nil {
+		fmt.Println("tasks=", tasks)
+		models.CheckTasksItem(tasks)
+		item.Errcode = 0
+	}
+	c.Data["json"] = item
+	c.ServeJSON()	
+}
+
 func handleCancelTaskCmd(c *TaskController) {
 	strCmdPara := c.GetString("CmdPara")
 	bytesCmdPara := []byte(strCmdPara)
-	fmt.Println("bytesCmdPara=", bytesCmdPara);
+	fmt.Println("bytesCmdPara=", bytesCmdPara)
 
 	item := new(TaskJsonData)
 	item.Errcode = 1
 	// para
-	paraJSON, _ := simplejson.NewJson(bytesCmdPara);
+	paraJSON, _ := simplejson.NewJson(bytesCmdPara)
 	fmt.Println("paraJSON=", paraJSON)
 	if tasks, err := paraJSON.Get("Tasks").StringArray(); err == nil {
 		fmt.Println("tasks=", tasks)
@@ -181,6 +220,25 @@ func handleQueryTaskCmd(c *TaskController) {
 		item.Errcode = 0;
 	}	
 
+	c.Data["json"] = item
+	c.ServeJSON()
+}
+
+func handleCloseTaskCmd(c *TaskController) {
+	strCmdPara := c.GetString("CmdPara")
+	bytesCmdPara := []byte(strCmdPara)
+	fmt.Println("bytesCmdPara=", bytesCmdPara)
+
+	item := new(TaskJsonData)
+	item.Errcode = 1
+	// para
+	paraJSON, _ := simplejson.NewJson(bytesCmdPara)
+	fmt.Println("paraJSON=", paraJSON)
+	if tasks, err := paraJSON.Get("Tasks").StringArray(); err == nil {
+		fmt.Println("tasks=", tasks)
+		models.CloseTasksItem(tasks)
+		item.Errcode = 0
+	}
 	c.Data["json"] = item
 	c.ServeJSON()
 }
@@ -217,12 +275,18 @@ func (c *TaskController) Get() {
 		handleUnloadCmd(&c.Controller)
 	case common.ZLD_CMD_LOAD_TASK:
 		handleLoadTaskCmd(c)
+	case common.ZLD_CMD_ASSIGN_TASK:
+		handleAssignTaskCmd(c)
+	case common.ZLD_CMD_CHECK_TASK:
+		handleCheckTaskCmd(c)
 	case common.ZLD_CMD_QUERY_TASK:
 		handleQueryTaskCmd(c)
 	case common.ZLD_CMD_ARCHIVE_TASK:
 		handleArchiveTaskCmd(c)
 	case common.ZLD_CMD_CANCEL_TASK:
 		handleCancelTaskCmd(c)
+	case common.ZLD_CMD_CLOSE_TASK:
+		handleCloseTaskCmd(c)	
 	}	
 }
 
@@ -239,11 +303,17 @@ func (c *TaskController) Post() {
 		handleUnloadCmd(&c.Controller)
 	case common.ZLD_CMD_LOAD_TASK:
 		handleLoadTaskCmd(c)
+	case common.ZLD_CMD_ASSIGN_TASK:
+		handleAssignTaskCmd(c)
+	case common.ZLD_CMD_CHECK_TASK:
+		handleCheckTaskCmd(c)		
 	case common.ZLD_CMD_QUERY_TASK:
 		handleQueryTaskCmd(c)
 	case common.ZLD_CMD_ARCHIVE_TASK:
 		handleArchiveTaskCmd(c)	
 	case common.ZLD_CMD_CANCEL_TASK:
-		handleCancelTaskCmd(c)			
+		handleCancelTaskCmd(c)
+	case common.ZLD_CMD_CLOSE_TASK:
+		handleCloseTaskCmd(c)
 	}	
 }

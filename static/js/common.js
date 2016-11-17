@@ -41,14 +41,19 @@ var CMD_LOAD_TASK = "LoadTask";
 var CMD_LOAD_WORKER = "LoadWorker";
 var CMD_UNLOAD = "UnLoad";
 var CMD_LOGIN = "Login";
-var CMD_ADD_WORKER = "AddWorker"
-var CMD_DEL_WORKER = "DelWorker"
-var CMD_UPD_WORKER = "UpdateWorker"
-var CMD_CHGPWD_WORKER = "ChgPwd"
+
+var CMD_ADD_WORKER = "AddWorker";
+var CMD_DEL_WORKER = "DelWorker";
+var CMD_UPD_WORKER = "UpdateWorker";
+var CMD_CHGPWD_WORKER = "ChgPwd";
+
 var CMD_QUERY_TASK = "QueryTask";
 var CMD_ARCHIVE_TASK= "ArchiveTask";
-var CMD_ADD_TASK = "AddTask"
-var CMD_CANCEL_TASK= "CancelTask"
+var CMD_ADD_TASK = "AddTask";
+var CMD_CANCEL_TASK = "CancelTask";
+var CMD_ASSIGN_TASK = "AssignTask";
+var CMD_CHECK_TASK = "CheckTask";
+var CMD_CLOSE_TASK = "CloseTask";
 
 // url
 var URL_LOGIN = "/land/login";

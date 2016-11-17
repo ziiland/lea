@@ -233,7 +233,7 @@ func QueryWorkerItemNums(worker string) (int64, error) {
 
 	var maps []orm.Params
 	o := orm.NewOrm()
-	return o.Raw(s).Values(&maps);
+	return o.Raw(s).Values(&maps)
 }
 
 func QueryAllOpenItemNums() (int64, error) {
@@ -243,7 +243,7 @@ func QueryAllOpenItemNums() (int64, error) {
 
 	var maps []orm.Params
 	o := orm.NewOrm()
-	return o.Raw(s).Values(&maps);
+	return o.Raw(s).Values(&maps)
 }
 
 func QueryMatchItemNums(worker, farm, title string)(int64, error) {
@@ -272,7 +272,7 @@ func SelectTaskTableItemsWithFarmId(worker, farm, title string, tasks *[]ZldTask
 
 	var maps []orm.Params
 	o := orm.NewOrm()
-	num, err = o.Raw(s).Values(&maps);
+	num, err = o.Raw(s).Values(&maps)
 
 	if err == nil && num > 0 {
 		for i, v := range maps {
@@ -291,7 +291,7 @@ func SelectTaskTableItemsWithTaskId(taskid string)(*ZldTaskData, error) {
 
 	var maps []orm.Params
 	o := orm.NewOrm()
-	num, err := o.Raw(s).Values(&maps);
+	num, err := o.Raw(s).Values(&maps)
 
 	task := NewZldTaskDBData();
 	if err == nil && num > 0 {
@@ -343,7 +343,7 @@ func SelectTaskTableItemWithConds(stime, etime int64, worker, state, farm, cell,
 	var num int64 = 0
 	var err error
 	o := orm.NewOrm()
-	num, err = o.Raw(s).Values(&maps);
+	num, err = o.Raw(s).Values(&maps)
 
 	tasks := make([]ZldTaskData, num) 
 	if err == nil && num > 0 {
@@ -356,6 +356,43 @@ func SelectTaskTableItemWithConds(stime, etime int64, worker, state, farm, cell,
 	return tasks, err	
 }
 
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+func AssignTasksItem(ids []string, worker, checker string) (int64, error) {
+	s := fmt.Sprintf("UPDATE `%s` SET ", ZLD_TASK_TBL_NAME)
+	s = fmt.Sprintf("%s `WorkerId`= '%s' , `CheckerId` = '%s' WHERE (", s, worker, checker)
+	for i, id := range ids {
+		if i > 0 {
+			s = fmt.Sprintf("%s OR ", s)
+		}
+		s = fmt.Sprintf("%s`TaskId` = '%s' ", s, id)
+	}
+	s = fmt.Sprintf("%s);", s)
+	fmt.Println("s=", s)
+
+	var maps []orm.Params
+	o := orm.NewOrm()
+	return o.Raw(s).Values(&maps)	
+}
+
+func CheckTasksItem(ids []string) (int64, error) {
+	s := fmt.Sprintf("UPDATE `%s` SET ", ZLD_TASK_TBL_NAME)
+	s = fmt.Sprintf("%s `State`='%s' WHERE (", s, common.ZLD_TASK_STATE_CHECKED)
+	for i, id := range ids {
+		if i > 0 {
+			s = fmt.Sprintf("%s OR ", s)
+		}
+		s = fmt.Sprintf("%s`TaskId` = '%s' ", s, id)
+	}
+	s = fmt.Sprintf("%s);", s)
+	fmt.Println("s=", s)
+
+	var maps []orm.Params
+	o := orm.NewOrm()
+	return o.Raw(s).Values(&maps)
+}
+
 func DeleteTaskItem(id string) (int64, error){
 	s := fmt.Sprintf("DELETE FROM `%s`", ZLD_TASK_TBL_NAME)
 	s = fmt.Sprintf("%s WHERE (`TaskId` = '%s');", s, id)
@@ -363,7 +400,7 @@ func DeleteTaskItem(id string) (int64, error){
 
 	var maps []orm.Params
 	o := orm.NewOrm()
-	return o.Raw(s).Values(&maps);	
+	return o.Raw(s).Values(&maps)
 }
 
 func CancelTasksItem(ids []string) (int64, error) {
@@ -380,5 +417,23 @@ func CancelTasksItem(ids []string) (int64, error) {
 
 	var maps []orm.Params
 	o := orm.NewOrm()
-	return o.Raw(s).Values(&maps);		
+	return o.Raw(s).Values(&maps)
 }
+
+func CloseTasksItem(ids []string) (int64, error) {
+	s := fmt.Sprintf("UPDATE `%s` SET ", ZLD_TASK_TBL_NAME)
+	s = fmt.Sprintf("%s `State`='%s' WHERE (", s, common.ZLD_TASK_STATE_CLOSED)
+	for i, id := range ids {
+		if i > 0 {
+			s = fmt.Sprintf("%s OR ", s)
+		}
+		s = fmt.Sprintf("%s`TaskId` = '%s' ", s, id)
+	}
+	s = fmt.Sprintf("%s);", s)
+	fmt.Println("s=", s)
+
+	var maps []orm.Params
+	o := orm.NewOrm()
+	return o.Raw(s).Values(&maps)	
+}
+
