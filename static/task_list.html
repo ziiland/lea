@@ -66,12 +66,12 @@
                         <label class="col-sm-2 control-label">任务种类</label>
                         <div class="col-md-4">
 							<select class="form-control" id ="task-type">
-								<option>翻地</option><option>播种</option>
-								<option>浇水</option><option>施肥</option>
-								<option>搭架子</option><option>移栽</option>
-								<option>嫁接</option><option>除草</option>
-								<option>除虫</option><option>收割</option>
-								<option>快递</option>
+								<option value="0">翻地</option><option value="1">播种</option>
+								<option value="2">浇水</option><option value="3">施肥</option>
+								<option value="4">搭架子</option><option value="5">移栽</option>
+								<option value="6">嫁接</option><option value="7">除草</option>
+								<option value="8">除虫</option><option value="9">收割</option>
+								<option value="10">快递</option>
 							</select>
                         </div>
                     </div>
@@ -179,7 +179,7 @@
                             <table class="table table-bordered table-hover table-condensed" id="tasks_table">
                                 <thead>
                                     <tr>
-                                        <th><input type="checkbox" name="choice"onclick="choseAllBox(this)"></th>
+                                        <th><input type="checkbox" name="choice" onclick="choseAllBox(this)"></th>
                                         <th>工作包号</th>
                                         <th>田地</th>
                                         <th>施工</th>

@@ -123,3 +123,38 @@ func InsertPriceTableItem(item *ZldPriceData) {
 	}
 }
 
+func DecodePriceOrmParamsToData(para orm.Params) (item ZldPriceData){
+	id := (para["Id"]).(string)
+	nId, _ := strconv.Atoi(id)
+	item.Id = int32(nId)
+
+	cprice := (para["Price"]).(string)
+	item.Price, _ = strconv.ParseFloat(cprice, 64)
+	discount := (para["Discount"]).(string)
+	item.Discount, _ = strconv.ParseFloat(discount, 64)
+
+	item.Name = (para["Name"]).(string)
+	item.Kind = (para["Kind"]).(string)
+	item.Comment = (para["Comment"]).(string)
+
+	return		
+}
+
+func QueryAllPriceTableItem() ([]ZldPriceData, error) {
+	s := fmt.Sprintf("SELECT * FROM `%s`;", ZLD_PRICE_TBL_NAME)
+	fmt.Println("s=", s)
+
+	var maps []orm.Params
+	o := orm.NewOrm()
+	num, err := o.Raw(s).Values(&maps)
+	//fmt.Printf("num=%d, maps=%v\n", num, maps)
+
+	prices := make([]ZldPriceData, num)
+	if err == nil && num > 0 {
+		for i, v := range maps {
+			prices[i] = DecodePriceOrmParamsToData(v)
+		}
+	}
+	fmt.Println("prices=", prices)
+	return prices, err
+}

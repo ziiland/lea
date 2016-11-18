@@ -1,6 +1,6 @@
 var tasks = new Array();
 var selectedTasks = new Array();
-var errcode =1;
+var errcode = 1;
 ///////////////////////////////////////////////////////////////////////////////
 // core-object constructor
 function TaskConstructor(taskId, sponsorId, farmId, cellId, patchId, workerId, checkerId,
@@ -22,11 +22,23 @@ function TaskConstructor(taskId, sponsorId, farmId, cellId, patchId, workerId, c
     this.UserComment = userComment;
     this.Comment = comment;
 }
+
+function AssignCmdParaConstructor(worker, checker) {
+    this.Tasks = selectedTasks;
+    this.Worker = worker;        // use workerId
+    this.Checker = checker;      // use checkerId
+}
+
 //selected Constructor
 function SelectedCmdParaConstructor() {
     // delete the selected tasks
     this.Tasks = selectedTasks;
 }
+
+function SearchCmdParaConstructor() {
+    // 
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 $(document).ready(function(){
     getDataFromBackend();
@@ -91,21 +103,22 @@ function displayTaskAction() {
     console.log("displayTaskAction title="+gLoginInfo.title);
     if(gLoginInfo.title == STR_WORKER) {
         btnAction.CommitTask();
-    }
-    else if (gLoginInfo.title == STR_ADMIN){
+    } else if (gLoginInfo.title == STR_ADMIN || gLoginInfo.title == STR_MANAGER){
         btnAction.CreateTask();
         btnAction.ArchiveTask();
         btnAction.AssignTask();
         btnAction.CheckTask();
-        btnAction.ClosekTask();
+        btnAction.CloseTask();
         btnAction.CancelTask();
         btnAction.CommitTask();
     }
 }
+
 //重新加载任务列表
 function reLoadTasksList() {
     taskOper.getTaskList();
 }
+
 function getTaskListItem(data) {
     var taskId, sponsorId, farmId, cellId, patchId, workerId, checkerId;
     var state, type, createTime, startTime, endTime, checkTime, score, userComment, comment;
@@ -154,6 +167,7 @@ function getTaskListItem(data) {
 var taskOper = {
     //获取全部任务信息
     getTaskList:function () {
+        tasks.length = 0;
         $.get(URL_TASK, {Command:CMD_LOAD_TASK, STime:0, ETime:0, Worker:"", State:"", Farm:"", Cell:"", Patch:""}, function(data){
             $.each(data, function(key, value){
                 console.log("key=" + key + ", value=" + value);
@@ -274,9 +288,12 @@ var btnAction={
                 var usercomment = $("#user-comment").val();
                 var comment = $("#task-comment").val();
 
-                if (farmid != "" && cellid != "" && patchid != "" && workerid != "" && type != "") {
-                    $.post(URL_TASK, { Command: CMD_ADD_TASK, FarmId: farmid, CellId: cellid, PatchId: patchid, WorkerId: workerid,
-                        Type: type, UserComment: usercomment, Comment: comment}, function (data) {
+                //console.log("Press SaveBtn: type=", typeof(type));
+                if (farmid != "" && cellid != "" && patchid != "" && type != "") {
+                    $.post(URL_TASK, { Command: CMD_ADD_TASK, Farm: farmid.toUpperCase(),
+                        Cell: cellid.toUpperCase(), Patch: patchid.toUpperCase(), 
+                        Worker: workerid.toUpperCase(),
+                        Type: type, Comment: comment}, function (data) {
                         $.each(data, function(key, value){
                             if (key == KEY_ERRCODE) {
                                 errcode = value;
@@ -369,9 +386,9 @@ var btnAction={
             });
         });
     },
-    ClosekTask:function () {
-        $("#taskBtn").append('<button class="btn btn-default" id="ClosekTask">关闭</button>');
-        $("#ClosekTask").click(function () {
+    CloseTask:function () {
+        $("#taskBtn").append('<button class="btn btn-default" id="CloseTask">关闭</button>');
+        $("#CloseTask").click(function () {
             // test, send the delete command
             var item = new SelectedCmdParaConstructor();
             console.log("delete cmd parameter = " + item);
