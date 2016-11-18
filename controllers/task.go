@@ -7,6 +7,7 @@ import (
 	"lea/models"
 	"lea/utils/simplejson"
 	"lea/zllogs"
+	"strings"
 	"strconv"
 	"time"
 )
@@ -261,6 +262,54 @@ func handleArchiveTaskCmd(c *TaskController) {
 	c.ServeJSON()
 }
 
+func handleAddTaskCmd(c *TaskController) {
+	item := new(TaskJsonData)
+
+	task := models.NewZldTaskDBData()
+	task.SponsorId = strings.ToUpper((c.GetSession(common.ZLD_PARA_WORKER)).(string))
+	task.FarmId = c.GetString(common.ZLD_PARA_FARM)
+	task.CellId = c.GetString(common.ZLD_PARA_CELL)
+	task.PatchId = c.GetString(common.ZLD_PARA_PATCH)
+	task.CreateTime = time.Now().Unix()
+	task.WorkerId =  c.GetString(common.ZLD_PARA_WORKER)
+	ctype := c.GetString(common.ZLD_PARA_TYPE)
+	task.Type, _ = strconv.ParseInt(ctype, 10, 64)
+	task.TaskId = genTaskId(task.FarmId, task.CellId, task.PatchId)
+	task.Comment = c.GetString(common.ZLD_PARA_COMMENT)
+	fmt.Println("AddTask: task=", task)
+	models.InsertTaskTableItem(task)
+
+	item.Errcode = 0
+	c.Data["json"] = item
+	c.ServeJSON()
+}
+
+func handleBeginTaskCmd(c *TaskController) {
+	taskId := c.GetString(common.ZLD_PARA_TASKID)
+
+	item := new(TaskJsonData)
+	item.Errcode = 1
+
+	if _, err := models.BeginTaskItem(taskId); err == nil {
+		item.Errcode = 0
+	}
+	c.Data["json"] = item
+	c.ServeJSON()	
+}
+
+func handleSubmitTaskCmd(c *TaskController) {
+	taskId := c.GetString(common.ZLD_PARA_TASKID)
+	item := new(TaskJsonData)
+	item.Errcode = 1
+
+	if _, err := models.SubmitTaskItem(taskId); err == nil {
+		item.Errcode = 0
+	}
+
+	c.Data["json"] = item
+	c.ServeJSON()	
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 func (c *TaskController) Get() {
 	// get the para
@@ -286,7 +335,13 @@ func (c *TaskController) Get() {
 	case common.ZLD_CMD_CANCEL_TASK:
 		handleCancelTaskCmd(c)
 	case common.ZLD_CMD_CLOSE_TASK:
-		handleCloseTaskCmd(c)	
+		handleCloseTaskCmd(c)
+	case common.ZLD_CMD_ADD_TASK:
+		handleAddTaskCmd(c)
+	case common.ZLD_CMD_SUBMIT_TASK:
+		handleSubmitTaskCmd(c)
+	case common.ZLD_CMD_BEGIN_TASK:
+		handleBeginTaskCmd(c)
 	}	
 }
 
@@ -315,5 +370,11 @@ func (c *TaskController) Post() {
 		handleCancelTaskCmd(c)
 	case common.ZLD_CMD_CLOSE_TASK:
 		handleCloseTaskCmd(c)
+	case common.ZLD_CMD_ADD_TASK:
+		handleAddTaskCmd(c)
+	case common.ZLD_CMD_SUBMIT_TASK:
+		handleSubmitTaskCmd(c)
+	case common.ZLD_CMD_BEGIN_TASK:
+		handleBeginTaskCmd(c)
 	}	
 }

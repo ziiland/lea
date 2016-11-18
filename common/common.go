@@ -35,6 +35,7 @@ const ZLD_CMD_TRANS_TASK = "TransferTask"
 const ZLD_CMD_QUERY_TASK = "QueryTask"
 const ZLD_CMD_ARCHIVE_TASK = "ArchiveTask"
 const ZLD_CMD_CANCEL_TASK = "CancelTask"
+const ZLD_CMD_BEGIN_TASK = "BeginTask"
 ///////////////////////////////////////////////////////////////////////////////
 
 const ZLD_PARA_COMMAND string = "Command"

@@ -54,6 +54,8 @@ var CMD_CANCEL_TASK = "CancelTask";
 var CMD_ASSIGN_TASK = "AssignTask";
 var CMD_CHECK_TASK = "CheckTask";
 var CMD_CLOSE_TASK = "CloseTask";
+var CMD_BEGIN_TASK = "BeginTask";
+var CMD_SUBMIT_TASK = "SubmitTask";
 
 var CMD_LOAD_PRICE = "LoadPrice";
 

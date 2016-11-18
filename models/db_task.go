@@ -437,3 +437,22 @@ func CloseTasksItem(ids []string) (int64, error) {
 	return o.Raw(s).Values(&maps)	
 }
 
+func BeginTaskItem(id string) (int64, error) {
+	s := fmt.Sprintf("UPDATE `%s` SET ", ZLD_TASK_TBL_NAME)
+	s = fmt.Sprintf("%s `State`='%s' WHERE (`TaskId` = '%s');", s, common.ZLD_TASK_STATE_STARTED, id)
+
+	fmt.Println("s=", s)
+	var maps []orm.Params
+	o := orm.NewOrm()
+	return o.Raw(s).Values(&maps)	
+}
+
+func  SubmitTaskItem(id string) (int64, error) {
+	s := fmt.Sprintf("UPDATE `%s` SET ", ZLD_TASK_TBL_NAME)
+	s = fmt.Sprintf("%s `State`='%s' WHERE (`TaskId` = '%s');", s, common.ZLD_TASK_STATE_FINISHED, id)
+
+	fmt.Println("s=", s)
+	var maps []orm.Params
+	o := orm.NewOrm()
+	return o.Raw(s).Values(&maps)		
+}

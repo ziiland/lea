@@ -277,6 +277,15 @@ var btnAction={
     CreateTask:function () {
         $("#taskBtn").append('<button class="btn btn-default" id="CreateTask" data-toggle="modal" data-target="#myModal">添加</button>');
         $("#CreateTask").click(function () {
+            // test, send the assign command
+            // var item = new AssignCmdParaConstructor("ZLD00004", "ZLD00003");
+            // console.log("Assign cmd parameter = " + item);
+            // var json = JSON.stringify(item);
+            // console.log("json string = " + json);
+            // $.get(URL_TASK, {Command:CMD_ASSIGN_TASK, CmdPara:json}, function(data){
+            //     console.log("");
+            // });
+
             $("#task_form").show().reset;
             $("#myModalLabel").text("新建任务");
             $("#modesavebtn").show().on("click",function () {
