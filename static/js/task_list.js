@@ -247,6 +247,15 @@ function TaskDetailsAction(o){
         $("#detail_show").show().append(task_details_info); //显示详情模态框内容
 }
 
+// function displayPricesInfo(data) {
+//     $.each(data, function(key, value){
+//         console.log("key = " + key + ", value = " + value);
+//         for (itm in value) {
+//             console.log("item = " + item + ", value = " + value[itm]);
+//         }
+//     });
+// }
+
 //任务的各种action
 var btnAction={
     //显示创建任务表单
@@ -269,6 +278,14 @@ var btnAction={
             // console.log("json string = " + json);
             // $.get(URL_TASK, {Command:CMD_ASSIGN_TASK, CmdPara:json}, function(data){
             //     console.log("");
+            // });
+            // $.get(URL_PRICE, {Command:CMD_LOAD_PRICE}, function(data){
+            //     $.each(data, function(key, value){
+            //         console.log("price key = " + key);
+            //         if (key == "Prices") {
+            //             displayPricesInfo(value);
+            //         }
+            //     });
             // });
 
             $("#task_form").show().reset;

@@ -55,10 +55,13 @@ var CMD_ASSIGN_TASK = "AssignTask";
 var CMD_CHECK_TASK = "CheckTask";
 var CMD_CLOSE_TASK = "CloseTask";
 
+var CMD_LOAD_PRICE = "LoadPrice";
+
 // url
 var URL_LOGIN = "/land/login";
 var URL_WORKER = "/land/worker";
 var URL_TASK = "/land/task";
+var URL_PRICE = "/land/price";
 
 // event
 var EVT_HIDE_BTNADD = "HideBtnAdd";

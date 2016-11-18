@@ -7,17 +7,25 @@ package common
 const ZLD_PATH_LOGIN string  = "/land/login"
 const ZLD_PATH_WORKER string = "/land/worker"
 const ZLD_PATH_TASK string = "/land/task"
+const ZLD_PATH_PRICE string = "/land/price"
 
+const ZLD_CMD_LOGIN string = "Login"
 const ZLD_CMD_LOAD_PARA string = "LoadPara"
 const ZLD_CMD_LOAD_VER string = "LoadVer"
-const ZLD_CMD_LOAD_TASK string = "LoadTask"
-const ZLD_CMD_LOAD_WORKER string = "LoadWorker"
 const ZLD_CMD_UNLOAD string = "UnLoad"
-const ZLD_CMD_LOGIN string = "Login"
+///////////////////////////////////////////////////////////////////////////////
+const ZLD_CMD_LOAD_PRICE string = "LoadPrice"
+const ZLD_CMD_ADD_RRICE string = "AddPrice"
+const ZLD_CMD_UPDATE_PRICE string = "UpdatePrice"
+const ZLD_CMD_DEL_PRICE string = "DelPrice"
+///////////////////////////////////////////////////////////////////////////////
+const ZLD_CMD_LOAD_WORKER string = "LoadWorker"
 const ZLD_CMD_ADD_WORKER = "AddWorker"
 const ZLD_CMD_DEL_WORKER = "DelWorker"
 const ZLD_CMD_UPD_WORKER = "UpdateWorker"
 const ZLD_CMD_CHGPWD_WORKER = "ChgPwd"
+///////////////////////////////////////////////////////////////////////////////
+const ZLD_CMD_LOAD_TASK string = "LoadTask"
 const ZLD_CMD_ADD_TASK = "AddTask"
 const ZLD_CMD_ASSIGN_TASK = "AssignTask"
 const ZLD_CMD_SUBMIT_TASK= "SubmitTask"
@@ -27,6 +35,7 @@ const ZLD_CMD_TRANS_TASK = "TransferTask"
 const ZLD_CMD_QUERY_TASK = "QueryTask"
 const ZLD_CMD_ARCHIVE_TASK = "ArchiveTask"
 const ZLD_CMD_CANCEL_TASK = "CancelTask"
+///////////////////////////////////////////////////////////////////////////////
 
 const ZLD_PARA_COMMAND string = "Command"
 const ZLD_PARA_WORKER string = "Worker"
