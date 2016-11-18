@@ -1,19 +1,27 @@
-#user_table,#tasks_table{
-    line-height: 20px;
-    overflow:scroll;
-    height:400px;
-}
-
-#myherder,#myfooter{
-
-
-}
 body{
     background-image: url("../img/login-bg.jpg");
     background-repeat:no-repeat;
     background-size:cover;
     background-attachment: fixed;
 }
+
+#user_table,#tasks_table{
+    text-align: center;
+    vertical-align: middle;
+    overflow:scroll;
+    height:400px;
+}
+
+#search_table{
+    width: auto;
+
+}
+
+#myherder,#myfooter{
+
+
+}
+
 #mymenu{
     background-color: #5fafe4;
 }

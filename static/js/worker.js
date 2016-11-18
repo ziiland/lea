@@ -68,6 +68,7 @@ function getWorkersInfo() {
 function descriptionWorkers(workers) {
     var worker_info = "";
     var btn_state = 'disabled="disabled"';
+    var bgcolor ="style='background-color: grey'";
 
     for ( item in workers) {
         //console.log("item =" + item + ", value=" + workers[item]);
@@ -77,6 +78,7 @@ function descriptionWorkers(workers) {
             //console.log("btn_state =" + btn_state);
             if(workers[item] == 0){
                 btn_state = "";
+                bgcolor ="style='background-color: white'";
             }
             //worker_info = worker_info + "<td>" + workers[item] + "</td>";
         } else if(item == KEY_CHECKINTIME) {
@@ -112,7 +114,7 @@ function descriptionWorkers(workers) {
     } else {
         worker_info = worker_info +"<td>" + changePassword_btn +"</td>";
     }
-    $("#userlist").append("<tr>"+worker_info+"</tr>");
+    $("#userlist").append("<tr "+bgcolor+">"+worker_info+"</tr>");
 }
 
 //显示用户详情

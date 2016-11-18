@@ -1,5 +1,6 @@
 var tasks = new Array();
 var selectedTasks = new Array();
+var errcode =1;
 ///////////////////////////////////////////////////////////////////////////////
 // core-object constructor
 function TaskConstructor(taskId, sponsorId, farmId, cellId, patchId, workerId, checkerId,
@@ -21,23 +22,11 @@ function TaskConstructor(taskId, sponsorId, farmId, cellId, patchId, workerId, c
     this.UserComment = userComment;
     this.Comment = comment;
 }
-
-function AssignCmdParaConstructor(worker, checker) {
-    this.Tasks = selectedTasks;
-    this.Worker = worker;        // use workerId
-    this.Checker = checker;      // use checkerId
-}
-
-// delete/submit/close command use this 
-function TasksCmdParaConstructor() {
+//selected Constructor
+function SelectedCmdParaConstructor() {
     // delete the selected tasks
     this.Tasks = selectedTasks;
 }
-
-function SearchCmdParaConstructor() {
-    // 
-}
-
 ///////////////////////////////////////////////////////////////////////////////
 $(document).ready(function(){
     getDataFromBackend();
@@ -49,13 +38,15 @@ $(document).ready(function(){
 
     $(document).on(EVT_TASKS_LOADED, function() {
         taskOper.descriptionTask(tasks);
+        bindMyModalClick();
+        displayTaskAction();
+        searchAction();
+        initdate();
     });
-    bindMyModalClick();
-    displayTaskAction();
-
-    $("#form_search").submit(function(event){
-        event.preventDefault();
-        //DoSendLoginInfo();
+});
+//搜索按钮事件
+function searchAction() {
+    $("#searchBtn").click(function () {
         console.log("Press the search button");
         var stime = $("#starttime").val();
         var etime = $("#endtime").val();
@@ -63,7 +54,7 @@ $(document).ready(function(){
         var state = $("#searchtype").val();
         var farm = $("#searchfarmid").val();
 
-        console.log("type: stime=" + typeof(stime) + ", etime=" + typeof(etime) + ", worker=" + typeof(worker) 
+        console.log("type: stime=" + typeof(stime) + ", etime=" + typeof(etime) + ", worker=" + typeof(worker)
             + ", state=" + typeof(state) + ", farm=" + typeof(farm));
 
         tasks.length = 0;
@@ -79,23 +70,42 @@ $(document).ready(function(){
                 }
             });
             $(document).trigger(EVT_TASKS_LOADED);
-        });        
+        });
     });
-});
-
-//绑定各种click
+}
+//绑定模态框关闭事件
 function bindMyModalClick(){
     $("#myModal").on("hidden.bs.modal", function() {
-        $("#detail_show").empty().hide();
+        $("#detailwindown").empty().hide();
         $("#task_form").hide();
-        $("#modesavebtn").hide();
+        $("#modesavebtn").hide().off("click");
     });
 }
-//task action
-function displayTaskAction() {
-    btnAction.addTask();
+//时间控件
+function initdate() {
+    $('#starttime').fdatepicker();
+    $('#endtime').fdatepicker();
 }
-
+//display tasksaction button
+function displayTaskAction() {
+    console.log("displayTaskAction title="+gLoginInfo.title);
+    if(gLoginInfo.title == STR_WORKER) {
+        btnAction.CommitTask();
+    }
+    else if (gLoginInfo.title == STR_ADMIN){
+        btnAction.CreateTask();
+        btnAction.ArchiveTask();
+        btnAction.AssignTask();
+        btnAction.CheckTask();
+        btnAction.ClosekTask();
+        btnAction.CancelTask();
+        btnAction.CommitTask();
+    }
+}
+//重新加载任务列表
+function reLoadTasksList() {
+    taskOper.getTaskList();
+}
 function getTaskListItem(data) {
     var taskId, sponsorId, farmId, cellId, patchId, workerId, checkerId;
     var state, type, createTime, startTime, endTime, checkTime, score, userComment, comment;
@@ -225,115 +235,165 @@ function TaskDetailsAction(o){
                 });
             }
         });
+    }).done(function () {
+            console.log("logInfo=" + logInfo);
+
+            logInfo = '<table class="table table-bordered table-hover table-condensed">' +
+                '<thead><th>action</th><th>operate</th><th>actiontime</th><th>comment</th></thead>' +
+                '<tbody>'+ logInfo +'</tbody>' +
+                '</table>';
+
+            console.log("logInfo=" + logInfo);
+            var obj=tasks[index-1];
+            for(item in obj){
+                task_details_info +="<tr><td>"+item+"</td><td>"+obj[item]+"</td><tr>";
+            }
+            task_details_info +='<tr>'+logInfo+'</tr>';
+            task_details_info= '<table class="table table-bordered table-hover table-condensed"><tbody>'+
+                task_details_info+'<tbody></table>';
+
+            $("#myModalLabel").text("任务详情");
+            $("#detailwindown").show().append(task_details_info); //显示详情模态框内容
     });
-   
-    console.log("logInfo=" + logInfo);
-
-    logInfo = '<table class="table table-bordered table-hover table-condensed">' +
-        '<thead><th>action</th><th>operate</th><th>actiontime</th><th>comment</th></thead>' +
-        '<tbody>'+ logInfo +'</tbody>' +
-        '</table>';
-
-    console.log("logInfo=" + logInfo);
-    var obj=tasks[index-1];
-        for(item in obj){
-            task_details_info +="<tr><td>"+item+"</td><td>"+obj[item]+"</td><tr>";
-        }
-        task_details_info +='<tr>'+logInfo+'</tr>';
-        task_details_info= '<table class="table table-bordered table-hover table-condensed"><tbody>'+
-                             task_details_info+'<tbody></table>';
-
-        $("#myModalLabel").text("任务详情");
-        $("#detail_show").show().append(task_details_info); //显示详情模态框内容
 }
 
 //任务的各种action
 var btnAction={
-    //显示创建任务表单
-    addTask:function () {
-        $("#task-action").append('<button class="btn btn-default" id="addTask" data-toggle="modal" data-target="#myModal">添加</button>');
-        $("#addTask").click(function () {
-            // test, send the delete command
-            // var item = new TasksCmdParaConstructor();
-            // console.log("delete cmd parameter = " + item);
-            // var json = JSON.stringify(item);
-            // console.log("json string = " + json);
-            //  $.get(URL_TASK, {Command:CMD_CLOSE_TASK, CmdPara:json}, function(data){
-            //     console.log("");
-            //  });
-
-            // test, send the assign command
-            // var item = new AssignCmdParaConstructor("ZLD00004", "ZLD00003");
-            // console.log("Assign cmd parameter = " + item);
-            // var json = JSON.stringify(item);
-            // console.log("json string = " + json);
-            // $.get(URL_TASK, {Command:CMD_ASSIGN_TASK, CmdPara:json}, function(data){
-            //     console.log("");
-            // });
-
+    //创建任务
+    CreateTask:function () {
+        $("#taskBtn").append('<button class="btn btn-default" id="CreateTask" data-toggle="modal" data-target="#myModal">添加</button>');
+        $("#CreateTask").click(function () {
             $("#task_form").show().reset;
             $("#myModalLabel").text("新建任务");
-            $("#modesavebtn").show();
+            $("#modesavebtn").show().on("click",function () {
+                var farmid = $("#task-farm").val();
+                var cellid = $("#task-cell").val();
+                var patchid = $("#task-patch").val();
+                var workerid = $("#task-worker").val();
+                var type = $("#task-type").val();
+                var usercomment = $("#user-comment").val();
+                var comment = $("#task-comment").val();
+
+                if (farmid != "" && cellid != "" && patchid != "" && workerid != "" && type != "") {
+                    $.post(URL_TASK, { Command: CMD_ADD_TASK, FarmId: farmid, CellId: cellid, PatchId: patchid, WorkerId: workerid,
+                        Type: type, UserComment: usercomment, Comment: comment}, function (data) {
+                        $.each(data, function(key, value){
+                            if (key == KEY_ERRCODE) {
+                                errcode = value;
+                            }
+                        });
+                        if (errcode == 1) {
+                            alert("创建不成功");
+                        } else {
+                            $("#myModal").modal("hide");
+                            alert("新增成功");
+                            reLoadTasksList();
+                        }
+                    });
+                } else {
+                    alert("请输入正确的信息");
+                }
+            });
+        })
+    },
+//删除任务
+    CancelTask:function () {
+        $("#taskBtn").append('<button class="btn btn-default" id="CancelTask">删除</button>');
+        $("#CancelTask").click(function () {
+            // test, send the delete command
+             var item = new SelectedCmdParaConstructor();
+             console.log("delete cmd parameter = " + item);
+             var json = JSON.stringify(item);
+             console.log("json string = " + json);
+             $.get(URL_TASK, {Command:CMD_CANCEL_TASK, CmdPara:json}, function(data){
+                    console.log("");
+                 $.each(data, function(key, value){
+                     if (key == KEY_ERRCODE) {
+                         errcode = value;
+                     }
+                 });
+                 if (errcode == 1) {
+                     alert("删除不成功");
+                 } else {
+                     alert("删除成功");
+                     reLoadTasksList();
+                 }
+            });
         });
     },
 
-    dellTask:function () {
-        $("#task-action").appendChild('<button class="btn btn-default" id="dellTask">删除</button>');
-        $("#dellTask").click(function () {
+    AssignTask:function () {
+        $("#taskBtn").append('<button class="btn btn-default" id="AssignTask">分配</button>');
+        $("#AssignTask").click(function () {
+            $("#task_form").show().reset;
+            $("#myModalLabel").text("新建任务");
+            $("#modesavebtn").show().on("click",function () {
+            });
+        });
+    },
+
+    CommitTask:function () {
+        $("#taskBtn").append('<button class="btn btn-default" id="CommitTask">提交</button>');
+        $("#CommitTask").click(function () {
 
         });
     },
 
-    allocationTask:function () {
-        $("#task-action").appendChild('<button class="btn btn-default" id="allocationTask">分配</button>');
-        $("#allocationTask").click(function () {
+    CheckTask:function () {
+        $("#taskBtn").append('<button class="btn btn-default" id="CheckTask">检查</button>');
+        $("#CheckTask").click(function () {
 
         });
     },
-
-    commitTask:function () {
-        $("#task-action").appendChild('<button class="btn btn-default" id="commitTask">提交</button>');
-        $("#commitTask").click(function () {
-
-        });
-    },
-
-    checkTask:function () {
-        $("#task-action").appendChild('<button class="btn btn-default" id="checkTask">检查</button>');
-        $("#checkTask").click(function () {
-
-        });
-    },
-    //保存，创建任务begin
-    modeSaveBtn:function () {
-        var farmid = $("#task-farm").val();
-        var cellid = $("#task-cell").val();
-        var patchid = $("#task-patch").val();
-        var workerid = $("#task-worker").val();
-        var type = $("#task-type").val();
-        var usercomment = $("#user-comment").val();
-        var comment = $("#task-comment").val();
-
-        if (farmid != "" && cellid != "" && patchid != "" && workerid != "" && type != "") {
-            $.post(URL_TASK, { Command: CMD_ADD_TASK, FarmId: farmid, CellId: cellid, PatchId: patchid, WorkerId: workerid,
-                Type: type, UserComment: usercomment, Comment: comment}, function (data) {
+    ArchiveTask:function () {
+        $("#taskBtn").append('<button class="btn btn-default" id="ArchiveTask">归档</button>');
+        $("#ArchiveTask").click(function () {
+            // test, send the delete command
+            var item = new SelectedCmdParaConstructor();
+            console.log("delete cmd parameter = " + item);
+            var json = JSON.stringify(item);
+            console.log("json string = " + json);
+            $.get(URL_TASK, {Command:CMD_CANCEL_TASK, CmdPara:json}, function(data){
+                console.log("");
                 $.each(data, function(key, value){
                     if (key == KEY_ERRCODE) {
                         errcode = value;
                     }
                 });
                 if (errcode == 1) {
-                    alert("创建不成功");
+                    alert("归档失败");
                 } else {
-                    $("#myModal").modal("hide");
-                    alert("新增成功");
+                    alert("归档成功");
+                    reLoadTasksList();
                 }
             });
-        } else {
-            alert("请输入正确的信息");
-        }
+        });
+    },
+    ClosekTask:function () {
+        $("#taskBtn").append('<button class="btn btn-default" id="ClosekTask">关闭</button>');
+        $("#ClosekTask").click(function () {
+            // test, send the delete command
+            var item = new SelectedCmdParaConstructor();
+            console.log("delete cmd parameter = " + item);
+            var json = JSON.stringify(item);
+            console.log("json string = " + json);
+            $.get(URL_TASK, {Command:CMD_CANCEL_TASK, CmdPara:json}, function(data){
+                console.log("");
+                $.each(data, function(key, value){
+                    if (key == KEY_ERRCODE) {
+                        errcode = value;
+                    }
+                });
+                if (errcode == 1) {
+                    alert("关闭失败");
+                } else {
+                    alert("关闭成功");
+                    reLoadTasksList();
+                }
+            });
+        });
     }
-    //保存，创建任务end
+
 }
 
 //选中或者取消所有
