@@ -258,6 +258,7 @@ function changePersonPasswordEvent() {
 }
 
 function updataWorkerList() {
+    workers.length = 0;
     $("#user_list").empty();
     getWorkersInfo();//获取全部用户信息
 }
@@ -289,6 +290,7 @@ function addWorker() {
             if (errcode == 1) {
                 alert("用户已存在");
             } else {
+                updataWorkerList();
                 $("#myModal").modal("hide");
                 alert("新增成功");
             }                
