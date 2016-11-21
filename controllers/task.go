@@ -126,6 +126,8 @@ func handleLoadTaskCmd(c *TaskController) {
 		stime, etime, state, worker, farm, cell, patch, title)	
 	if title == common.ZLD_STR_WORKER {
 		worker = workerId
+	} else if title == common.ZLD_STR_ADMIN {
+		worker = common.ZLD_STR_ADMIN
 	}
 	item := new(TaskJsonData)
 	//slice := make([]models.ZldTaskData, 1)
@@ -154,6 +156,8 @@ func handleAssignTaskCmd(c *TaskController) {
 	bytesCmdPara := []byte(strCmdPara)
 	fmt.Println("bytesCmdPara=", bytesCmdPara)
 
+	assigner := (c.GetSession(common.ZLD_PARA_WORKER)).(string)
+
 	item := new(TaskJsonData)
 	item.Errcode = 1
 	paraJSON, _ := simplejson.NewJson(bytesCmdPara)
@@ -162,7 +166,7 @@ func handleAssignTaskCmd(c *TaskController) {
 		checker, _ := paraJSON.Get("Checker").String()
 
 		models.AssignTasksItem(tasks, worker, checker)
-		item.Errcode = 0
+		models.AssignTasksLogItem(tasks, assigner, worker, checker)
 	}
 
 	c.Data["json"] = item
@@ -176,6 +180,7 @@ func handleCheckTaskCmd(c *TaskController) {
 
 	item := new(TaskJsonData)
 	item.Errcode = 1	
+	checker := c.GetString(common.ZLD_PARA_CHECKER)
 
 	// para
 	paraJSON, _ := simplejson.NewJson(bytesCmdPara)
@@ -183,6 +188,8 @@ func handleCheckTaskCmd(c *TaskController) {
 	if tasks, err := paraJSON.Get("Tasks").StringArray(); err == nil {
 		fmt.Println("tasks=", tasks)
 		models.CheckTasksItem(tasks)
+		models.CheckTasksLogItem(tasks, checker)
+
 		item.Errcode = 0
 	}
 	c.Data["json"] = item
@@ -199,9 +206,12 @@ func handleCancelTaskCmd(c *TaskController) {
 	// para
 	paraJSON, _ := simplejson.NewJson(bytesCmdPara)
 	fmt.Println("paraJSON=", paraJSON)
+	command := c.GetString(common.ZLD_PARA_COMMAND)
+	worker := strings.ToUpper((c.GetSession(common.ZLD_PARA_WORKER)).(string))	
 	if tasks, err := paraJSON.Get("Tasks").StringArray(); err == nil {
 		fmt.Println("tasks=", tasks)
 		models.CancelTasksItem(tasks)
+		models.HandleStandardTasksLogItem(tasks, command, worker)
 		item.Errcode = 0
 	}
 	c.Data["json"] = item
@@ -235,27 +245,51 @@ func handleCloseTaskCmd(c *TaskController) {
 	item.Errcode = 1
 	// para
 	paraJSON, _ := simplejson.NewJson(bytesCmdPara)
+	command := c.GetString(common.ZLD_PARA_COMMAND)
+	worker := strings.ToUpper((c.GetSession(common.ZLD_PARA_WORKER)).(string))
 	fmt.Println("paraJSON=", paraJSON)
 	if tasks, err := paraJSON.Get("Tasks").StringArray(); err == nil {
 		fmt.Println("tasks=", tasks)
 		models.CloseTasksItem(tasks)
+		models.HandleStandardTasksLogItem(tasks, command, worker)
 		item.Errcode = 0
 	}
 	c.Data["json"] = item
 	c.ServeJSON()
 }
 
+func doHandleArchiveTaskCmd(taskId, worker string) {
+	if task, err := models.SelectTaskTableItemsWithTaskId(taskId); err == nil {
+		//add to task archive table
+		models.InsertTaskArchivedTableItem(task)
+		models.DeleteTaskItem(taskId)
+		models.DoArchiveTaskLogItem(taskId, worker)
+	}
+}
+
 func handleArchiveTaskCmd(c *TaskController) {
-	taskId := c.GetString(common.ZLD_PARA_TASKID)
+	//taskId := c.GetString(common.ZLD_PARA_TASKID)
+	strCmdPara := c.GetString("CmdPara")
+	bytesCmdPara := []byte(strCmdPara)
+	fmt.Println("bytesCmdPara=", bytesCmdPara)	
 
 	item := new(TaskJsonData)
 	item.Errcode = 1
 
+	paraJSON, _ := simplejson.NewJson(bytesCmdPara)	
+	fmt.Println("paraJSON=", paraJSON)
+	worker := strings.ToUpper((c.GetSession(common.ZLD_PARA_WORKER)).(string))
 	// get data
-	if task, err := models.SelectTaskTableItemsWithTaskId(taskId); err == nil {
+	if tasks, err := paraJSON.Get("Tasks").StringArray(); err == nil {
+		for _, task := range tasks {
+			doHandleArchiveTaskCmd(task, worker)
+		}
+		//models.SelectTaskTableItemsWithTaskId(taskId);
 		// add to task archive table
-		models.InsertTaskArchivedTableItem(task)
-		models.DeleteTaskItem(taskId)
+		//models.InsertTaskArchivedTableItem(task)
+		//models.DeleteTaskItem(taskId)
+		//models.HandleStandardTasksLogItem(command, tasks, worker)
+
 		item.Errcode = 0
 	}	
 
@@ -273,12 +307,29 @@ func handleAddTaskCmd(c *TaskController) {
 	task.PatchId = c.GetString(common.ZLD_PARA_PATCH)
 	task.CreateTime = time.Now().Unix()
 	task.WorkerId =  c.GetString(common.ZLD_PARA_WORKER)
+	if task.WorkerId == "" {
+		task.State = common.ZLD_TASK_STATE_CREATED
+	} else {
+		task.State = common.ZLD_TASK_STATE_ASSIGNED
+	}	
 	ctype := c.GetString(common.ZLD_PARA_TYPE)
 	task.Type, _ = strconv.ParseInt(ctype, 10, 64)
 	task.TaskId = genTaskId(task.FarmId, task.CellId, task.PatchId)
 	task.Comment = c.GetString(common.ZLD_PARA_COMMENT)
 	fmt.Println("AddTask: task=", task)
 	models.InsertTaskTableItem(task)
+
+	// Add task log
+	log := models.NewZldTaskLogDBData()
+	log.TaskId = task.TaskId
+	log.Action = common.ZLD_TASK_ACTION_ADD
+	log.OperatorId = task.SponsorId
+	//log.Comment = task.Comment
+	models.InsertTaskLogTableItem(log)
+	if task.State == common.ZLD_TASK_STATE_ASSIGNED {
+		log.Action = common.ZLD_TASK_ACTION_ASSIGN
+		models.InsertTaskLogTableItem(log)
+	}
 
 	item.Errcode = 0
 	c.Data["json"] = item
@@ -292,6 +343,12 @@ func handleBeginTaskCmd(c *TaskController) {
 	item.Errcode = 1
 
 	if _, err := models.BeginTaskItem(taskId); err == nil {
+		log := models.NewZldTaskLogDBData()
+		log.TaskId = taskId
+		log.Action = common.ZLD_TASK_ACTION_START
+		log.OperatorId = c.GetString(common.ZLD_PARA_WORKER)
+		models.InsertTaskLogTableItem(log)
+
 		item.Errcode = 0
 	}
 	c.Data["json"] = item
@@ -304,6 +361,12 @@ func handleSubmitTaskCmd(c *TaskController) {
 	item.Errcode = 1
 
 	if _, err := models.SubmitTaskItem(taskId); err == nil {
+		log := models.NewZldTaskLogDBData()
+		log.TaskId = taskId
+		log.Action = common.ZLD_TASK_ACTION_SUBMIT
+		log.OperatorId = c.GetString(common.ZLD_PARA_WORKER)
+		models.InsertTaskLogTableItem(log)
+
 		item.Errcode = 0
 	}
 
