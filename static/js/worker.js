@@ -12,7 +12,17 @@ $(document).ready(function(){
     });
     setModalEvent();//绑定模态框事件
 });
+//绑定模态框事件
+function setModalEvent(){
+    $("#myModal").on("hidden.bs.modal", function() {
+        $("#worker_detail").empty().hide();
+        $("#registered_from").hide();
+        $("#registered_from  input").val("");
+        $("#person_password").hide();//显示详情模态框内容
+        $("#modesavebtn").hide().off("click");
 
+    });
+}
 //显示添加用户按钮
 function displayAddButton() {
     console.log("gLoginInfo.title=displayAddButton_" + gLoginInfo.title)
@@ -23,29 +33,54 @@ function displayAddButton() {
 //添加用户按钮event
 function addClickAction() {
     console.log("Press Add Button!");
-    $("#WorkerId").val("");
-    $("#Password").val("");
-    $("#Name").val("");
-    $("#Sex").val("");
-    $("#IdentifyNo").val("");
-    $("#Title").val("");
-
     $("#WorkerId").attr("readonly",false);
     $("#registered_from").show();
     $("#myModalLabel").text("新增员工");
-    $("#modesavebtn").show();
-}
-
-//绑定模态框事件
-function setModalEvent(){
-    $("#myModal").on("hidden.bs.modal", function() {
-        $("#worker_detail").empty().hide();
-        $("#registered_from").hide().reset;
-        $("#modesavebtn").hide();
-        $("#modeupdatabtn").hide();
-        $("#person_password").hide();//显示详情模态框内容
-        $("#modechangebtn").hide();
+    $("#modesavebtn").show().on("click",function () {
+        addWorker();
     });
+}
+//添加用户
+function addWorker() {
+    var workerId = $("#WorkerId").val();
+    var password = $("#Password").val();
+    var name = $("#Name").val();
+    var sex = $("#Sex").val();
+    var identifyNo = $("#IdentifyNo").val();
+    var title = $("#Title").val();
+    // checkInTime = $("#CheckInTime").val();
+    // checkOutTime = $("#CheckOutTime").val();
+    var comment = $("#Comment").val();
+    var errcode = 1;
+
+    console.log("workerId = " + workerId + ", password = " + password + ", name = " + name + ", title = " + title + ", identifyNo = ", + identifyNo);
+    if (workerId != "" && password!= "" && name!= "" && title!="" && identifyNo != "") {
+        $.get(URL_WORKER, {
+            Command: CMD_ADD_WORKER, Worker: workerId, Password: password, Name: name, Sex: sex,
+            IdentifyNo: identifyNo, Title: title, Comment: comment}, function (data) {
+            $.each(data, function(key,value){
+                if (key == KEY_ERRCODE) {
+                    errcode = value;
+                }
+            });
+
+            if (errcode == 1) {
+                alert("用户已存在");
+            } else {
+                updataWorkerList();
+                $("#myModal").modal("hide");
+                alert("新增成功");
+            }
+        });
+    } else {
+        alert("请输入正确的信息");
+    }
+}
+//重新加载全部用户列表
+function updataWorkerList() {
+    workers.length = 0;
+    $("#user_list").empty();
+    getWorkersInfo();//获取全部用户信息
 }
 //获取全部用户信息
 function getWorkersInfo() {
@@ -188,7 +223,9 @@ function changeWorkerAction(data) {
 
     $("#myModalLabel").text("个人信息修改");
     $("#registered_from").show();//显示详情模态框内容
-    $("#modeupdatabtn").show();
+    $("#modesavebtn").show().on("click",function () {
+        updataPersonInfo();
+    });
 }
 
 //admin提交修改用户信息
@@ -230,7 +267,9 @@ function changePersonPasswordUi(data) {
     $("#mypassword").val("");
     $("#myModalLabel").text("修改密码");
     $("#person_password").show();//显示详情模态框内容
-    $("#modechangebtn").show();
+    $("#modesavebtn").show().on("click",function () {
+        changePersonPasswordEvent()
+    });
 }
 
 //修改个人密码event
@@ -256,50 +295,6 @@ function changePersonPasswordEvent() {
         }
     });
 }
-
-function updataWorkerList() {
-    workers.length = 0;
-    $("#user_list").empty();
-    getWorkersInfo();//获取全部用户信息
-}
-
-//添加用户
-function addWorker() {
-    var workerId = $("#WorkerId").val();
-    var password = $("#Password").val();
-    var name = $("#Name").val();
-    var sex = $("#Sex").val();
-    var identifyNo = $("#IdentifyNo").val();
-    var title = $("#Title").val();
-    // checkInTime = $("#CheckInTime").val();
-    // checkOutTime = $("#CheckOutTime").val();
-    var comment = $("#Comment").val();
-    var errcode = 1;
-
-    console.log("workerId = " + workerId + ", password = " + password + ", name = " + name + ", title = " + title + ", identifyNo = ", + identifyNo);
-    if (workerId != "" && password!= "" && name!= "" && title!="" && identifyNo != "") {
-        $.get(URL_WORKER, {
-                Command: CMD_ADD_WORKER, Worker: workerId, Password: password, Name: name, Sex: sex,
-                IdentifyNo: identifyNo, Title: title, Comment: comment}, function (data) {
-            $.each(data, function(key,value){
-                if (key == KEY_ERRCODE) {
-                    errcode = value;
-                }
-            });
-
-            if (errcode == 1) {
-                alert("用户已存在");
-            } else {
-                updataWorkerList();
-                $("#myModal").modal("hide");
-                alert("新增成功");
-            }                
-        });
-    } else {
-        alert("请输入正确的信息");
-    }
-}
-
 //恢复初始密码
 function resetPassword(data) {
     var errcode = 1;

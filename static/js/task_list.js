@@ -52,40 +52,12 @@ $(document).ready(function(){
     searchAction();
     initdate();
 });
-//搜索按钮事件
-function searchAction() {
-    $("#searchBtn").click(function () {
-        console.log("Press the search button");
-        var stime = $("#starttime").val();
-        var etime = $("#endtime").val();
-        var worker = $("#searchworkerid").val();
-        var state = $("#searchtype").val();
-        var farm = $("#searchfarmid").val();
-
-        console.log("type: stime=" + typeof(stime) + ", etime=" + typeof(etime) + ", worker=" + typeof(worker)
-            + ", state=" + typeof(state) + ", farm=" + typeof(farm));
-
-        tasks.length = 0;
-        $.get(URL_TASK, {Command:CMD_LOAD_TASK, STime:stime, ETime:etime, Worker:worker, State:state, Farm:farm, Cell:"", Patch:""}, function(data){
-            $.each(data, function(key, value){
-                console.log("key=" + key + ", value=" + value);
-                if (key == KEY_TASKS) {
-                    $.each(value, function(index, obj){
-                        var item = getTaskListItem(obj);
-                        tasks.push(item);
-                    });
-                }
-            });
-        }).done(function () {
-            reLoadTasksList();
-        });
-    });
-}
 //绑定模态框关闭事件
 function bindMyModalClick(){
     $("#myModal").on("hidden.bs.modal", function() {
         $("#detail_win").empty().hide();
         $("#task_form").hide();
+        $("#task_form input").val("");
         $("#modesavebtn").hide().off("click");
     });
 }
@@ -109,7 +81,6 @@ function displayTaskAction() {
         btnAction.ArchiveTask();
     }
 }
-
 //重新加载任务列表
 function reLoadTasksList() {
     $("#task_list").empty();
@@ -117,7 +88,7 @@ function reLoadTasksList() {
     selectedTasks.length=0;
     getTaskList();
 }
-
+//转换task信息
 function getTaskListItem(data) {
     var taskId, sponsorId, farmId, cellId, patchId, workerId, checkerId;
     var state, type, createTime, startTime, endTime, checkTime, score, userComment, comment;
@@ -207,7 +178,7 @@ function descriptionTask(data) {
         $("#task_list").append(task_info);
     });
 }
-
+//转换log信息
 function PrintLog(data) {
     var action = "";
     var operate = "";
@@ -235,8 +206,7 @@ function PrintLog(data) {
 
     //console.log("Print Log: Id=" + id + ", Action=" + action + ", Operate=" + operate + ", ActionTime=" + actiontime + ", comment=" + comment);
 }
-
-//查询并显示任务详情
+//查询并显示任务详情,以及log信息
 function TaskDetailsAction(o){
     var task_details_info = "";
     var index = o.parentNode.parentNode.rowIndex;
@@ -341,7 +311,7 @@ var btnAction={
             }
         });
     },
-
+//分配任务
     AssignTask:function () {
         getWorkers();//获取员工Id
         $("#taskBtn").append('<button class="btn btn-default" id="AssignTask">分配</button>');
@@ -378,7 +348,7 @@ var btnAction={
             }
         });
     },
-
+//提交任务
     CommitTask:function () {
         $("#taskBtn").append('<button class="btn btn-default" id="CommitTask">提交</button>');
         $("#CommitTask").click(function () {
@@ -405,7 +375,7 @@ var btnAction={
             }
         });
     },
-
+//检查任务
     CheckTask:function () {
         $("#taskBtn").append('<button class="btn btn-default" id="CheckTask">检查</button>');
         $("#CheckTask").click(function () {
@@ -432,6 +402,7 @@ var btnAction={
             }
         });
     },
+//归档任务
     ArchiveTask:function () {
         $("#taskBtn").append('<button class="btn btn-default" id="ArchiveTask">归档</button>');
         $("#ArchiveTask").click(function () {
@@ -458,6 +429,7 @@ var btnAction={
             }
         });
     },
+//关闭任务
     CloseTask:function () {
         $("#taskBtn").append('<button class="btn btn-default" id="CloseTask">关闭</button>');
         $("#CloseTask").click(function () {
@@ -486,7 +458,35 @@ var btnAction={
     }
 
 }
+//搜索按钮事件
+function searchAction() {
+    $("#searchBtn").click(function () {
+        console.log("Press the search button");
+        var stime = $("#starttime").val();
+        var etime = $("#endtime").val();
+        var worker = $("#searchworkerid").val();
+        var state = $("#searchtype").val();
+        var farm = $("#searchfarmid").val();
 
+        console.log("type: stime=" + typeof(stime) + ", etime=" + typeof(etime) + ", worker=" + typeof(worker)
+            + ", state=" + typeof(state) + ", farm=" + typeof(farm));
+
+        tasks.length = 0;
+        $.get(URL_TASK, {Command:CMD_LOAD_TASK, STime:stime, ETime:etime, Worker:worker, State:state, Farm:farm, Cell:"", Patch:""}, function(data){
+            $.each(data, function(key, value){
+                console.log("key=" + key + ", value=" + value);
+                if (key == KEY_TASKS) {
+                    $.each(value, function(index, obj){
+                        var item = getTaskListItem(obj);
+                        tasks.push(item);
+                    });
+                }
+            });
+        }).done(function () {
+            reLoadTasksList();
+        });
+    });
+}
 //选中或者取消所有
 function choseAllBox(o){
     var taskId = "";
@@ -521,7 +521,17 @@ function setCheckedId(data) {
     }
     console.log("selectedTasks=" + selectedTasks );
 }
-//获取全部用户信息
+//检查是否有选中任务
+function isChecked() {
+    if(selectedTasks.length > 0){
+        return true;
+    }else{
+        alert("请选择任务");
+        return false;
+    }
+    
+}
+//获取全部用户信息,放到分配任务下拉框里
 function getWorkers() {
     var workersId = new Array();
     var checkerId = new Array();
@@ -570,14 +580,4 @@ function getWorkers() {
 
         $("#assign_win").append(AssignWorkerInfo + AssignCheckerInfo);
     });
-}
-//检查是否有选中任务
-function isChecked() {
-    if(selectedTasks.length > 0){
-        return true;
-    }else{
-        alert("请选择任务");
-        return false;
-    }
-    
 }
