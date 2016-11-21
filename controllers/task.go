@@ -157,7 +157,6 @@ func handleAssignTaskCmd(c *TaskController) {
 	fmt.Println("bytesCmdPara=", bytesCmdPara)
 
 	assigner := (c.GetSession(common.ZLD_PARA_WORKER)).(string)
-
 	item := new(TaskJsonData)
 	item.Errcode = 1
 	paraJSON, _ := simplejson.NewJson(bytesCmdPara)
@@ -167,6 +166,7 @@ func handleAssignTaskCmd(c *TaskController) {
 
 		models.AssignTasksItem(tasks, worker, checker)
 		models.AssignTasksLogItem(tasks, assigner, worker, checker)
+		item.Errcode = 0
 	}
 
 	c.Data["json"] = item

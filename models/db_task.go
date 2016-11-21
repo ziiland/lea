@@ -369,7 +369,7 @@ func SelectTaskTableItemWithConds(stime, etime int64, worker, state, farm, cell,
 ///////////////////////////////////////////////////////////////////////////////
 func AssignTasksItem(ids []string, worker, checker string) (int64, error) {
 	s := fmt.Sprintf("UPDATE `%s` SET ", ZLD_TASK_TBL_NAME)
-	s = fmt.Sprintf("%s `WorkerId`= '%s' , `CheckerId` = '%s' WHERE (", s, worker, checker)
+	s = fmt.Sprintf("%s `WorkerId`= '%s' , `CheckerId` = '%s', `State` = '%s' WHERE (", s, worker, checker, common.ZLD_TASK_STATE_ASSIGNED)
 	for i, id := range ids {
 		if i > 0 {
 			s = fmt.Sprintf("%s OR ", s)
