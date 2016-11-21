@@ -162,6 +162,7 @@ func handleAssignTaskCmd(c *TaskController) {
 		checker, _ := paraJSON.Get("Checker").String()
 
 		models.AssignTasksItem(tasks, worker, checker)
+		item.Errcode = 0
 	}
 
 	c.Data["json"] = item

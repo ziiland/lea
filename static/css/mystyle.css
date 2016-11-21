@@ -7,21 +7,21 @@ body{
 
 #user_table,#tasks_table{
     text-align: center;
-    vertical-align: middle;
     overflow:scroll;
     height:400px;
 }
-
+#tasks_table th,tr{
+    text-align: center;
+    vertical-align: middle;
+}
 #search_table{
     width: auto;
 
 }
 
-#myherder,#myfooter{
-
-
+#my_menu{
+    text-align: center;
 }
-
-#mymenu{
-    background-color: #5fafe4;
+#login_info{
+    text-align: center;
 }

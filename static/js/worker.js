@@ -4,15 +4,13 @@ var gWrokerKey = {"WorkerId":"工号", "Password":"密码", "Name":"姓名"
                 , "CheckInTime":"入职时间", "CheckOutTime":"离职时间", "Comment":"备注"};
 ///////////////////////////////////////////////////////////////////////////////
 $(document).ready(function(){
-    getDataFromBackend();
     displayFooter();//显示页头
     displayHeader();//显示页尾
-
-    $(document).on(EVT_PARA_LOADED, function(){
-        getWorkersInfo();//获取全部用户信息
-        setModalEvent();//绑定模态框事件
+    $.when(getDataFromBackend()).done(function(){
+        getWorkersInfo();
         displayAddButton();
     });
+    setModalEvent();//绑定模态框事件
 });
 
 //显示添加用户按钮
@@ -114,7 +112,7 @@ function descriptionWorkers(workers) {
     } else {
         worker_info = worker_info +"<td>" + changePassword_btn +"</td>";
     }
-    $("#userlist").append("<tr "+bgcolor+">"+worker_info+"</tr>");
+    $("#user_list").append("<tr "+bgcolor+">"+worker_info+"</tr>");
 }
 
 //显示用户详情
@@ -260,7 +258,7 @@ function changePersonPasswordEvent() {
 }
 
 function updataWorkerList() {
-    $("#userlist").empty();
+    $("#user_list").empty();
     getWorkersInfo();//获取全部用户信息
 }
 

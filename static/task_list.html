@@ -30,12 +30,10 @@
 				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
 				<h4 class="modal-title text-center" id="myModalLabel"></h4>
 			</div>
-			<div class="modal-body clearfix">
-				<div hidden id="detailwindown">
+			<div class="modal-body">
+				<div hidden id="detail_win">
 				</div>
-                <div hidden id="assignwindown">
-                </div>
-                <div hidden id="">
+                <div hidden id="assign_win">
                 </div>
 				<form hidden class="form-horizontal" id="task_form">
                     <div class="form-group">
@@ -96,15 +94,13 @@
 		<div class="col-md-12" id="myherder" >
 		</div>
 	</div>
-	<div class="row clearfix">
-        <div class="col-md-2 text-center">
-			<div class="row clearfix">
-				<div class="col-md-12 well" id="login_info" >
-				</div>
-			</div>
-			<div class="row clearfix">
-				<div class="col-md-12 text-center well" id="mymenu">
-					<div class="nav">
+	<div class="row">
+        <div class="col-md-2">
+			<div class="row">
+				<div class="col-md-12 well" >
+                    <div id="login_info" >
+                    </div><hr>
+					<div class="nav" id="my_menu">
 						<ul class="nav nav-pills nav-stacked">
 							<li><a href="./index.html">主页</a></li>
 							<li><a href="./worker.html">用户管理</a></li>
@@ -176,23 +172,25 @@
                             </h3>
                         </div>
                         <div class="panel-body">
-                            <table class="table table-bordered table-hover table-condensed" id="tasks_table">
-                                <thead>
-                                    <tr>
-                                        <th><input type="checkbox" name="choice" onclick="choseAllBox(this)"></th>
-                                        <th>工作包号</th>
-                                        <th>田地</th>
-                                        <th>施工</th>
-                                        <th>检查</th>
-                                        <th>状态</th>
-                                        <th>种类</th>
-                                        <th>备注</th>
-                                        <th>详情</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="tasklist">
-                                </tbody>
-                            </table>
+                            <div id="tasks_table">
+                                <table class="table table-bordered table-hover table-condensed" >
+                                    <thead>
+                                        <tr>
+                                            <th><input type="checkbox" name="choice" onclick="choseAllBox(this)"></th>
+                                            <th>工作包号</th>
+                                            <th>田地</th>
+                                            <th>施工</th>
+                                            <th>检查</th>
+                                            <th>状态</th>
+                                            <th>种类</th>
+                                            <th>备注</th>
+                                            <th>详情</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="task_list">
+                                    </tbody>
+                                </table>
+                            </div>
                             <br>
                             <div class="btn-group" id="taskBtn">
                             </div>

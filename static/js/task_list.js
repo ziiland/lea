@@ -41,20 +41,16 @@ function SearchCmdParaConstructor() {
 
 ///////////////////////////////////////////////////////////////////////////////
 $(document).ready(function(){
-    getDataFromBackend();
     displayFooter();
     displayHeader();
-    $(document).on(EVT_PARA_LOADED, function(){
-        taskOper.getTaskList();
-    });
-
-    $(document).on(EVT_TASKS_LOADED, function() {
-        taskOper.descriptionTask(tasks);
-        bindMyModalClick();
+    $.when(getDataFromBackend()).done(function(){
+        getTaskList();
+        console.log("first login=",gLoginInfo.title);
         displayTaskAction();
-        searchAction();
-        initdate();
     });
+    bindMyModalClick();
+    searchAction();
+    initdate();
 });
 //搜索按钮事件
 function searchAction() {
@@ -70,7 +66,6 @@ function searchAction() {
             + ", state=" + typeof(state) + ", farm=" + typeof(farm));
 
         tasks.length = 0;
-        $("#tasklist").empty();
         $.get(URL_TASK, {Command:CMD_LOAD_TASK, STime:stime, ETime:etime, Worker:worker, State:state, Farm:farm, Cell:"", Patch:""}, function(data){
             $.each(data, function(key, value){
                 console.log("key=" + key + ", value=" + value);
@@ -81,14 +76,15 @@ function searchAction() {
                     });
                 }
             });
-            $(document).trigger(EVT_TASKS_LOADED);
+        }).done(function () {
+            reLoadTasksList();
         });
     });
 }
 //绑定模态框关闭事件
 function bindMyModalClick(){
     $("#myModal").on("hidden.bs.modal", function() {
-        $("#detailwindown").empty().hide();
+        $("#detail_win").empty().hide();
         $("#task_form").hide();
         $("#modesavebtn").hide().off("click");
     });
@@ -105,18 +101,21 @@ function displayTaskAction() {
         btnAction.CommitTask();
     } else if (gLoginInfo.title == STR_ADMIN || gLoginInfo.title == STR_MANAGER){
         btnAction.CreateTask();
-        btnAction.ArchiveTask();
+        btnAction.CancelTask();
         btnAction.AssignTask();
         btnAction.CheckTask();
-        btnAction.CloseTask();
-        btnAction.CancelTask();
         btnAction.CommitTask();
+        btnAction.CloseTask();
+        btnAction.ArchiveTask();
     }
 }
 
 //重新加载任务列表
 function reLoadTasksList() {
-    taskOper.getTaskList();
+    $("#task_list").empty();
+    $("#task_list input[type=checkbox]").prop("checked",false);
+    selectedTasks.length=0;
+    getTaskList();
 }
 
 function getTaskListItem(data) {
@@ -164,11 +163,12 @@ function getTaskListItem(data) {
         state, type, createTime, startTime, endTime, checkTime, score, userComment, comment);
     return item;
 }
-var taskOper = {
-    //获取全部任务信息
-    getTaskList:function () {
-        tasks.length = 0;
-        $.get(URL_TASK, {Command:CMD_LOAD_TASK, STime:0, ETime:0, Worker:"", State:"", Farm:"", Cell:"", Patch:""}, function(data){
+
+//获取全部任务信息
+function getTaskList(){
+    tasks.length = 0;
+    $.get(URL_TASK, {Command:CMD_LOAD_TASK, STime:0, ETime:0, Worker:"", State:"", Farm:"", Cell:"", Patch:""},
+        function(data){
             $.each(data, function(key, value){
                 console.log("key=" + key + ", value=" + value);
                 if (key == KEY_TASKS) {
@@ -178,33 +178,34 @@ var taskOper = {
                     });
                 }
             });
-            $(document).trigger(EVT_TASKS_LOADED);
-        });
-    },
+        }).done(function () {
+        descriptionTask(tasks);
+    });
+}
 
-    //解析全部任务信息
-    descriptionTask:function(data) {
-        $.each(data, function(index, value){
-            var task_info='<td><input type="checkbox" onclick="setCheckedId(this)"></td>';
-            for (item in value) {
-                if((item == KEY_TASK_TASKID) ||(item == KEY_TASK_FARMID)|| 
-                    (item == KEY_TASK_WORKERID)||(item == KEY_TASK_CHECKERID) || (item == KEY_TASK_COMMENT)) {
-                    task_info += "<td>" + value[item] + "</td>";
-                } else if(item == KEY_TASK_STATE){
-                    //console.log("Task state=" + value[item] + "end");
-                    task_info += "<td>" + gTaskStateDes[value[item]] + "</td>";
-                } else if(item == KEY_TASK_TYPE) {
-                    //var id = value[item];
-                    //console.log("id=" +id);
-                    task_info += "<td>" + gTaskTypes[value[item]] + "</td>";
-                }
+//解析全部任务信息
+function descriptionTask(data) {
+    $.each(data, function(index, value){
+        var task_info='<td><input type="checkbox" onclick="setCheckedId(this)"></td>';
+        for (item in value) {
+            if((item == KEY_TASK_TASKID) ||(item == KEY_TASK_FARMID)||
+                (item == KEY_TASK_WORKERID)||(item == KEY_TASK_CHECKERID) || (item == KEY_TASK_COMMENT)) {
+                task_info += "<td>" + value[item] + "</td>";
+            } else if(item == KEY_TASK_STATE){
+                //console.log("Task state=" + value[item] + "end");
+                task_info += "<td>" + gTaskStateDes[value[item]] + "</td>";
+            } else if(item == KEY_TASK_TYPE) {
+                //var id = value[item];
+                //console.log("id=" +id);
+                task_info += "<td>" + gTaskTypes[value[item]] + "</td>";
             }
-            task_info = task_info+"<td><button class='btn btn-sm btn-info' onclick='TaskDetailsAction(this)' data-toggle='modal' data-target='#myModal'>详情</button></td>";
-            task_info = "<tr>"+task_info+"</tr>"
-            /** 增加任务行*/
-            $("#tasklist").append(task_info);
-        });
-    }
+        }
+        task_info = task_info+"<td><button class='btn btn-sm btn-info' onclick='TaskDetailsAction(this)' data-toggle='modal' data-target='#myModal'>详情</button></td>";
+        task_info = "<tr>"+task_info+"</tr>";
+        //增加任务行
+        //console.log("task_info=" + task_info);
+        $("#task_list").append(task_info);
+    });
 }
 
 function PrintLog(data) {
@@ -225,7 +226,10 @@ function PrintLog(data) {
             comment = value;
         }
     });
-    var logInfo ='<tr><td>'+action+'</td><td>'+operate+'</td><td>'+actiontime+'</td><td>'+comment+'</td></tr>';
+
+        var logInfo ='<li>'+actiontime+','+operate+','+action+','+comment+'</li>';
+
+
 
     return logInfo;
 
@@ -241,33 +245,31 @@ function TaskDetailsAction(o){
     console.log("task_id=" + task_id);
     // get task log
     $.get(URL_TASK, {Command:CMD_QUERY_TASK, TaskId:task_id}, function(data){
-        $.each(data, function(key, value){
-            if (key == KEY_LOGS)  {
-                $.each(value, function(index, obj){
-                    // logs
-                    logInfo += PrintLog(obj);
-                });
-            }
-        });
+            $.each(data, function(key, value){
+                if (key == KEY_LOGS)  {
+                    $.each(value, function(index, obj){
+                        // logs
+                        logInfo += PrintLog(obj);
+                        console.log("logInfo:" + logInfo);
+                    });
+                }
+            });
     }).done(function () {
             console.log("logInfo=" + logInfo);
 
-            logInfo = '<table class="table table-bordered table-hover table-condensed">' +
-                '<thead><th>action</th><th>operate</th><th>actiontime</th><th>comment</th></thead>' +
-                '<tbody>'+ logInfo +'</tbody>' +
-                '</table>';
+            logInfo = '<ul>'+ logInfo+ '</ul>'
 
             console.log("logInfo=" + logInfo);
             var obj=tasks[index-1];
             for(item in obj){
                 task_details_info +="<tr><td>"+item+"</td><td>"+obj[item]+"</td><tr>";
             }
-            task_details_info +='<tr>'+logInfo+'</tr>';
+            task_details_info +='<tr>'+'<td colspan="2" style="text-align: left"><label>logInfo:</label>'+logInfo+'</td></tr>';
             task_details_info= '<table class="table table-bordered table-hover table-condensed"><tbody>'+
                 task_details_info+'<tbody></table>';
 
             $("#myModalLabel").text("任务详情");
-            $("#detailwindown").show().append(task_details_info); //显示详情模态框内容
+            $("#detail_win").show().append(task_details_info); //显示详情模态框内容
     });
 }
 
@@ -277,15 +279,6 @@ var btnAction={
     CreateTask:function () {
         $("#taskBtn").append('<button class="btn btn-default" id="CreateTask" data-toggle="modal" data-target="#myModal">添加</button>');
         $("#CreateTask").click(function () {
-            // test, send the assign command
-            // var item = new AssignCmdParaConstructor("ZLD00004", "ZLD00003");
-            // console.log("Assign cmd parameter = " + item);
-            // var json = JSON.stringify(item);
-            // console.log("json string = " + json);
-            // $.get(URL_TASK, {Command:CMD_ASSIGN_TASK, CmdPara:json}, function(data){
-            //     console.log("");
-            // });
-
             $("#task_form").show().reset;
             $("#myModalLabel").text("新建任务");
             $("#modesavebtn").show().on("click",function () {
@@ -294,7 +287,6 @@ var btnAction={
                 var patchid = $("#task-patch").val();
                 var workerid = $("#task-worker").val();
                 var type = $("#task-type").val();
-                var usercomment = $("#user-comment").val();
                 var comment = $("#task-comment").val();
 
                 //console.log("Press SaveBtn: type=", typeof(type));
@@ -327,96 +319,169 @@ var btnAction={
         $("#taskBtn").append('<button class="btn btn-default" id="CancelTask">删除</button>');
         $("#CancelTask").click(function () {
             // test, send the delete command
-             var item = new SelectedCmdParaConstructor();
-             console.log("delete cmd parameter = " + item);
-             var json = JSON.stringify(item);
-             console.log("json string = " + json);
-             $.get(URL_TASK, {Command:CMD_CANCEL_TASK, CmdPara:json}, function(data){
+            if(isChecked()) {
+                var item = new SelectedCmdParaConstructor();
+                console.log("delete cmd parameter = " + item);
+                var json = JSON.stringify(item);
+                console.log("json string = " + json);
+                $.get(URL_TASK, {Command: CMD_CANCEL_TASK, CmdPara: json}, function (data) {
                     console.log("");
-                 $.each(data, function(key, value){
-                     if (key == KEY_ERRCODE) {
-                         errcode = value;
-                     }
-                 });
-                 if (errcode == 1) {
-                     alert("删除不成功");
-                 } else {
-                     alert("删除成功");
-                     reLoadTasksList();
-                 }
-            });
+                    $.each(data, function (key, value) {
+                        if (key == KEY_ERRCODE) {
+                            errcode = value;
+                        }
+                    });
+                    if (errcode == 1) {
+                        alert("删除失败");
+                    } else {
+                        alert("删除成功");
+                        reLoadTasksList();
+                    }
+                });
+            }
         });
     },
 
     AssignTask:function () {
+        getWorkers();//获取员工Id
         $("#taskBtn").append('<button class="btn btn-default" id="AssignTask">分配</button>');
         $("#AssignTask").click(function () {
-            $("#task_form").show().reset;
-            $("#myModalLabel").text("新建任务");
-            $("#modesavebtn").show().on("click",function () {
-            });
+            if(isChecked()) {
+                $("#myModal").modal("show");
+                $("#myModalLabel").text("分配任务");
+                $("#assign_win").show();
+                $("#modesavebtn").show().on("click", function () {
+                    var worker = $("#AssignWorker").val();
+                    var checker = $("#AssignChecker").val();
+                    worker = worker.substring(0, worker.indexOf("|"));
+                    checker = checker.substring(0, checker.indexOf("|"));
+                    var item = new AssignCmdParaConstructor(worker, checker);
+                    console.log("delete cmd parameter = " + item);
+                    var json = JSON.stringify(item);
+                    console.log("json string = " + json);
+                    $.get(URL_TASK, {Command: CMD_ASSIGN_TASK, CmdPara: json}, function (data) {
+                        console.log("");
+                        $.each(data, function (key, value) {
+                            if (key == KEY_ERRCODE) {
+                                errcode = value;
+                            }
+                        });
+                        if (errcode == 1) {
+                            alert("分配失败");
+                        } else {
+                            alert("分配成功");
+                            reLoadTasksList();
+                            $("#myModal").modal("hide")
+                        }
+                    });
+                });
+            }
         });
     },
 
     CommitTask:function () {
         $("#taskBtn").append('<button class="btn btn-default" id="CommitTask">提交</button>');
         $("#CommitTask").click(function () {
-
+            // test, send the delete command
+            if(isChecked()) {
+                var item = new SelectedCmdParaConstructor();
+                console.log("delete cmd parameter = " + item);
+                var json = JSON.stringify(item);
+                console.log("json string = " + json);
+                $.get(URL_TASK, {Command: CMD_SUBMIT_TASK, CmdPara: json}, function (data) {
+                    console.log("");
+                    $.each(data, function (key, value) {
+                        if (key == KEY_ERRCODE) {
+                            errcode = value;
+                        }
+                    });
+                    if (errcode == 1) {
+                        alert("归档失败");
+                    } else {
+                        alert("归档成功");
+                        reLoadTasksList();
+                    }
+                });
+            }
         });
     },
 
     CheckTask:function () {
         $("#taskBtn").append('<button class="btn btn-default" id="CheckTask">检查</button>');
         $("#CheckTask").click(function () {
-
+            // test, send the delete command
+            if(isChecked()) {
+                var item = new SelectedCmdParaConstructor();
+                console.log("delete cmd parameter = " + item);
+                var json = JSON.stringify(item);
+                console.log("json string = " + json);
+                $.get(URL_TASK, {Command: CMD_CHECK_TASK, CmdPara: json}, function (data) {
+                    console.log("");
+                    $.each(data, function (key, value) {
+                        if (key == KEY_ERRCODE) {
+                            errcode = value;
+                        }
+                    });
+                    if (errcode == 1) {
+                        alert("检查失败");
+                    } else {
+                        alert("检查成功");
+                        reLoadTasksList();
+                    }
+                });
+            }
         });
     },
     ArchiveTask:function () {
         $("#taskBtn").append('<button class="btn btn-default" id="ArchiveTask">归档</button>');
         $("#ArchiveTask").click(function () {
             // test, send the delete command
-            var item = new SelectedCmdParaConstructor();
-            console.log("delete cmd parameter = " + item);
-            var json = JSON.stringify(item);
-            console.log("json string = " + json);
-            $.get(URL_TASK, {Command:CMD_CANCEL_TASK, CmdPara:json}, function(data){
-                console.log("");
-                $.each(data, function(key, value){
-                    if (key == KEY_ERRCODE) {
-                        errcode = value;
+            if(isChecked()) {
+                var item = new SelectedCmdParaConstructor();
+                console.log("delete cmd parameter = " + item);
+                var json = JSON.stringify(item);
+                console.log("json string = " + json);
+                $.get(URL_TASK, {Command: CMD_ARCHIVE_TASK, CmdPara: json}, function (data) {
+                    console.log("");
+                    $.each(data, function (key, value) {
+                        if (key == KEY_ERRCODE) {
+                            errcode = value;
+                        }
+                    });
+                    if (errcode == 1) {
+                        alert("归档失败");
+                    } else {
+                        alert("归档成功");
+                        reLoadTasksList();
                     }
                 });
-                if (errcode == 1) {
-                    alert("归档失败");
-                } else {
-                    alert("归档成功");
-                    reLoadTasksList();
-                }
-            });
+            }
         });
     },
     CloseTask:function () {
         $("#taskBtn").append('<button class="btn btn-default" id="CloseTask">关闭</button>');
         $("#CloseTask").click(function () {
             // test, send the delete command
-            var item = new SelectedCmdParaConstructor();
-            console.log("delete cmd parameter = " + item);
-            var json = JSON.stringify(item);
-            console.log("json string = " + json);
-            $.get(URL_TASK, {Command:CMD_CANCEL_TASK, CmdPara:json}, function(data){
-                console.log("");
-                $.each(data, function(key, value){
-                    if (key == KEY_ERRCODE) {
-                        errcode = value;
+            if(isChecked()) {
+                var item = new SelectedCmdParaConstructor();
+                console.log("delete cmd parameter = " + item);
+                var json = JSON.stringify(item);
+                console.log("json string = " + json);
+                $.get(URL_TASK, {Command: CMD_CLOSE_TASK, CmdPara: json}, function (data) {
+                    console.log("");
+                    $.each(data, function (key, value) {
+                        if (key == KEY_ERRCODE) {
+                            errcode = value;
+                        }
+                    });
+                    if (errcode == 1) {
+                        alert("关闭失败");
+                    } else {
+                        alert("关闭成功");
+                        reLoadTasksList();
                     }
                 });
-                if (errcode == 1) {
-                    alert("关闭失败");
-                } else {
-                    alert("关闭成功");
-                    reLoadTasksList();
-                }
-            });
+            }
         });
     }
 
@@ -455,4 +520,64 @@ function setCheckedId(data) {
         $("#checkAll").removeAttr("checked");
     }
     console.log("selectedTasks=" + selectedTasks );
+}
+//获取全部用户信息
+function getWorkers() {
+    var workersId = new Array();
+    var checkerId = new Array();
+
+    $.get(URL_WORKER, {Command:CMD_LOAD_WORKER}, function(data){
+        $.each(data, function(key, value){
+            if (key == KEY_WORKERS) {
+                $.each(value, function(index, obj){
+                    var worker;
+                    var title;
+                    var name;
+                    for(item in obj){
+                        if (obj[KEY_CHECKOUTTIME]==0) {
+                            worker = obj[KEY_WORKERID];
+                            title = obj[KEY_TITLE];
+                            name = "|" + obj[KEY_NAME];
+                        }
+                    }
+                    if(title == STR_MANAGER){
+                        checkerId.push(worker+name);
+                    }
+                    else if(title == STR_WORKER){
+                        workersId.push(worker+name);
+                    }
+                });
+            }
+        });
+    }).done(function () {
+        var  AssignWorkerInfo = '<option></option>';
+        var AssignCheckerInfo ='<option></option>';
+        console.log("checkerId:"+checkerId);
+        for(var i=0;i<workersId.length;i++){
+            AssignWorkerInfo += '<option>'+workersId[i]+'</option>';
+        };
+        for(var j=0;j<checkerId.length;j++){
+            AssignCheckerInfo += '<option>'+checkerId[j]+'</option>';
+        };
+
+        AssignWorkerInfo ='<div>工人：<select class="form-control" id ="AssignWorker">'+
+            AssignWorkerInfo+
+            '</select></div>';
+
+        AssignCheckerInfo ='<div>检查员：<select class="form-control" id ="AssignChecker">'+
+            AssignCheckerInfo+
+            '</select></div>';
+
+        $("#assign_win").append(AssignWorkerInfo + AssignCheckerInfo);
+    });
+}
+//检查是否有选中任务
+function isChecked() {
+    if(selectedTasks.length > 0){
+        return true;
+    }else{
+        alert("请选择任务");
+        return false;
+    }
+    
 }

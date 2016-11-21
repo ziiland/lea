@@ -5,6 +5,7 @@ var KEY_WORKER = "Worker";
 var KEY_WORKERS = "Workers";
 var KEY_WORKERID = "WorkerId";
 var KEY_TITLE = "Title";
+var KEY_NAME = "Name";
 var KEY_FARM = "Farm";
 var KEY_TASKS = "Tasks";
 var KEY_COMMAND = "Command";
@@ -87,8 +88,8 @@ var gLoginInfo = {workerId:"", title:""};
 
 //获取登录信息,并显示。
 function getDataFromBackend() {
-	var login = "";
-    $.get(URL_TASK, {Command:CMD_LOAD_PARA}, function(data){
+    var isLogin = $.get(URL_TASK, {Command:CMD_LOAD_PARA}, function(data){
+        var login = "";
         $.each(data, function(key, value){
             if(key == KEY_LOGIN) {
                 login = value;
@@ -106,10 +107,11 @@ function getDataFromBackend() {
             console.log("login on");
             //显示登录信息
             displayWorkerId();
-            $(document).trigger(EVT_PARA_LOADED);
         }
     });
+    return isLogin;
 }
+
 
 //显示登录的用户
 function displayWorkerId() {
