@@ -472,6 +472,8 @@ function searchAction() {
             + ", state=" + typeof(state) + ", farm=" + typeof(farm));
 
         tasks.length = 0;
+        $("#task_list").empty();
+        $("#search_table :input").val("");
         $.get(URL_TASK, {Command:CMD_LOAD_TASK, STime:stime, ETime:etime, Worker:worker, State:state, Farm:farm, Cell:"", Patch:""}, function(data){
             $.each(data, function(key, value){
                 console.log("key=" + key + ", value=" + value);
@@ -483,7 +485,6 @@ function searchAction() {
                 }
             });
         }).done(function () {
-            $("#task_list").empty();
             descriptionTask(tasks);
         });
     });
