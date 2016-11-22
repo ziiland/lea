@@ -10,8 +10,6 @@ $(document).ready(function(){
     AutoCursorMove();
 });
 
-
-
 function  AutoCursorMove(){
     $(document).keydown(function (event) {
         console.log("event.keyCode="+event.keyCode);

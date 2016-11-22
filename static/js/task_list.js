@@ -50,7 +50,6 @@ $(document).ready(function(){
     });
     bindMyModalClick();
     searchAction();
-    initdate();
 });
 //绑定模态框关闭事件
 function bindMyModalClick(){
@@ -62,11 +61,6 @@ function bindMyModalClick(){
         $("#task_form :input").val("");
         $("#modesavebtn").hide().off("click");
     });
-}
-//时间控件
-function initdate() {
-    $('#starttime').fdatepicker();
-    $('#endtime').fdatepicker();
 }
 //display tasksaction button
 function displayTaskAction() {

@@ -115,7 +115,7 @@ function getDataFromBackend() {
 
 //显示登录的用户
 function displayWorkerId() {
-    var Info ='您好，'+ gLoginInfo.workerId+ ',<a href="javascript:void(0);" onclick="dropoutpage()">注销</a>';
+    var Info ='<br>您好，'+ gLoginInfo.workerId+ ',<a href="javascript:void(0);" onclick="dropoutpage()">注销</a>';
 
     $("#login_info").append(Info);
 }
