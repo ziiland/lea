@@ -57,7 +57,7 @@ function bindMyModalClick(){
     $("#myModal").on("hidden.bs.modal", function() {
         $("#detail_win").empty().hide();
         $("#task_form").hide();
-        $("#task_form input").val("");
+        $("#task_form :input").val("");
         $("#modesavebtn").hide().off("click");
     });
 }
@@ -483,7 +483,8 @@ function searchAction() {
                 }
             });
         }).done(function () {
-            reLoadTasksList();
+            $("#task_list").empty();
+            descriptionTask(tasks);
         });
     });
 }

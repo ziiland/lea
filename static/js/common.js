@@ -115,22 +115,21 @@ function getDataFromBackend() {
 
 //显示登录的用户
 function displayWorkerId() {
-    var Info ='<label>您好，'+ gLoginInfo.workerId+'</label>'+
-        '<button class="btn btn-sm" onclick="dropoutpage()">注销</button>';
+    var Info ='您好，'+ gLoginInfo.workerId+ ',<a href="javascript:void(0);" onclick="dropoutpage()">注销</a>';
 
     $("#login_info").append(Info);
 }
 
 //显示页头
 function  displayHeader() {
-    var herder =  '<h1 style="text-align:center">Ziiland生产管理软件 <small>v1.0</small></h1><hr>';
+    var herder =  '<h1 style="text-align:center">Ziiland生产管理软件 <small>v1.0</small></h1>';
 
     $("#myherder").append(herder);
 }
 
 //显示页脚
 function  displayFooter() {
-    var footer = '<hr><div class="col-md-12 column text-center"> ' +
+    var footer = '<div class="col-md-12 column text-center"> ' +
                     '<h5>版权信息：寸田尺园网络科技(上海)有限公司</h5> ' +
                 '</div>';
 

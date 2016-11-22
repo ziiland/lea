@@ -12,26 +12,31 @@
     <!-- jQuery文件。务必在bootstrap.min.js 之前引入 -->
     <script src="./js/jquery-1.11.3.min.js"></script>
     <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
-    <script src="./js/bootstrap.min.js"></script>
-    <script src="./js/login.js"></script>
-    <script src="./js/worker.js"></script>
     <link rel="stylesheet" type="text/css" href="./css/mystyle.css">
+    <script src="./js/bootstrap.min.js"></script>
+    <script src="./js/common.js"></script>
+    <script src="./js/index.js"></script>
 </head>
 <body>
 <div class="container">
-    <div class="row clearfix">
-        <div class="col-md-12 text-center well">
-            <h1>主页</h1>
+    <div class="row" >
+        <div class="col-md-12" id="myherder" >
         </div>
     </div>
-    <div class="row clearfix">
-        <div class="col-md-2 text-center well">
-            <div class="nav">
-                <ul class="nav nav-pills nav-stacked">
-                    <li class="active"><a href="./index.html">主页</a></li>
-                    <li><a href="./worker.html">用户管理</a></li>
-                    <li><a href="./task_list.html">任务管理</a></li>
-                </ul>
+    <div class="row">
+        <div class="col-md-2">
+            <div class="row">
+                <div class="col-md-12 whitebg">
+                    <div id="login_info">
+                    </div><hr>
+                    <div class="nav" id="my_menu">
+                        <ul class="nav nav-pills nav-stacked">
+                            <li  class="active"><a href="./index.html">主页</a></li>
+                            <li><a href="./worker.html">用户管理</a></li>
+                            <li><a href="./task_list.html">任务管理</a></li>
+                        </ul>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="col-md-10 column">
@@ -78,8 +83,7 @@
         </div>
     </div>
     <div class="row clearfix">
-        <div class="col-md-12 text-center well">
-            <h5>版权信息：上海自然技术有限公司</h5>
+        <div class="row" id="myfooter" >
         </div>
     </div>
 </div>

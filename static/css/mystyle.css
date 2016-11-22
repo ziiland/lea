@@ -1,4 +1,5 @@
 body{
+    background-image: url("../img/login-bg.jpg");
     background-repeat:no-repeat;
     background-size:cover;
     background-attachment: fixed;
@@ -13,14 +14,29 @@ body{
     text-align: center;
     vertical-align: middle;
 }
-#search_table{
-    width: auto;
-
-}
 
 #my_menu{
     text-align: center;
+    color: #0f0f0f;
 }
 #login_info{
     text-align: center;
+    vertical-align: middle;
+}
+#myherder{
+    color: white;
+    text-shadow: 2px 2px 4px #0f0f0f;
+}
+#myfooter{
+    color: white;
+}
+#form_login{
+    border-radius: 5px;
+    background: rgba(232, 232, 232, 0.4);
+
+}
+.whitebg{
+    height: 300px;
+    background: rgba(255, 255, 255,1);
+    border-radius: 5px;
 }

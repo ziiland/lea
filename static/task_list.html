@@ -16,6 +16,7 @@
     <script src="./js/foundation-datepicker.zh-CN.js"></script>
     <link rel="stylesheet" type="text/css" href="./css/mystyle.css">
     <link rel="stylesheet" type="text/css" href="./css/foundation-datepicker.css">
+    <link rel="stylesheet" href="./css/font-awesome.4.6.0.css">
     <script src="./js/bootstrap.min.js"></script>
     <script src="./js/common.js"></script>
     <script src="./js/task_list.js"></script>
@@ -90,14 +91,14 @@
 </div>
 <!-- 模态框（Modal）end -->
 <div class="container">
-	<div class="row clearfix" >
+	<div class="row" >
 		<div class="col-md-12" id="myherder" >
 		</div>
 	</div>
 	<div class="row">
         <div class="col-md-2">
 			<div class="row">
-				<div class="col-md-12">
+				<div class="col-md-12 whitebg">
                     <div id="login_info">
                     </div><hr>
 					<div class="nav" id="my_menu">
@@ -127,7 +128,6 @@
                                             <div class="input-group">
                                                 <span class="input-group-addon">时间:</span>
                                                 <input type="text" class="form-control" placeholder="开始" id="starttime">
-                                                <span class="input-group-addon">to</span>
                                                 <input type="text" class="form-control" placeholder="结束" id="endtime">
                                             </div>
                                         </td>
@@ -136,11 +136,15 @@
                                                 <span class="input-group-addon">工号:</span>
                                                 <input type="text" class="form-control" placeholder="" id="searchworkerid">
                                             </div>
+                                            <div class="input-group">
+                                                <span class="input-group-addon">田块:</span>
+                                                <input type="text" class="form-control" placeholder="" id="searchfarmid">
+                                            </div>
                                         </td>
                                         <td>
                                             <div class="input-group">
                                                 <span class="input-group-addon">状态:</span>
-                                                <select class="form-control" data-style="btn-primary" id ="searchtype">
+                                                <select class="form-control" id ="searchtype">
                                                 <option></option>
                                                 <option>已创建</option><option>已分配</option>
                                                 <option>进行中</option><option>已完成</option>
@@ -149,13 +153,8 @@
                                                 </select>
                                             </div>
                                         </td>
-                                        <td>
-                                            <div class="input-group">
-                                                <span class="input-group-addon">田块:</span>
-                                                <input type="text" class="form-control" placeholder="" id="searchfarmid">
-                                            </div>
-                                        </td>
                                         <td><button type="button" class="btn btn-info"id="searchBtn">Search</button></td>
+                                        <td></td>
                                     </tr>
                                 </tbody>
                             </table>
