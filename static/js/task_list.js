@@ -56,6 +56,8 @@ $(document).ready(function(){
 function bindMyModalClick(){
     $("#myModal").on("hidden.bs.modal", function() {
         $("#detail_win").empty().hide();
+        $("#assign_win").hide();
+        $("#assign_win :input").val("");
         $("#task_form").hide();
         $("#task_form :input").val("");
         $("#modesavebtn").hide().off("click");
@@ -562,8 +564,8 @@ function getWorkers() {
             }
         });
     }).done(function () {
-        var  AssignWorkerInfo = '<option></option>';
-        var AssignCheckerInfo ='<option></option>';
+        var  AssignWorkerInfo ="";
+        var AssignCheckerInfo ="";
         console.log("checkerId:"+checkerId);
         for(var i=0;i<workersId.length;i++){
             AssignWorkerInfo += '<option>'+workersId[i]+'</option>';
@@ -572,14 +574,7 @@ function getWorkers() {
             AssignCheckerInfo += '<option>'+checkerId[j]+'</option>';
         };
 
-        AssignWorkerInfo ='<div>工人：<select class="form-control" id ="AssignWorker">'+
-            AssignWorkerInfo+
-            '</select></div>';
-
-        AssignCheckerInfo ='<div>检查员：<select class="form-control" id ="AssignChecker">'+
-            AssignCheckerInfo+
-            '</select></div>';
-
-        $("#assign_win").append(AssignWorkerInfo + AssignCheckerInfo);
+        $("#AssignWorker").append(AssignWorkerInfo);
+        $("#AssignChecker").append(AssignCheckerInfo);
     });
 }

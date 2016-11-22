@@ -35,6 +35,10 @@ body{
     background: rgba(232, 232, 232, 0.4);
 
 }
+#assign_win div{
+    margin: auto;
+    width: 200px;
+}
 .whitebg{
     height: 300px;
     background: rgba(255, 255, 255,1);
