@@ -67,6 +67,7 @@ function DoSendLoginInfo() {
         alert("请输入用户名和密码");
     }
     if((workerId!="")&&(password!="")){
+        save();
         $.get(URL_LOGIN, {Command: CMD_LOGIN, Worker: workerId, Password: password}, function (data) {
             $.each(data, function (key, value) {
                 if (key == "Errcode") {
