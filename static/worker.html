@@ -104,59 +104,57 @@
 </div>
 <!-- 模态框（Modal）end -->
 <div class="container">
-  <div class="row" id="myherder" >
+  <div class="row">
+    <div class="col-md-12" id="myherder">
+    </div>
   </div>
-  <div class="col-md-2">
-    <div class="row">
-      <div class="col-md-12 whitebg">
+  <div class="row">
+    <div class="col-md-2">
+      <div class="left-panel">
         <div id="login_info">
-        </div><hr>
+        </div>
         <div class="nav" id="my_menu">
           <ul class="nav nav-pills nav-stacked">
-              <li><a href="./index.html">主页</a></li>
-              <li class="active"><a href="./worker.html">用户管理</a></li>
-              <li><a href="./task_list.html">任务管理</a></li>
-            </ul>
-          </div>
+          <li><a href="./index.html">主页</a></li>
+          <li class="active"><a href="./worker.html">用户管理</a></li>
+          <li><a href="./task_list.html">任务管理</a></li>
+          </ul>
         </div>
       </div>
     </div>
-    <div class="col-md-10 column">
-      <div class="row">
-	  	<div class="col-md-12">
-          <div class="panel panel-primary">
-            <div class="panel-heading">
-              <h3 class="panel-title">
-                员工列表
-              </h3>
-            </div>
-            <div class="panel-body">
-              <div id="user_table">
-                <table class="table table-bordered table-hover table-condensed">
-                  <thead>
-                  <tr>
-                    <th>工号</th>
-                    <th>中文名</th>
-                    <th>性别</th>
-                    <th>角色</th>
-                    <th>入职时间</th>
-                    <!--               <th>离职时间</th> -->
-                    <th></th>
-                  </tr>
-                  </thead>
-                  <tbody id="user_list">
-                  </tbody>
-                </table>
-              </div>
-              <br><hr>
-              <button style="display:none" onclick="addClickAction()" class="btn btn-default navbar-btn" id="add" data-toggle="modal" data-target="#myModal">添加</button>
-            </div>
+    <div class="col-md-10">
+      <div class="panel panel-primary">
+        <div class="panel-heading">
+          <h3 class="panel-title">
+            员工列表
+          </h3>
+        </div>
+        <div class="panel-body">
+          <div id="user_table">
+            <table class="table table-bordered table-hover table-condensed">
+              <thead>
+                <tr>
+                  <th>工号</th>
+                  <th>中文名</th>
+                  <th>性别</th>
+                  <th>角色</th>
+                  <th>入职时间</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody id="user_list">
+              </tbody>
+            </table>
           </div>
+          <br>
+          <button style="display:none" onclick="addClickAction()" class="btn btn-default navbar-btn" id="add" data-toggle="modal" data-target="#myModal">添加</button>
         </div>
       </div>
     </div>
   </div>
-  <div class="row" id="myfooter" >
+  <div class="row">
+    <div class="col-md-12" id="myfooter">
+    </div>
   </div>
 </div>
 </body>
