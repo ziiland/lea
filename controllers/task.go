@@ -61,22 +61,22 @@ func createTaskTableItemForTest() {
 	task.SponsorId = "ZLD00001"
 	task.FarmId = "SHA001"
 	task.CellId = "000A0001"
-	task.PatchId = "B"
+	task.PatchId = "N"
 	task.CreateTime = time.Now().Unix()
 	task.Type = 1;
-	task.TaskId = genTaskId("SHA01A", "000A0001", "B")
+	task.TaskId = genTaskId("SHA01A", "000A0001", "N")
 	models.InsertTaskTableItem(task)
 
-	task.TaskId = genTaskId("SHA01A", "000A0001", "B")
+	task.TaskId = genTaskId("SHA01A", "000A0001", "S")
 	models.InsertTaskTableItem(task)
 
-	task.TaskId = genTaskId("SHA01A", "000A0001", "B")
+	task.TaskId = genTaskId("SHA01A", "000A0001", "N")
 	models.InsertTaskTableItem(task)
 }
 
 func createTaskLogTableItemForTest() {
 	log := models.NewZldTaskLogDBData()
-	log.TaskId = "SHA01A000A0001B14768647080000000"
+	log.TaskId = "SHA01A000A0001N14768647080000000"
 	log.Action = "Create" 
 	log.OperatorId = "williamzhang"
 	log.ActionTime = time.Now().Unix() - 367890
