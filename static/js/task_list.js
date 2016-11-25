@@ -41,8 +41,6 @@ function SearchCmdParaConstructor() {
 
 ///////////////////////////////////////////////////////////////////////////////
 $(document).ready(function(){
-    displayFooter();
-    displayHeader();
     $.when(getDataFromBackend()).done(function(){
         getTaskList();
         console.log("first login=",gLoginInfo.title);
@@ -50,7 +48,31 @@ $(document).ready(function(){
     });
     bindMyModalClick();
     searchAction();
+    initDate();
 });
+//init 时间插件
+function initDate() {
+    $("#starttime").datetimepicker({
+        language:  'zh-CN',
+        weekStart: 1,
+        todayBtn:  1,
+        autoclose: 1,
+        todayHighlight: 1,
+        startView: 2,
+        minView: 2,
+        forceParse: 0
+    });
+    $("#endtime").datetimepicker({
+        language:  'zh-CN',
+        weekStart: 1,
+        todayBtn:  1,
+        autoclose: 1,
+        todayHighlight: 1,
+        startView: 2,
+        minView: 2,
+        forceParse: 0
+    });
+}
 //绑定模态框关闭事件
 function bindMyModalClick(){
     $("#myModal").on("hidden.bs.modal", function() {
@@ -193,13 +215,10 @@ function PrintLog(data) {
             comment = value;
         }
     });
-
-        var logInfo ='<li>'+actiontime+','+operate+','+action+','+comment+'</li>';
-
-
-
+    var date = new Date(actiontime*1000);
+    actiontime = date.getFullYear()+"-"+(date.getMonth()+1)+"-"+date.getDate();
+    var logInfo ='<li>'+actiontime+','+operate+','+action+','+comment+'</li>';
     return logInfo;
-
     //console.log("Print Log: Id=" + id + ", Action=" + action + ", Operate=" + operate + ", ActionTime=" + actiontime + ", comment=" + comment);
 }
 //查询并显示任务详情,以及log信息
@@ -220,7 +239,7 @@ function TaskDetailsAction(o){
                     });
                 }
             });
-    }).done(function () {
+    }).always(function () {
             console.log("logInfo=" + logInfo);
 
             logInfo = '<ul>'+ logInfo+ '</ul>'
@@ -228,7 +247,17 @@ function TaskDetailsAction(o){
             console.log("logInfo=" + logInfo);
             var obj=tasks[index-1];
             for(item in obj){
-                task_details_info +="<tr><td>"+item+"</td><td>"+obj[item]+"</td><tr>";
+                if((item == KEY_TASK_CREATETIME)||(item == KEY_TASK_STARTTIME)||(item == KEY_TASK_ENDTIME)||(item == KEY_TASK_CHECKTIME)){
+                    if(obj[item] != 0){
+                        var date = new Date(obj[item] * 1000);
+                        var showdate = date.getFullYear() +"-"+(date.getMonth()+1)+"-"+date.getDate();
+                        task_details_info +="<tr><td>"+item+"</td><td>"+showdate+"</td><tr>";
+                    }else{
+                        task_details_info +="<tr><td>"+item+"</td><td>"+obj[item]+"</td><tr>";
+                    }
+                }else {
+                    task_details_info += "<tr><td>" + item + "</td><td>" + obj[item] + "</td><tr>";
+                }
             }
             task_details_info +='<tr>'+'<td colspan="2" style="text-align: left"><label>logInfo:</label>'+logInfo+'</td></tr>';
             task_details_info= '<table class="table table-bordered table-hover table-condensed"><tbody>'+
@@ -466,9 +495,13 @@ function searchAction() {
 
         console.log("type: stime=" + typeof(stime) + ", etime=" + typeof(etime) + ", worker=" + typeof(worker)
             + ", state=" + typeof(state) + ", farm=" + typeof(farm));
-
         tasks.length = 0;
         $("#task_list").empty();
+
+        stime = ((new Date(stime)).getTime())/1000;
+        etime = ((new Date(etime)).getTime())/1000;
+        console.log("stime="+ stime ,"etime=" + etime);
+
         $("#search_table :input").val("");
         $.get(URL_TASK, {Command:CMD_LOAD_TASK, STime:stime, ETime:etime, Worker:worker, State:state, Farm:farm, Cell:"", Patch:""}, function(data){
             $.each(data, function(key, value){

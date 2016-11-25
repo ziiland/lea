@@ -6,10 +6,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
     <title>任务列表</title>
     <link rel="stylesheet" href="./bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="./bootstrap/css/bootstrap-datetimepicker.min.css">
     <script src="./js/respond.min.js"></script>
     <script src="./js/html5shiv.js"></script>
     <script src="./js/jquery-1.11.3.min.js"></script>
     <script src="./bootstrap/js/bootstrap.min.js"></script>
+    <script src="./bootstrap/js/bootstrap-datetimepicker.min.js"></script>
+    <script src="./bootstrap/js/bootstrap-datetimepicker.zh-CN.js"></script>
     <link rel="stylesheet" type="text/css" href="./css/mystyle.css">
     <script src="./js/common.js"></script>
     <script src="./js/task_list.js"></script>
@@ -97,7 +100,7 @@
 <!-- 模态框（Modal）end -->
 <div class="container">
 	<div class="row" >
-		<div class="col-md-12" id="myherder" >
+		<div class="col-md-12" id="myheader" >
 		</div>
 	</div>
 	<div class="row">
@@ -107,10 +110,10 @@
                 </div>
                 <div class="nav" id="my_menu">
                     <ul class="nav nav-pills nav-stacked">
-                    <li><a href="./index.html">主页</a></li>
-                    <li><a href="./worker.html">用户管理</a></li>
-                    <li class="active"><a href="./task_list.html">任务管理</a></li>
-                </ul>
+                        <li><a href="./index.html">主页</a></li>
+                        <li><a href="./worker.html">用户管理</a></li>
+                        <li class="active"><a href="./task_list.html">任务管理</a></li>
+                    </ul>
                 </div>
             </div>
 		</div>
@@ -124,35 +127,41 @@
                             </h3>
                         </div>
                         <div class="panel-body">
-                            <div id="search_table">
-                                <div class="input-group">
-                                    <span class="input-group-addon">时间</span>
-                                    <input type="date" class="form-control" id="starttime">
-                                    <input type="date" class="form-control" id="endtime">
-                                </div>
-                                <div class="input-group">
-                                    <span class="input-group-addon">工号:</span>
-                                    <input type="text" class="form-control" placeholder="" id="searchworkerid">
-                                </div>
-                                <div class="input-group">
-                                    <span class="input-group-addon">状态:</span>
-                                    <select class="form-control" id ="searchtype">
-                                    <option></option>
-                                    <option value="Created">已创建</option>
-                                    <option value="Assigned">已分配</option>
-                                    <option value="Started">进行中</option>
-                                    <option value="Finished">已完成</option>
-                                    <option value="Checked">已检查</option>
-                                    <option value="Closed">已关闭</option>
-                                    <option value="Canceled">已取消</option>
-                                    <option value="Archived">已归档</option>
-                                    </select>
-                                </div>
-                                <div class="input-group">
-                                    <span class="input-group-addon">田块:</span>
-                                    <input type="text" class="form-control" placeholder="" id="searchfarmid">
-                                </div>
-                                <button type="button" class="btn btn-info"id="searchBtn">Search</button>
+                            <div class="form-inline" id="search_table">
+                                <dl class="form-group">
+                                    <dt>开始日期:</dt>
+                                    <dd><input type="text" class="form-control" id="starttime" placeholder="选择开始时间" data-date-format="yyyy/mm/dd"></dd>
+                                </dl>
+                                <dl class="form-group">
+                                    <dt>结束日期:</dt>
+                                    <dd><input type="text" class="form-control" id="endtime" placeholder="选择结束时间" data-date-format="yyyy/mm/dd"></dd>
+                                </dl>
+                                <dl class="form-group">
+                                    <dt>工号:</dt>
+                                    <dd><input type="text" class="form-control" id="searchworkerid"></dd>
+                                </dl>
+                                <dl class="form-group">
+                                    <dt>状态:</dt>
+                                    <dd><select class="form-control" id ="searchtype">
+                                            <option></option>
+                                            <option value="Created">已创建</option>
+                                            <option value="Assigned">已分配</option>
+                                            <option value="Started">进行中</option>
+                                            <option value="Finished">已完成</option>
+                                            <option value="Checked">已检查</option>
+                                            <option value="Closed">已关闭</option>
+                                            <option value="Canceled">已取消</option>
+                                            <option value="Archived">已归档</option>
+                                    </select></dd>
+                                </dl>
+                                <dl class="form-group">
+                                    <dt>田块:</dt>
+                                    <dd><input type="text" class="form-control"id="searchfarmid"></dd>
+                                </dl>
+                                <dl class="form-group">
+                                    <dt>&nbsp</dt>
+                                    <dd><button type="button" class="btn btn-info" id="searchBtn">Search</button></dd>
+                                </dl>
                             </div>
                         </div>
                     </div>

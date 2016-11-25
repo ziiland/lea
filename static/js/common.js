@@ -85,7 +85,14 @@ var gTaskTypes = ["翻地", "播种", "浇水", "施肥", "搭架子", "移栽",
 var gRoleDes = {"Admin":"管理员", "Manager":"经理", "Worker":"职员"};
 var gLoginInfo = {workerId:"", title:""};
 ///////////////////////////////////////////////////////////////////////////////
+$(function() {
+    var header = '<h1>Ziiland生产管理软件 <small>v1.0</small></h1>';
+    var footer = '版权信息：寸田尺园网络科技(上海)有限公司';
 
+    //显示页头和页尾
+    $("#myheader").append(header);
+    $("#myfooter").append(footer);
+});
 //获取登录信息,并显示。
 function getDataFromBackend() {
     var isLogin = $.get(URL_TASK, {Command:CMD_LOAD_PARA}, function(data){
@@ -106,36 +113,17 @@ function getDataFromBackend() {
         } else {
             console.log("login on");
             //显示登录信息
-            displayWorkerId();
+            var Info ='您好，'+ gLoginInfo.workerId+ ',<a href="javascript:void(0);" onclick="dropoutpage()">注销</a>';
+            $("#login_info").append(Info);
+            if (gLoginInfo.title == STR_ADMIN){
+                var priceMenu = '<li><a href="./price.html">价格管理</a></li>'
+                //显示price Menu
+                $("#my_menu").append(priceMenu);
+            }
         }
     });
     return isLogin;
 }
-
-
-//显示登录的用户
-function displayWorkerId() {
-    var Info ='您好，'+ gLoginInfo.workerId+ ',<a href="javascript:void(0);" onclick="dropoutpage()">注销</a>';
-
-    $("#login_info").append(Info);
-}
-
-//显示页头
-function  displayHeader() {
-    var herder =  '<h1 style="text-align:center">Ziiland生产管理软件 <small>v1.0</small></h1>';
-
-    $("#myherder").append(herder);
-}
-
-//显示页脚
-function  displayFooter() {
-    var footer = '<div class="col-md-12 column text-center"> ' +
-                    '版权信息：寸田尺园网络科技(上海)有限公司' +
-                '</div>';
-
-    $("#myfooter").append(footer);
-}
-
 //退出登录
 function dropoutpage() {
     $.post(URL_TASK, {Command:CMD_UNLOAD}, function(){

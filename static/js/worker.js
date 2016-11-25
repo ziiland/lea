@@ -4,8 +4,6 @@ var gWrokerKey = {"WorkerId":"工号", "Password":"密码", "Name":"姓名"
                 , "CheckInTime":"入职时间", "CheckOutTime":"离职时间", "Comment":"备注"};
 ///////////////////////////////////////////////////////////////////////////////
 $(document).ready(function(){
-    displayFooter();//显示页头
-    displayHeader();//显示页尾
     $.when(getDataFromBackend()).done(function(){
         getWorkersInfo();
         displayAddButton();

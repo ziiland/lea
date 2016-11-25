@@ -13,14 +13,10 @@ body{
     text-align: center;
     vertical-align: middle;
 }
-#search_table div{
+#search_table input{
     width: 170px;
-    margin-left: 10px;
-    float: left;
 }
-#search_table button{
-    margin-left: 15px;
-}
+
 #login_info{
     text-align: center;
     margin-top: 15px;
@@ -34,12 +30,14 @@ body{
     text-align: center;
     vertical-align: middle;
 }
-#myherder{
+#myheader{
     color: white;
+    text-align: center;
     text-shadow:#000 1px 0 0,#000 0 1px 0,#000 -1px 0 0,#000 0 -1px 0;
 }
 #myfooter{
     font-size: medium;
+    text-align: center;
     color: white;
     text-shadow:#000 1px 0 0,#000 0 1px 0,#000 -1px 0 0,#000 0 -1px 0;
 
@@ -47,6 +45,7 @@ body{
 #form_login{
     margin-top: 100px;
     padding: 20px;
+    margin-bottom: 15px;;
     border-radius: 5px;
     background: rgba(232, 232, 232, 0.4);
 
@@ -58,7 +57,6 @@ body{
 .left-panel{
     background: rgba(255, 255, 255,1);
     border-radius: 5px;
-    margin-bottom: 15px;
     border-style: solid;
     border-width: 1px;
     border-color: #003eff;

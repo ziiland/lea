@@ -4,8 +4,6 @@ var page = "";
 var workerId = "";
 var password = "";
 $(document).ready(function(){
-    displayFooter();
-    displayHeader();
     getCookies();
     AutoCursorMove();
 });
