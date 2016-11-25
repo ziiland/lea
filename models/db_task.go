@@ -79,7 +79,7 @@ func DoInsertTaskTableItem(item *ZldTaskData) {
 	s := fmt.Sprintf("INSERT INTO `%s`", ZLD_TASK_TBL_NAME)
 	s = fmt.Sprintf("%s (`TaskId`, `SponsorId`, `FarmId`, `CellId`, `PatchId`, `WorkerId`, `CheckerId`, `State`, `Type`, `CreateTime`, `StartTime`, `EndTime`, `CheckTime`, `Score`, `UserComment`, `Comment`)", s)
 	s = fmt.Sprintf("%s VALUES ", s)
-	s = fmt.Sprintf("%s ('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%v', '%v', '%v', '%v', '%v', '%v', '%s', '%s');", s, item.TaskId, item.SponsorId, item.FarmId, item.CellId, item.PatchId, item.WorkerId, item.CheckerId, common.ZLD_TASK_STATE_CREATED, item.Type, time.Now().Unix(), item.StartTime, item.EndTime, item.CheckTime, item.Score, item.UserComment, item.Comment)
+	s = fmt.Sprintf("%s ('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%v', '%v', '%v', '%v', '%v', '%v', '%s', '%s');", s, item.TaskId, item.SponsorId, item.FarmId, item.CellId, item.PatchId, item.WorkerId, item.CheckerId, item.State, item.Type, time.Now().Unix(), item.StartTime, item.EndTime, item.CheckTime, item.Score, item.UserComment, item.Comment)
 	//fmt.Println("s=", s)
 
 	o := orm.NewOrm()
@@ -305,38 +305,46 @@ func SelectTaskTableItemsWithTaskId(taskid string)(*ZldTaskData, error) {
 func SelectTaskTableItemWithConds(stime, etime int64, worker, state, farm, cell, patch string) ([]ZldTaskData, error){
 	//var cond bool = false;
 	s := fmt.Sprintf("SELECT * FROM `%s`", ZLD_TASK_TBL_NAME)
-	s = fmt.Sprintf("%s WHERE (", s)
 	//fmt.Println("s=", s)
 
+	var cond string = ""
 	// state always should be a condition
-	if state == "" {
-		s = fmt.Sprintf("%s `State` != '%s' AND `State` != '%s'", s, common.ZLD_TASK_STATE_CLOSED, common.ZLD_TASK_STATE_CANCELED)
-	} else {
-		s = fmt.Sprintf("%s `State` = '%s'", s, state)
-	}	
+	if worker != common.ZLD_STR_ADMIN {
+		if state == "" {
+			cond = fmt.Sprintf("%s `State` != '%s' AND `State` != '%s'", cond, common.ZLD_TASK_STATE_CLOSED, common.ZLD_TASK_STATE_CANCELED)
+		} else {
+			cond = fmt.Sprintf("%s `State` = '%s'", cond, state)
+		}		
+	}
 	//fmt.Println("s=", s)
 
 	if stime > 0 {
-		s = fmt.Sprintf("%s AND `CreateTime` > %v", s, stime)
+		cond = fmt.Sprintf("%s AND `CreateTime` > %v", cond, stime)
 		if etime > 0 {
-			s = fmt.Sprintf("%s AND `CreateTime` < %v", s, etime)
+			cond = fmt.Sprintf("%s AND `CreateTime` < %v", cond, etime)
 		}
 	}
 
 	if farm != "" {
-		s = fmt.Sprintf("%s AND `FarmId` = '%s'", s, farm)
+		cond = fmt.Sprintf("%s AND `FarmId` = '%s'", cond, farm)
 		if cell != "" {
-			s = fmt.Sprintf("%s AND `CellId` = '%s'", s, cell)
+			cond = fmt.Sprintf("%s AND `CellId` = '%s'", cond, cell)
 			if patch != "" {
-				s = fmt.Sprintf("%s AND `PatchId` = '%s'", s, patch)
+				cond = fmt.Sprintf("%s AND `PatchId` = '%s'", cond, patch)
 			}
 		}
 	}
 
-	if worker != "" {
-		s = fmt.Sprintf("%s AND `WorkerId` = '%s'", s, worker)
+	if worker != "" && worker != common.ZLD_STR_ADMIN {
+		cond = fmt.Sprintf("%s AND `WorkerId` = '%s'", cond, worker)
 	}
-	s = fmt.Sprintf("%s );", s)
+
+	if cond == "" {
+		s = fmt.Sprintf("%s;", s)
+	} else {
+		s = fmt.Sprintf("%s WHERE (%s);", s, cond)
+		//s = fmt.Sprintf("%s );", s)
+	}
 	fmt.Println("s=", s)
 
 	var maps []orm.Params
@@ -361,7 +369,7 @@ func SelectTaskTableItemWithConds(stime, etime int64, worker, state, farm, cell,
 ///////////////////////////////////////////////////////////////////////////////
 func AssignTasksItem(ids []string, worker, checker string) (int64, error) {
 	s := fmt.Sprintf("UPDATE `%s` SET ", ZLD_TASK_TBL_NAME)
-	s = fmt.Sprintf("%s `WorkerId`= '%s' , `CheckerId` = '%s' WHERE (", s, worker, checker)
+	s = fmt.Sprintf("%s `WorkerId`= '%s' , `CheckerId` = '%s', `State` = '%s' WHERE (", s, worker, checker, common.ZLD_TASK_STATE_ASSIGNED)
 	for i, id := range ids {
 		if i > 0 {
 			s = fmt.Sprintf("%s OR ", s)

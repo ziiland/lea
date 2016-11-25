@@ -245,22 +245,20 @@ function TaskDetailsAction(o){
             logInfo = '<ul>'+ logInfo+ '</ul>'
 
             console.log("logInfo=" + logInfo);
-            var obj=tasks[index-1];
+            var obj = tasks[index-1];
             for(item in obj){
-                if((item == KEY_TASK_CREATETIME)||(item == KEY_TASK_STARTTIME)||(item == KEY_TASK_ENDTIME)||(item == KEY_TASK_CHECKTIME)){
-                    if(obj[item] != 0){
-                        var date = new Date(obj[item] * 1000);
-                        var showdate = date.getFullYear() +"-"+(date.getMonth()+1)+"-"+date.getDate();
-                        task_details_info +="<tr><td>"+item+"</td><td>"+showdate+"</td><tr>";
-                    }else{
-                        task_details_info +="<tr><td>"+item+"</td><td>"+obj[item]+"</td><tr>";
-                    }
-                }else {
-                    task_details_info += "<tr><td>" + item + "</td><td>" + obj[item] + "</td><tr>";
-                }
+                if (item == "CreateTime" || item == "StartTime" || item == "EndTime" || item == "CheckTime") {
+                    //console.log("Item == CreateTime");
+                    var t = new Date(obj[item] * 1000);
+                    var tStr = (obj[item]==0)?"":(t.getFullYear() + "-" + (t.getMonth() + 1) + "-" + t.getDate()); 
+                    //console.log("t = " + t + ", tStr = " + tStr);
+                    task_details_info += "<tr><td>" + item + "</td><td>" + tStr + "</td><tr>";
+                } else {
+                    task_details_info +="<tr><td>"+ item +"</td><td>"+ obj[item] +"</td><tr>";
+                }                
             }
             task_details_info +='<tr>'+'<td colspan="2" style="text-align: left"><label>logInfo:</label>'+logInfo+'</td></tr>';
-            task_details_info= '<table class="table table-bordered table-hover table-condensed"><tbody>'+
+            task_details_info = '<table class="table table-bordered table-hover table-condensed"><tbody>'+
                 task_details_info+'<tbody></table>';
 
             $("#myModalLabel").text("任务详情");

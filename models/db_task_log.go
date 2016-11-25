@@ -4,9 +4,10 @@ import(
 	"fmt"
 	"github.com/astaxie/beego/orm"
 	_ "github.com/go-sql-driver/mysql"
+	"lea/common"
 	"lea/zllogs"
 	"strconv"
-	//"time"
+	"time"
 )
 
 const ZLD_TASK_LOG_TBL_NAME string = "zld_task_log"
@@ -55,8 +56,13 @@ func DoInsertTaskLogTableItem(item *ZldTaskLogData) {
 	// insert data to the table
 	s := fmt.Sprintf("INSERT INTO `%s`", ZLD_TASK_LOG_TBL_NAME)
 	s = fmt.Sprintf("%s (`TaskId`, `Action`, `OperatorId`, `ActionTime`, `Comment`)", s)
-	s = fmt.Sprintf("%s VALUES ", s)
-	s = fmt.Sprintf("%s ('%s', '%s', '%s', '%v', '%s');", s, item.TaskId, item.Action, item.OperatorId, item.ActionTime, item.Comment)
+	s = fmt.Sprintf("%s VALUES ('%s', '%s', '%s'", s, item.TaskId, item.Action, item.OperatorId)
+	if item.ActionTime == 0 {
+		s = fmt.Sprintf("%s, '%v'", s, time.Now().Unix())
+	} else {
+		s = fmt.Sprintf("%s, '%v'", s, item.ActionTime)
+	}
+	s = fmt.Sprintf("%s , '%s');", s, item.Comment)
 	fmt.Println("s=", s)
 
 	o := orm.NewOrm()
@@ -185,4 +191,77 @@ func SelectTaskZLogTableItemsWithTaskId(taskid string) ([]ZldTaskLogData, error)
 
 	fmt.Println("logs=", logs)
 	return logs, err	
+}
+
+func DoAssignTaskLogItem(id, assigner, worker, checker string) {
+	item := NewZldTaskLogDBData()
+
+	item.TaskId = id
+	item.OperatorId = assigner
+	item.Action = common.ZLD_TASK_ACTION_ASSIGN
+	item.Comment = fmt.Sprintf("Worker:%s, Checker:%s", worker, checker)
+
+	InsertTaskLogTableItem(item)
+}
+
+func AssignTasksLogItem(ids []string, assigner, worker, checker string) {
+	for _, id := range ids {
+		DoAssignTaskLogItem(id, assigner, worker, checker)
+	}
+}
+
+func DoCheckTaskLogItem(id, checker string) {
+	item := NewZldTaskLogDBData()
+
+	item.TaskId = id
+	item.OperatorId = checker
+	item.Action = common.ZLD_TASK_ACTION_CHECK
+	//item.Comment = fmt.Sprintf("Worker:%s, Checker:%s", worker, checker)
+
+	InsertTaskLogTableItem(item)	
+}
+
+func CheckTasksLogItem(ids []string, checker string) {
+	for _, id := range ids {
+		DoCheckTaskLogItem(id, checker)
+	}
+}
+
+func DoArchiveTaskLogItem(id, worker string) {
+	item := NewZldTaskLogDBData()
+
+	item.TaskId = id
+	item.OperatorId = worker
+	item.Action = common.ZLD_TASK_ACTION_ARCHIVE
+
+	InsertTaskLogTableItem(item)		
+}
+
+func ArchiveTasksLogItem(ids []string, worker string) {
+	for _, id := range ids {
+		DoArchiveTaskLogItem(id, worker)
+	}	
+}
+
+func DoHandleStandardTaskLogItem(id, command, worker string) {
+	item := NewZldTaskLogDBData()
+
+	item.TaskId = id
+	item.OperatorId = worker
+	switch command {
+	case common.ZLD_CMD_CANCEL_TASK:
+		item.Action = common.ZLD_TASK_ACTION_CANCEL
+	case common.ZLD_CMD_CLOSE_TASK:
+		item.Action = common.ZLD_TASK_ACTION_CLOSE
+	case common.ZLD_CMD_ARCHIVE_TASK:
+		item.Action = common.ZLD_TASK_ACTION_ARCHIVE
+	}
+
+	InsertTaskLogTableItem(item)	
+}
+
+func HandleStandardTasksLogItem(ids []string, command, worker string) {
+	for _, id := range ids {
+		DoHandleStandardTaskLogItem(id, command, worker)
+	}
 }
