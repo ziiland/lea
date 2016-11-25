@@ -1,22 +1,16 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<meta charset="utf-8" />
-	<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1, user-scalable=no">
-	<title>任务管理</title>
-	<!-- 引入 Bootstrap -->
-	<!-- 新 Bootstrap 核心 CSS 文件 -->
-	<link rel="stylesheet" type="text/css" href="./css/bootstrap.min.css">
-	<!-- 可选的Bootstrap主题文件（一般不使用） -->
-	<link rel="stylesheet" type="text/css" href="./css/bootstrap-theme.min.css">
-	<!-- jQuery文件。务必在bootstrap.min.js 之前引入 -->
-	<script src="./js/jquery-1.11.3.min.js"></script>
-	<!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
-    <script src="./js/foundation-datepicker.js"></script>
-    <script src="./js/foundation-datepicker.zh-CN.js"></script>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <title>任务列表</title>
+    <link rel="stylesheet" href="./bootstrap/css/bootstrap.min.css">
+    <script src="./js/respond.min.js"></script>
+    <script src="./js/html5shiv.js"></script>
+    <script src="./js/jquery-1.11.3.min.js"></script>
+    <script src="./bootstrap/js/bootstrap.min.js"></script>
     <link rel="stylesheet" type="text/css" href="./css/mystyle.css">
-    <link rel="stylesheet" type="text/css" href="./css/foundation-datepicker.css">
-    <script src="./js/bootstrap.min.js"></script>
     <script src="./js/common.js"></script>
     <script src="./js/task_list.js"></script>
 </head>
@@ -34,6 +28,18 @@
 				<div hidden id="detail_win">
 				</div>
                 <div hidden id="assign_win">
+                    <div>
+                        <lable class="control-label">工人:</lable>
+                        <select class="form-control" id ="AssignWorker">
+                            <option></option>
+                        </select>
+                    </div><br>
+                    <div>
+                        <lable class="control-label">检查员:</lable>
+                        <select class="form-control" id ="AssignChecker">
+                            <option></option>
+                        </select>
+                    </div>
                 </div>
 				<form hidden class="form-horizontal" id="task_form">
                     <div class="form-group">
@@ -90,27 +96,25 @@
 </div>
 <!-- 模态框（Modal）end -->
 <div class="container">
-	<div class="row clearfix" >
+	<div class="row" >
 		<div class="col-md-12" id="myherder" >
 		</div>
 	</div>
 	<div class="row">
         <div class="col-md-2">
-			<div class="row">
-				<div class="col-md-12">
-                    <div id="login_info">
-                    </div><hr>
-					<div class="nav" id="my_menu">
-						<ul class="nav nav-pills nav-stacked">
-							<li><a href="./index.html">主页</a></li>
-							<li><a href="./worker.html">用户管理</a></li>
-							<li class="active"><a href="./task_list.html">任务管理</a></li>
-						</ul>
-					</div>
-				</div>
-			</div>
+            <div class="left-panel">
+                <div id="login_info">
+                </div>
+                <div class="nav" id="my_menu">
+                    <ul class="nav nav-pills nav-stacked">
+                    <li><a href="./index.html">主页</a></li>
+                    <li><a href="./worker.html">用户管理</a></li>
+                    <li class="active"><a href="./task_list.html">任务管理</a></li>
+                </ul>
+                </div>
+            </div>
 		</div>
-		<div class="col-md-10 column">
+		<div class="col-md-10">
 			<div class="row">
 				<div class="col-md-12">
                     <div class="panel panel-primary">
@@ -120,45 +124,36 @@
                             </h3>
                         </div>
                         <div class="panel-body">
-                            <table class="table" id="search_table">
-                                <tbody>
-                                    <tr>
-                                        <td>
-                                            <div class="input-group">
-                                                <span class="input-group-addon">时间:</span>
-                                                <input type="text" class="form-control" placeholder="开始" id="starttime">
-                                                <span class="input-group-addon">to</span>
-                                                <input type="text" class="form-control" placeholder="结束" id="endtime">
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <div class="input-group">
-                                                <span class="input-group-addon">工号:</span>
-                                                <input type="text" class="form-control" placeholder="" id="searchworkerid">
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <div class="input-group">
-                                                <span class="input-group-addon">状态:</span>
-                                                <select class="form-control" data-style="btn-primary" id ="searchtype">
-                                                <option></option>
-                                                <option>已创建</option><option>已分配</option>
-                                                <option>进行中</option><option>已完成</option>
-                                                <option>已检查</option><option>已关闭</option>
-                                                <option>已取消</option><option>已归档</option>
-                                                </select>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <div class="input-group">
-                                                <span class="input-group-addon">田块:</span>
-                                                <input type="text" class="form-control" placeholder="" id="searchfarmid">
-                                            </div>
-                                        </td>
-                                        <td><button type="button" class="btn btn-info"id="searchBtn">Search</button></td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                            <div id="search_table">
+                                <div class="input-group">
+                                    <span class="input-group-addon">时间</span>
+                                    <input type="date" class="form-control" id="starttime">
+                                    <input type="date" class="form-control" id="endtime">
+                                </div>
+                                <div class="input-group">
+                                    <span class="input-group-addon">工号:</span>
+                                    <input type="text" class="form-control" placeholder="" id="searchworkerid">
+                                </div>
+                                <div class="input-group">
+                                    <span class="input-group-addon">状态:</span>
+                                    <select class="form-control" id ="searchtype">
+                                    <option></option>
+                                    <option value="Created">已创建</option>
+                                    <option value="Assigned">已分配</option>
+                                    <option value="Started">进行中</option>
+                                    <option value="Finished">已完成</option>
+                                    <option value="Checked">已检查</option>
+                                    <option value="Closed">已关闭</option>
+                                    <option value="Canceled">已取消</option>
+                                    <option value="Archived">已归档</option>
+                                    </select>
+                                </div>
+                                <div class="input-group">
+                                    <span class="input-group-addon">田块:</span>
+                                    <input type="text" class="form-control" placeholder="" id="searchfarmid">
+                                </div>
+                                <button type="button" class="btn btn-info"id="searchBtn">Search</button>
+                            </div>
                         </div>
                     </div>
 				</div>
@@ -191,7 +186,7 @@
                                     </tbody>
                                 </table>
                             </div>
-                            <br><hr size=8>
+                            <br>
                             <div class="btn-group" id="taskBtn">
                             </div>
                         </div>
@@ -200,7 +195,9 @@
 			</div>
 		</div>
 	</div>
-	<div class="row clearfix" id="myfooter" >
+	<div class="row">
+        <div class="col-md-12" id="myfooter">
+        </div>
 	</div>
 </div>
 </body>

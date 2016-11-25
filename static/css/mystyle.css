@@ -1,26 +1,65 @@
 body{
+    background-image: url("../img/login-bg.jpg");
     background-repeat:no-repeat;
     background-size:cover;
     background-attachment: fixed;
 }
 
 #user_table,#tasks_table{
-    text-align: center;
     overflow:scroll;
     height:400px;
 }
-#tasks_table th,tr{
+#user_table th,td,#tasks_table  th,tr{
     text-align: center;
     vertical-align: middle;
 }
-#search_table{
-    width: auto;
-
+#search_table div{
+    width: 170px;
+    margin-left: 10px;
+    float: left;
 }
-
-#my_menu{
-    text-align: center;
+#search_table button{
+    margin-left: 15px;
 }
 #login_info{
     text-align: center;
+    margin-top: 15px;
+    padding-bottom: 15px;
+    border-bottom-style: solid;
+    border-bottom-width: 1px;
+    border-bottom-color: #003eff;
+}
+#my_menu{
+    margin: 4px;
+    text-align: center;
+    vertical-align: middle;
+}
+#myherder{
+    color: white;
+    text-shadow:#000 1px 0 0,#000 0 1px 0,#000 -1px 0 0,#000 0 -1px 0;
+}
+#myfooter{
+    font-size: medium;
+    color: white;
+    text-shadow:#000 1px 0 0,#000 0 1px 0,#000 -1px 0 0,#000 0 -1px 0;
+
+}
+#form_login{
+    margin-top: 100px;
+    padding: 20px;
+    border-radius: 5px;
+    background: rgba(232, 232, 232, 0.4);
+
+}
+#assign_win div{
+    margin: auto;
+    width: 200px;
+}
+.left-panel{
+    background: rgba(255, 255, 255,1);
+    border-radius: 5px;
+    margin-bottom: 15px;
+    border-style: solid;
+    border-width: 1px;
+    border-color: #003eff;
 }

@@ -17,8 +17,9 @@ function setModalEvent(){
     $("#myModal").on("hidden.bs.modal", function() {
         $("#worker_detail").empty().hide();
         $("#registered_from").hide();
-        $("#registered_from  input").val("");
-        $("#person_password").hide();//显示详情模态框内容
+        $("#registered_from :input").val("");
+        $("#person_password").hide();
+        $("#person_password :input").val("");
         $("#modesavebtn").hide().off("click");
 
     });

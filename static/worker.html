@@ -1,18 +1,15 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1, user-scalable=no">
-  <title>用户管理</title>
-  <!-- 引入 Bootstrap -->
-  <!-- 新 Bootstrap 核心 CSS 文件 -->
-  <link rel="stylesheet" type="text/css" href="./css/bootstrap.min.css">
-  <!-- 可选的Bootstrap主题文件（一般不使用） -->
-  <link rel="stylesheet" type="text/css" href="./css/bootstrap-theme.min.css">
-  <!-- jQuery文件。务必在bootstrap.min.js 之前引入 -->
-  <script src="./js/jquery-1.11.3.min.js"></script>
-  <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
-  <script src="./js/bootstrap.min.js"></script>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <title>用户管理</title>
+    <link rel="stylesheet" href="./bootstrap/css/bootstrap.min.css">
+    <script src="./js/respond.min.js"></script>
+    <script src="./js/html5shiv.js"></script>
+    <script src="./js/jquery-1.11.3.min.js"></script>
+    <script src="./bootstrap/js/bootstrap.min.js"></script>
   <script src="./js/common.js"></script>
   <script src="./js/worker.js"></script>
   <link rel="stylesheet" type="text/css" href="./css/mystyle.css">
@@ -25,7 +22,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-        <h4 class="modal-title text-center" id="myModalLabel">新增员工</h4>
+        <h4 class="modal-title text-center" id="myModalLabel"></h4>
       </div>
       <div class="modal-body">
         <div hidden id="worker_detail">
@@ -48,7 +45,7 @@
           <div class="form-group">
               <label class="col-sm-2 control-label">工号  </label>
             <div class="col-md-4">
-              <input type="text" placeholder="ZLD00001" class="form-control" id ="WorkerId">
+              <input type="text" class="form-control" id ="WorkerId">
             </div>
           </div>
           <div class="form-group">
@@ -67,8 +64,10 @@
             <label class="col-sm-2 control-label">性别</label>
             <div class="controls col-md-4">
               <select class="form-control" id ="Sex">
+                <option></option>
                 <option>男</option>
-                <option>女</option></select>
+                <option>女</option>
+              </select>
             </div>
           </div>
           <div class="form-group">
@@ -81,6 +80,7 @@
             <label class="col-sm-2 control-label">角色</label>
             <div class="controls col-md-4">
               <select class="form-control" id ="Title">
+                <option></option>
                 <option>Admin</option>
                 <option>Manager</option>
                 <option>Worker</option>
@@ -104,59 +104,57 @@
 </div>
 <!-- 模态框（Modal）end -->
 <div class="container">
-  <div class="row" id="myherder" >
+  <div class="row">
+    <div class="col-md-12" id="myherder">
+    </div>
   </div>
-  <div class="col-md-2">
-    <div class="row">
-      <div class="col-md-12">
+  <div class="row">
+    <div class="col-md-2">
+      <div class="left-panel">
         <div id="login_info">
-        </div><hr>
+        </div>
         <div class="nav" id="my_menu">
           <ul class="nav nav-pills nav-stacked">
-              <li><a href="./index.html">主页</a></li>
-              <li class="active"><a href="./worker.html">用户管理</a></li>
-              <li><a href="./task_list.html">任务管理</a></li>
-            </ul>
-          </div>
+          <li><a href="./index.html">主页</a></li>
+          <li class="active"><a href="./worker.html">用户管理</a></li>
+          <li><a href="./task_list.html">任务管理</a></li>
+          </ul>
         </div>
       </div>
     </div>
-    <div class="col-md-10 column">
-      <div class="row">
-	  	<div class="col-md-12">
-          <div class="panel panel-primary">
-            <div class="panel-heading">
-              <h3 class="panel-title">
-                员工列表
-              </h3>
-            </div>
-            <div class="panel-body">
-              <div id="user_table">
-                <table class="table table-bordered table-hover table-condensed">
-                  <thead>
-                  <tr>
-                    <th>工号</th>
-                    <th>中文名</th>
-                    <th>性别</th>
-                    <th>角色</th>
-                    <th>入职时间</th>
-                    <!--               <th>离职时间</th> -->
-                    <th></th>
-                  </tr>
-                  </thead>
-                  <tbody id="user_list">
-                  </tbody>
-                </table>
-              </div>
-              <br><hr>
-              <button style="display:none" onclick="addClickAction()" class="btn btn-default navbar-btn" id="add" data-toggle="modal" data-target="#myModal">添加</button>
-            </div>
+    <div class="col-md-10">
+      <div class="panel panel-primary">
+        <div class="panel-heading">
+          <h3 class="panel-title">
+            员工列表
+          </h3>
+        </div>
+        <div class="panel-body">
+          <div id="user_table">
+            <table class="table table-bordered table-hover table-condensed">
+              <thead>
+                <tr>
+                  <th>工号</th>
+                  <th>中文名</th>
+                  <th>性别</th>
+                  <th>角色</th>
+                  <th>入职时间</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody id="user_list">
+              </tbody>
+            </table>
           </div>
+          <br>
+          <button style="display:none" onclick="addClickAction()" class="btn btn-default navbar-btn" id="add" data-toggle="modal" data-target="#myModal">添加</button>
         </div>
       </div>
     </div>
   </div>
-  <div class="row" id="myfooter" >
+  <div class="row">
+    <div class="col-md-12" id="myfooter">
+    </div>
   </div>
 </div>
 </body>

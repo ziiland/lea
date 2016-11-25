@@ -50,21 +50,17 @@ $(document).ready(function(){
     });
     bindMyModalClick();
     searchAction();
-    initdate();
 });
 //绑定模态框关闭事件
 function bindMyModalClick(){
     $("#myModal").on("hidden.bs.modal", function() {
         $("#detail_win").empty().hide();
+        $("#assign_win").hide();
+        $("#assign_win :input").val("");
         $("#task_form").hide();
-        $("#task_form input").val("");
+        $("#task_form :input").val("");
         $("#modesavebtn").hide().off("click");
     });
-}
-//时间控件
-function initdate() {
-    $('#starttime').fdatepicker();
-    $('#endtime').fdatepicker();
 }
 //display tasksaction button
 function displayTaskAction() {
@@ -480,6 +476,8 @@ function searchAction() {
             + ", state=" + typeof(state) + ", farm=" + typeof(farm));
 
         tasks.length = 0;
+        $("#task_list").empty();
+        $("#search_table :input").val("");
         $.get(URL_TASK, {Command:CMD_LOAD_TASK, STime:stime, ETime:etime, Worker:worker, State:state, Farm:farm, Cell:"", Patch:""}, function(data){
             $.each(data, function(key, value){
                 console.log("key=" + key + ", value=" + value);
@@ -491,7 +489,7 @@ function searchAction() {
                 }
             });
         }).done(function () {
-            reLoadTasksList();
+            descriptionTask(tasks);
         });
     });
 }
@@ -568,8 +566,8 @@ function getWorkers() {
             }
         });
     }).done(function () {
-        var  AssignWorkerInfo = '<option></option>';
-        var AssignCheckerInfo ='<option></option>';
+        var  AssignWorkerInfo ="";
+        var AssignCheckerInfo ="";
         console.log("checkerId:"+checkerId);
         for(var i=0;i<workersId.length;i++){
             AssignWorkerInfo += '<option>'+workersId[i]+'</option>';
@@ -578,14 +576,7 @@ function getWorkers() {
             AssignCheckerInfo += '<option>'+checkerId[j]+'</option>';
         };
 
-        AssignWorkerInfo ='<div>工人：<select class="form-control" id ="AssignWorker">'+
-            AssignWorkerInfo+
-            '</select></div>';
-
-        AssignCheckerInfo ='<div>检查员：<select class="form-control" id ="AssignChecker">'+
-            AssignCheckerInfo+
-            '</select></div>';
-
-        $("#assign_win").append(AssignWorkerInfo + AssignCheckerInfo);
+        $("#AssignWorker").append(AssignWorkerInfo);
+        $("#AssignChecker").append(AssignCheckerInfo);
     });
 }
