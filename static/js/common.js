@@ -59,7 +59,10 @@ var CMD_BEGIN_TASK = "BeginTask";
 var CMD_SUBMIT_TASK = "SubmitTask";
 
 var CMD_LOAD_PRICE = "LoadPrice";
-
+var KEY_PRICES = "Prices"
+var CMD_ADD_RRICE = "AddPrice";
+var CMD_UPDATE_PRICE = "UpdatePrice"
+var CMD_DEL_PRICE = "DelPrice"
 // url
 var URL_LOGIN = "/land/login";
 var URL_WORKER = "/land/worker";
@@ -114,8 +117,9 @@ function getDataFromBackend() {
             console.log("login on");
             //显示登录信息
             var Info ='您好，'+ gLoginInfo.workerId+ ',<a href="javascript:void(0);" onclick="dropoutpage()">注销</a>';
+            var pageTitle = $('title').text();
             $("#login_info").append(Info);
-            if (gLoginInfo.title == STR_ADMIN){
+            if ((gLoginInfo.title == STR_ADMIN)&&(pageTitle != "价格管理")){
                 var priceMenu = '<li><a href="./price.html">价格管理</a></li>'
                 //显示price Menu
                 $("#my_menu").append(priceMenu);

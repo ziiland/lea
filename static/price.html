@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-    <title>用户管理</title>
+    <title>价格管理</title>
     <link rel="stylesheet" href="./bootstrap/css/bootstrap.min.css">
     <script src="./js/respond.min.js"></script>
     <script src="./js/html5shiv.js"></script>
@@ -25,12 +25,42 @@
                 <h4 class="modal-title text-center" id="myModalLabel"></h4>
             </div>
             <div class="modal-body">
-                <div hidden id="worker_detail">
-                </div>
+                <form class="form-horizontal" role="form" id="price_from">
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">名称</label>
+                        <div class="col-md-4">
+                            <input type="text" class="form-control" id ="name">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">种类</label>
+                        <div class="col-md-4">
+                            <input type="text" class="form-control" id ="kind">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">价格</label>
+                        <div class="col-md-4">
+                            <input type="text" class="form-control" id ="price">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">折扣</label>
+                        <div class="col-md-4">
+                            <input type="text" class="form-control" id ="discount">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">备注</label>
+                        <div class="col-md-4">
+                            <input type="text" class="form-control" id ="comment">
+                        </div>
+                    </div>
+                </form>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-                <button style="display:none" id="modesavebtn" type="button" class="btn btn-primary" onclick="">保存</button>
+                <button id="modalSaveBtn" type="button" class="btn btn-primary">保存</button>
             </div>
         </div><!-- /.modal-content -->
     </div><!-- /.modal -->
@@ -51,6 +81,7 @@
                         <li><a href="./index.html">主页</a></li>
                         <li><a href="./worker.html">用户管理</a></li>
                         <li><a href="./task_list.html">任务管理</a></li>
+                        <li class ="active"><a href="./price.html">价格管理</a></li>
                     </ul>
                 </div>
             </div>
@@ -59,28 +90,29 @@
             <div class="panel panel-primary">
                 <div class="panel-heading">
                     <h3 class="panel-title">
-                        价格
+                        价格列表
                     </h3>
                 </div>
                 <div class="panel-body">
-                    <div id="user_table">
+                    <div id="price_table">
                         <table class="table table-bordered table-hover table-condensed">
                             <thead>
                             <tr>
-                                <th>工号</th>
-                                <th>中文名</th>
-                                <th>性别</th>
-                                <th>角色</th>
-                                <th>入职时间</th>
-                                <th></th>
+                                <th>序号</th>
+                                <th>名称</th>
+                                <th>种类</th>
+                                <th>价格</th>
+                                <th>折扣</th>
+                                <th>备注</th>
+                                <th>变更</th>
                             </tr>
                             </thead>
-                            <tbody id="user_list">
+                            <tbody id="price_list">
                             </tbody>
                         </table>
                     </div>
                     <br>
-                    <button style="display:none" onclick="" class="btn btn-default navbar-btn" id="add" data-toggle="modal" data-target="#myModal">添加</button>
+                    <button class="btn btn-default navbar-btn" id="add" onclick="addBtnAction()">添加</button>
                 </div>
             </div>
         </div>

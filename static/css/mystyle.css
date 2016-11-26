@@ -5,11 +5,11 @@ body{
     background-attachment: fixed;
 }
 
-#user_table,#tasks_table{
+#user_table,#tasks_table,#price_table{
     overflow:scroll;
     height:400px;
 }
-#user_table th,td,#tasks_table  th,tr{
+#user_table th,td,#tasks_table th,tr,#price_table th,tr{
     text-align: center;
     vertical-align: middle;
 }
@@ -45,7 +45,7 @@ body{
 #form_login{
     margin-top: 100px;
     padding: 20px;
-    margin-bottom: 15px;;
+    margin-bottom: 15px;
     border-radius: 5px;
     background: rgba(232, 232, 232, 0.4);
 
@@ -56,6 +56,7 @@ body{
 }
 .left-panel{
     background: rgba(255, 255, 255,1);
+    margin-bottom: 15px;
     border-radius: 5px;
     border-style: solid;
     border-width: 1px;
