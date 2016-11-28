@@ -1,6 +1,10 @@
 var tasks = new Array();
 var selectedTasks = new Array();
 var errcode = 1;
+var gTaskKey = {"TaskId":"工作包号","SponsorId":"发起人","FarmId":"农场号","CellId":"单元号",
+                "PatchId":"小片号","WorkerId":"施工员工","CheckerId":"检查员工","State":"任务状态",
+                "Type":"任务种类","CreateTime":"创建时间","StartTime":"开始时间", "EndTime":"结束时间",
+                "CheckTime":"检查时间", "Score":"评分","UserComment":"用户备注","Comment":"备注"};
 ///////////////////////////////////////////////////////////////////////////////
 // core-object constructor
 function TaskConstructor(taskId, sponsorId, farmId, cellId, patchId, workerId, checkerId,
@@ -177,19 +181,23 @@ function descriptionTask(data) {
     $.each(data, function(index, value){
         var task_info='<td><input type="checkbox" onclick="setCheckedId(this)"></td>';
         for (item in value) {
-            if((item == KEY_TASK_TASKID) ||(item == KEY_TASK_FARMID)||
-                (item == KEY_TASK_WORKERID)||(item == KEY_TASK_CHECKERID) || (item == KEY_TASK_COMMENT)) {
-                task_info += "<td>" + value[item] + "</td>";
-            } else if(item == KEY_TASK_STATE){
-                //console.log("Task state=" + value[item] + "end");
-                task_info += "<td>" + gTaskStateDes[value[item]] + "</td>";
-            } else if(item == KEY_TASK_TYPE) {
-                //var id = value[item];
-                //console.log("id=" +id);
-                task_info += "<td>" + gTaskTypes[value[item]] + "</td>";
+            switch(item){
+                case KEY_TASK_TASKID:
+                case KEY_TASK_FARMID:
+                case KEY_TASK_WORKERID:
+                case KEY_TASK_CHECKERID:
+                //case KEY_TASK_COMMENT:
+                    task_info += "<td>" + value[item] + "</td>";
+                    break;
+                case KEY_TASK_STATE:
+                    task_info += "<td>" + gTaskStateDes[value[item]] + "</td>";
+                    break;
+                case KEY_TASK_TYPE:
+                    task_info += "<td>" + gTaskTypes[value[item]] + "</td>";
+                    break;
             }
         }
-        task_info = task_info+"<td><button class='btn btn-sm btn-info' onclick='TaskDetailsAction(this)' data-toggle='modal' data-target='#myModal'>详情</button></td>";
+        task_info +="<td><button class='btn btn-sm btn-info' onclick='TaskDetailsAction(this)' data-toggle='modal' data-target='#myModal'>详情</button></td>";
         task_info = "<tr>"+task_info+"</tr>";
         //增加任务行
         //console.log("task_info=" + task_info);
@@ -202,25 +210,29 @@ function PrintLog(data) {
     var operate = "";
     var actiontime = "";
     var comment = "";
-
-    $.each(data, function(key, value){
+    $.each(data, function(key, value) {
         //console.log("Print log: key=" + key + ", value=" + value);
-        if (key == KEY_LOG_ACTION) {
-            action = value;
-        } else if (key == KEY_LOG_OPERATORID) {
-            operate = value;
-        } else if (key == KEY_LOG_ACTIONTIME) {
-            actiontime = value;
-        } else if (key == KEY_TASK_COMMENT) {
-            comment = value;
+        var spaceStr = ",";
+        switch (key) {
+            case  KEY_LOG_ACTION:
+                action = (value == 0) ? "" : (spaceStr + value);
+                break;
+            case KEY_LOG_OPERATORID:
+                operate = (value == 0) ? "" : (spaceStr + value);
+                break;
+            case KEY_LOG_ACTIONTIME:
+                var date = new Date(value * 1000);
+                actiontime = date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate();
+                break;
+            case KEY_TASK_COMMENT:
+                comment = (value == 0) ? "" : (spaceStr + value);
+                break;
         }
     });
-    var date = new Date(actiontime*1000);
-    actiontime = date.getFullYear()+"-"+(date.getMonth()+1)+"-"+date.getDate();
-    var logInfo ='<li>'+actiontime+','+operate+','+action+','+comment+'</li>';
-    return logInfo;
-    //console.log("Print Log: Id=" + id + ", Action=" + action + ", Operate=" + operate + ", ActionTime=" + actiontime + ", comment=" + comment);
+    return '<li>' + actiontime + operate + action + comment + '</li>';
 }
+
+
 //查询并显示任务详情,以及log信息
 function TaskDetailsAction(o){
     var task_details_info = "";
@@ -239,33 +251,35 @@ function TaskDetailsAction(o){
                     });
                 }
             });
+        logInfo ='<tr><td colspan="2" style="text-align: left"><label>操作信息:</label><ul>'+logInfo +'</ul></td></tr>';
     }).always(function () {
-            console.log("logInfo=" + logInfo);
-
-            logInfo = '<ul>'+ logInfo+ '</ul>'
-
             console.log("logInfo=" + logInfo);
             var obj = tasks[index-1];
             for(item in obj){
-                if (item == "CreateTime" || item == "StartTime" || item == "EndTime" || item == "CheckTime") {
-                    //console.log("Item == CreateTime");
-                    var t = new Date(obj[item] * 1000);
-                    var tStr = (obj[item]==0)?"":(t.getFullYear() + "-" + (t.getMonth() + 1) + "-" + t.getDate()); 
-                    //console.log("t = " + t + ", tStr = " + tStr);
-                    task_details_info += "<tr><td>" + item + "</td><td>" + tStr + "</td><tr>";
-                } else {
-                    task_details_info +="<tr><td>"+ item +"</td><td>"+ obj[item] +"</td><tr>";
-                }                
+                var title = "";
+                var content = "";
+                switch(item){
+                    case KEY_TASK_CREATETIME:
+                    case KEY_TASK_STARTTIME:
+                    case KEY_TASK_ENDTIME:
+                    case KEY_TASK_CHECKTIME:
+                        title = gTaskKey[item];
+                        content = timeToDate(obj[item]);
+                        break;
+                    default:
+                        title = gTaskKey[item];
+                        content = obj[item];
+                        break;
+                }
+                task_details_info +="<tr><td>"+ title +"</td><td>"+ content +"</td><tr>";
             }
-            task_details_info +='<tr>'+'<td colspan="2" style="text-align: left"><label>logInfo:</label>'+logInfo+'</td></tr>';
             task_details_info = '<table class="table table-bordered table-hover table-condensed"><tbody>'+
-                task_details_info+'<tbody></table>';
+                task_details_info + logInfo + '<tbody></table>';
 
             $("#myModalLabel").text("任务详情");
             $("#detail_win").show().append(task_details_info); //显示详情模态框内容
     });
 }
-
 //任务的各种action
 var btnAction={
     //创建任务

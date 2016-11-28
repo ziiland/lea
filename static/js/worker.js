@@ -99,28 +99,29 @@ function getWorkersInfo() {
 //显示用户信息table
 function descriptionWorkers(workers) {
     var worker_info = "";
-    var btn_state = 'disabled="disabled"';
-    var bgcolor ="style='background-color: grey'";
+    var btn_state = "";
+    var bgcolor ="";
 
     for ( item in workers) {
-        //console.log("item =" + item + ", value=" + workers[item]);
-        if (item == KEY_TITLE) {
-            worker_info = worker_info + "<td>" + gRoleDes[workers[item]] + "</td>";
-        } else if(item == KEY_CHECKOUTTIME){
-            //console.log("btn_state =" + btn_state);
-            if(workers[item] == 0){
-                btn_state = "";
-                bgcolor ="style='background-color: white'";
-            }
-            //worker_info = worker_info + "<td>" + workers[item] + "</td>";
-        } else if(item == KEY_CHECKINTIME) {
-            var checkindate = new Date(workers[item] * 1000);
-            // console.log("year = " + checkindate.getFullYear() + ", month = " + (checkindate.getMonth() 
-            //     + 1) + ", day = " + checkindate.getDate());
-            worker_info += "<td>" + checkindate.getFullYear() + "-" + (checkindate.getMonth() + 1) + "-" 
-            + checkindate.getDate() + "</td>";
-        } else if ((item != KEY_PASSWORD) && (item != KEY_ID) && (item != "IdentifyNo") && (item != "Comment")) {
-            worker_info += "<td>" + workers[item] + "</td>";
+        switch (item){
+            case KEY_WORKERID:
+            case KEY_NAME:
+            case KEY_SEX:
+                worker_info += "<td>" +workers[item] + "</td>";
+                break;
+            case KEY_TITLE:
+                worker_info += "<td>" +gRoleDes[workers[item]] + "</td>";
+                break;
+            case KEY_CHECKOUTTIME:
+                if (workers[item] != 0){
+                    bgcolor ="style='background-color: grey'"
+                    btn_state = 'disabled="disabled"';
+                }
+                break;
+            case KEY_CHECKINTIME:
+                var time = timeToDate(workers[item]);
+                worker_info += "<td>" + time + "</td>";
+                break;
         }
     }
     console.log("gLoginInfo.title = "+ gLoginInfo.title)
@@ -131,22 +132,35 @@ function descriptionWorkers(workers) {
     var change_btn='<button class="btn btn-sm btn-warning"'+btn_state+' onclick="changeWorkerAction(this)" data-toggle="modal" data-target="#myModal">修改</button>';
     var reset_btn='<button class="btn btn-sm btn-warning" onclick="resetPassword(this)" data-toggle="modal" data-target="#myModal">恢复密码</button>';
     var changePassword_btn='<button class="btn btn-sm btn-info"onclick="changePersonPasswordUi(this)" data-toggle="modal" data-target="#myModal">修改密码</button>';
-    if(gLoginInfo.title == STR_ADMIN) {
-       if(workers[KEY_WORKERID] == STR_ADMIN) {
-           worker_info = worker_info + "<td>" + detail_btn + change_btn + "</td>"
-       }else{
-           worker_info = worker_info + "<td>" + detail_btn + del_btn+ change_btn + "</td>"
-       }
-    } else if(gLoginInfo.title == STR_MANAGER){
-        if (workers[KEY_WORKERID] == gLoginInfo.workerId.toUpperCase()) {
-            worker_info += "<td>" + detail_btn + changePassword_btn + "</td>";
-        } else {
-            worker_info = worker_info + "<td>" + detail_btn + reset_btn + "</td>"
-        }        
-    } else {
-        worker_info = worker_info +"<td>" + changePassword_btn +"</td>";
+    var showBtn ="";
+
+    switch (gLoginInfo.title){
+        case STR_ADMIN:
+            if(workers[KEY_WORKERID] == STR_ADMIN){
+                showBtn = detail_btn + change_btn;
+            }else{
+                showBtn = detail_btn + change_btn + del_btn;
+            }
+            break;
+        case STR_MANAGER:
+            if (workers[KEY_WORKERID] == gLoginInfo.workerId.toUpperCase()) {
+                showBtn = detail_btn + changePassword_btn;
+            }else{
+                if(workers[KEY_TITLE] == STR_MANAGER){
+                    showBtn = detail_btn;
+                }else if(workers[KEY_TITLE] == STR_WORKER){
+                    showBtn = detail_btn + reset_btn;
+                }
+            }
+            break;
+        case STR_WORKER:
+            showBtn = changePassword_btn;
+            break;
     }
-    $("#user_list").append("<tr "+bgcolor+">"+worker_info+"</tr>");
+    worker_info += "<td>" + showBtn +"</td>";
+    worker_info ="<tr "+bgcolor+">"+worker_info+"</tr>";
+
+    $("#user_list").append(worker_info);
 }
 
 //显示用户详情
@@ -157,26 +171,39 @@ function workerDetailsAction(o) {
 
     var obj = workers[index-1];
     for(item in obj){
-        if (item == KEY_TITLE) {
-            worker_details_info += "<tr><td>" + gWrokerKey[item] + "</td><td>" + gRoleDes[obj[item]] + "</td><tr>";
-        } else if (item == KEY_CHECKINTIME) {
-            var checkindate = new Date(obj[item] * 1000);
-            worker_details_info += "<tr><td>" + gWrokerKey[item] + "</td><td>" 
-                                 + checkindate.getFullYear() + "-" + (checkindate.getMonth() + 1)
-                                 + "-" + checkindate.getDate() + "</td><tr>";
-        } else if (item == KEY_CHECKOUTTIME) {
-            var checkoutdate = new Date(obj[item] * 1000);
-            worker_details_info += "<tr><td>" + gWrokerKey[item] + "</td><td>";
-            if (obj[item] != 0) {
-                worker_details_info += checkoutdate.getFullYear() + "-" + (checkoutdate.getMonth() + 1)
-                                 + "-" + checkoutdate.getDate();
-            }
-            worker_details_info += "</td><tr>";
-        } else if (item != KEY_PASSWORD && item != KEY_ID) {
-            worker_details_info += "<tr><td>" + gWrokerKey[item] + "</td><td>" + obj[item] + "</td><tr>";
-        }        
+        var title = ""
+        var content = "";
+        var show = true;
+        switch (item){
+            case KEY_TITLE:
+                title = gWrokerKey[item];
+                content = gRoleDes[obj[item]];
+                show = true;
+                break;
+            case KEY_WORKERID:
+            case KEY_NAME:
+            case KEY_SEX:
+            case KEY_IDENTIFYNO:
+            case KEY_COMMENT:
+                title = gWrokerKey[item];
+                content = obj[item];
+                show = true;
+                break;
+            case KEY_CHECKINTIME:
+            case KEY_CHECKOUTTIME:
+                title = gWrokerKey[item];
+                content = timeToDate(obj[item]);
+                show = true;
+                break;
+            default:
+                show = false;
+                break;
+        }
+        if(show){
+            worker_details_info += "<tr><td>" + title+ "</td><td>" + content + "</td><tr>";
+        }
     }
-    worker_details_info = '<table class="table table-bordered table-hover table-condensed bg-info"><tbody>'+
+    worker_details_info = '<table class="table table-bordered table-hover table-condensed"><tbody>'+
                          worker_details_info + '<tbody></table>';
 
     $("#myModalLabel").text("个人详情");
