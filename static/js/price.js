@@ -6,20 +6,20 @@ $(document).ready(function(){
     });
     bindMyModalClick();
 });
-//°ó¶¨Ä£Ì¬¿ò¹Ø±ÕÊÂ¼ş
+//ç»‘å®šæ¨¡æ€æ¡†å…³é—­äº‹ä»¶
 function bindMyModalClick(){
     $("#myModal").on("hidden.bs.modal", function() {
         $("#price_from :input").val("");
         $("#modalSaveBtn").off("click");
     });
 }
-//ÖØĞÂ¼ÓÔØÈ«²¿¼Û¸ñĞÅÏ¢
+//é‡æ–°åŠ è½½å…¨éƒ¨ä»·æ ¼ä¿¡æ¯
 function reLoadPrices() {
     $("#price_list").empty();
     prices.length = 0;
     LoadPriceInfo();
 }
-//¼ÓÔØÈ«²¿¼Û¸ñĞÅÏ¢
+//åŠ è½½å…¨éƒ¨ä»·æ ¼ä¿¡æ¯
 function LoadPriceInfo() {
     $.get(URL_PRICE, {Command:CMD_LOAD_PRICE},function (data) {
         $.each(data, function(key, value){
@@ -34,11 +34,11 @@ function LoadPriceInfo() {
         displayPriceTable();
     });
 }
-//ÏÔÊ¾È«²¿¼Û¸ñĞÅÏ¢
+//æ˜¾ç¤ºå…¨éƒ¨ä»·æ ¼ä¿¡æ¯
 function displayPriceTable() {
     var priceInfo = "";
-    var changeBtn = '<button class="btn btn-info btn-sm" onclick="changeBtnAction(this)" data-toggle="modal" data-target="#myModal">ĞŞ¸Ä</button>';
-    var dellBtn = '<button class="btn btn-danger btn-sm" onclick="dellBtnAction(this)">É¾³ı</button>';
+    var changeBtn = '<button class="btn btn-info btn-sm" onclick="changeBtnAction(this)" data-toggle="modal" data-target="#myModal">ä¿®æ”¹</button>';
+    var dellBtn = '<button class="btn btn-danger btn-sm" onclick="dellBtnAction(this)">åˆ é™¤</button>';
     console.log("prices=" + prices);
     $.each(prices,function (key,value) {
         for ( item in value) {
@@ -50,7 +50,7 @@ function displayPriceTable() {
     $("#price_list").append(priceInfo);
 
 }
-//ĞŞ¸Ä
+//ä¿®æ”¹
 function changeBtnAction(o) {
     var index = $(o).parent().parent().children("td:eq(0)").text();
     var priceInfo = prices[index-1];
@@ -64,13 +64,13 @@ function changeBtnAction(o) {
     $("#modalSaveBtn").on("click",function () {
         saveChangePrice();
     })
-    $("#myModalLabel").text("¼Û¸ñĞŞ¸Ä");
+    $("#myModalLabel").text("ä»·æ ¼ä¿®æ”¹");
 }
-//Ôö¼Ó
+//å¢åŠ 
 function addBtnAction() {
     $("#name").attr("readonly",false);
     $("#kind").attr("readonly",false);
-    $("#myModalLabel").text("¼Û¸ñĞŞ¸Ä");
+    $("#myModalLabel").text("ä»·æ ¼ä¿®æ”¹");
     $("#modalSaveBtn").on("click",function () {
         saveAddPrice();
     })
@@ -92,11 +92,11 @@ function saveChangePrice() {
         });
     }).done(function () {
         if (errcode == 1) {
-            alert("ĞŞ¸ÄÊ§°Ü");
+            alert("ä¿®æ”¹å¤±è´¥");
         } else {
             reLoadPrices();
             $("#myModal").modal("hide");
-            alert("ĞŞ¸Ä³É¹¦");
+            alert("ä¿®æ”¹æˆåŠŸ");
         }
     });
 }
@@ -117,20 +117,20 @@ function saveAddPrice() {
         });
     }).done(function () {
         if (errcode == 1) {
-            alert("±£´æÊ§°Ü");
+            alert("ä¿å­˜å¤±è´¥");
         } else {
             reLoadPrices();
             $("#myModal").modal("hide");
-            alert("±£´æ³É¹¦");
+            alert("ä¿å­˜æˆåŠŸ");
         }
     });
 }
-//É¾³ı
+//åˆ é™¤
 function dellBtnAction(o) {
     var index = $(o).parent().parent().children("td:eq(0)").text();
     var errcode ="";
-    //Ä¿Ç°Ïë·¨ÊÇ¸ù¾İidÀ´É¾³ı
-    $.post(URL_PRICE,{Command: CMD_DEL_PRICE,Id:index},function (data) {
+    //æ ¹æ®idæ¥åˆ é™¤
+    $.post(URL_PRICE,{Command: CMD_DEL_PRICE, Id:index},function (data) {
         $.each(data, function(key,value){
             if (key == KEY_ERRCODE) {
                 errcode = value;
@@ -138,10 +138,10 @@ function dellBtnAction(o) {
         });
     }).done(function () {
         if (errcode == 1) {
-            alert("É¾³ıÊ§°Ü");
+            alert("åˆ é™¤å¤±è´¥");
         } else {
             reLoadPrices();
-            alert("É¾³ı³É¹¦");
+            alert("åˆ é™¤æˆåŠŸ");
         }
     });
 }
