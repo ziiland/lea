@@ -137,19 +137,19 @@ function descriptionWorkers(workers) {
     switch (gLoginInfo.title){
         case STR_ADMIN:
             if(workers[KEY_WORKERID] == STR_ADMIN){
-                showBtn = detail_btn + change_btn;
+                showBtn = detail_btn +"&nbsp;"+ change_btn;
             }else{
-                showBtn = detail_btn + change_btn + del_btn;
+                showBtn = detail_btn +"&nbsp;"+ change_btn + "&nbsp;"+del_btn;
             }
             break;
         case STR_MANAGER:
             if (workers[KEY_WORKERID] == gLoginInfo.workerId.toUpperCase()) {
-                showBtn = detail_btn + changePassword_btn;
+                showBtn = detail_btn + "&nbsp;" + changePassword_btn;
             }else{
                 if(workers[KEY_TITLE] == STR_MANAGER){
                     showBtn = detail_btn;
                 }else if(workers[KEY_TITLE] == STR_WORKER){
-                    showBtn = detail_btn + reset_btn;
+                    showBtn = detail_btn + "&nbsp;" +reset_btn;
                 }
             }
             break;

@@ -53,7 +53,7 @@ function displayPriceTable() {
         for ( item in value) {
             priceInfo += "<td>" + value[item] + "</td>";
         }
-        priceInfo =  "<tr>"+ priceInfo + "<td>"+ changeBtn + dellBtn+"</td>"+"</tr>";
+        priceInfo =  "<tr>"+ priceInfo + "<td>"+ changeBtn+"&nbsp;"+ dellBtn+"</td>"+"</tr>";
     });
 
     $("#price_list").append(priceInfo);

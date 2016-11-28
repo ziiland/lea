@@ -6,6 +6,8 @@ var KEY_WORKERS = "Workers";
 var KEY_WORKERID = "WorkerId";
 var KEY_TITLE = "Title";
 var KEY_NAME = "Name";
+var KEY_SEX = "Sex";
+var KEY_IDENTIFYNO = "IdentifyNo";
 var KEY_FARM = "Farm";
 var KEY_TASKS = "Tasks";
 var KEY_COMMAND = "Command";
@@ -13,6 +15,7 @@ var KEY_PASSWORD = "Password";
 var KEY_LOGS = "Logs";
 var KEY_CHECKINTIME = "CheckInTime";
 var KEY_CHECKOUTTIME = "CheckOutTime";
+var KEY_COMMENT = "Comment";
 var KEY_ERRCODE = "Errcode";
 
 var KEY_TASK_TASKID = "TaskId";
