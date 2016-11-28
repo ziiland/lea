@@ -68,6 +68,7 @@ function changeBtnAction(o) {
     $("#kind").val(priceInfo.Kind).attr("readonly",true);
     $("#price").val(priceInfo.Price);
     $("#discount").val(priceInfo.Discount);
+    $("#show").val(priceInfo.Show);
     $("#comment").val(priceInfo.Comment);
 
     $("#modalSaveBtn").on("click",function () {
@@ -91,10 +92,11 @@ function saveChangePrice() {
     var kind = $("#kind").val();
     var price = $("#price").val();
     var discount = $("#discount").val();
+    var show = $("#show").val();
     var comment = $("#comment").val();
     var errcode ="";
 
-    var item = new PriceItemConstructor(name, kind, price, discount, "true", comment);
+    var item = new PriceItemConstructor(name, kind, price, discount, show, comment);
     var json = JSON.stringify(item);    
     $.post(URL_PRICE,{Command:CMD_UPDATE_PRICE, CmdPara:json},function (data) {
         $.each(data, function(key,value){
@@ -118,10 +120,11 @@ function saveAddPrice() {
     var kind = $("#kind").val();
     var price = $("#price").val();
     var discount = $("#discount").val();
+    var show = $("#show").val();
     var comment = $("#comment").val();
     var errcode = "";
 
-    var item = new PriceItemConstructor(name, kind, price, discount, "true", comment);
+    var item = new PriceItemConstructor(name, kind, price, discount, show, comment);
     var json = JSON.stringify(item);
     $.post(URL_PRICE,{Command: CMD_ADD_RRICE, CmdPara:json}, function (data) {
         $.each(data, function(key,value){
