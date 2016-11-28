@@ -8,6 +8,7 @@ import (
 	"lea/utils/simplejson"
 	"lea/zllogs"
 	"strconv"
+	"strings"
 	//"time"
 )
 
@@ -102,7 +103,7 @@ func handleAddPriceCmd(c *PriceController) {
 	if err := models.InsertPriceTableItem(price); err == nil {
 		// Add log
 		worker := (c.GetSession(common.ZLD_PARA_WORKER)).(string)
-		models.HandleStandardPriceLogItem(price.Kind, common.ZLD_CMD_ADD_RRICE, worker)
+		models.HandleStandardPriceLogItem(price.Kind, common.ZLD_CMD_ADD_RRICE, strings.ToUpper(worker))
 		item.Errcode = 0
 	}
 	c.Data["json"] = item
@@ -133,7 +134,7 @@ func handleUpdatePriceCmd(c *PriceController) {
 	if err := models.UpdatePriceItem(price); err == nil {
 		// update log
 		worker := (c.GetSession(common.ZLD_PARA_WORKER)).(string)
-		models.HandleStandardPriceLogItem(price.Kind, common.ZLD_CMD_UPDATE_PRICE, worker)	
+		models.HandleStandardPriceLogItem(price.Kind, common.ZLD_CMD_UPDATE_PRICE, strings.ToUpper(worker))	
 		item.Errcode = 0		
 	}	
 
@@ -149,7 +150,8 @@ func handleDeletePriceCmd(c *PriceController) {
 	if _, err := models.DeletePriceItem(kind); err == nil {
 		// delete log
 		worker := (c.GetSession(common.ZLD_PARA_WORKER)).(string)
-		models.HandleStandardPriceLogItem(kind, common.ZLD_CMD_DEL_PRICE, worker)			
+		//fmt.Println("action： deleter = ", strings.ToUpper(worker))
+		models.HandleStandardPriceLogItem(kind, common.ZLD_CMD_DEL_PRICE, strings.ToUpper(worker))			
 		item.Errcode = 0
 	}
 
