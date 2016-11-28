@@ -135,7 +135,7 @@ function getDataFromBackend() {
                 var priceMenu = '<li><a href="./price.html">价格管理</a></li>'
                 //显示price Menu
                 $("#my_menu").append(priceMenu);
-            }sdgsd
+            }
         }
     });
 }
