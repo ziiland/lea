@@ -110,7 +110,7 @@ $(function() {
 });
 //获取登录信息,并显示。
 function getDataFromBackend() {
-    $.get(URL_TASK, {Command:CMD_LOAD_PARA}, function(data){
+    var isLogin = $.get(URL_TASK, {Command:CMD_LOAD_PARA}, function(data){
         var login = "";
         $.each(data, function(key, value){
             if(key == KEY_LOGIN) {
@@ -138,6 +138,7 @@ function getDataFromBackend() {
             }
         }
     });
+    return isLogin;
 }
 //退出登录
 function dropoutpage() {
