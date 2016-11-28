@@ -17,6 +17,7 @@ type ZldPriceData struct {
 	Kind			string      // goods/service type
 	Price			float64
 	Discount		float64
+	Show            string      // mysql no boolean type, use string “true/false”
 	Comment   		string
 }
 
@@ -35,6 +36,7 @@ func CreateZldPriceTable() {
 	s = fmt.Sprintf("%s `Kind` varchar(32) NOT NULL DEFAULT '' COMMENT '种类',", s)
 	s = fmt.Sprintf("%s `Price` float NOT NULL DEFAULT 0.0 COMMENT '价格',", s)
 	s = fmt.Sprintf("%s `Discount` float NOT NULL DEFAULT 0.0 COMMENT '折扣',", s)
+	s = fmt.Sprintf("%s `Show` varchar(8) NOT NULL DEFAULT '' COMMENT '显示',", s)
 	s = fmt.Sprintf("%s `Comment` text NOT NULL DEFAULT '' COMMENT '备注'", s)
 	s = fmt.Sprintf("%s) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='价格表';", s)
 	//fmt.Println("s=", s)
@@ -51,12 +53,12 @@ func CreateZldPriceTable() {
 	}	
 }
 
-func DoInsertPriceTableItem(item *ZldPriceData) {
+func DoInsertPriceTableItem(item *ZldPriceData) error {
 	// insert data to the table
 	s := fmt.Sprintf("INSERT INTO `%s`", ZLD_PRICE_TBL_NAME)
-	s = fmt.Sprintf("%s (`Name`, `Kind`, `Price`, `Discount`, `Comment`)", s)
+	s = fmt.Sprintf("%s (`Name`, `Kind`, `Price`, `Discount`, `Show`, `Comment`)", s)
 	s = fmt.Sprintf("%s VALUES ", s)
-	s = fmt.Sprintf("%s ('%s', '%s', '%v', '%v', '%s');", s, item.Name, item.Kind, item.Price, item.Discount, item.Comment)
+	s = fmt.Sprintf("%s ('%s', '%s', '%v', '%v', '%s', '%s');", s, item.Name, item.Kind, item.Price, item.Discount, item.Show, item.Comment)
 	//fmt.Println("s=", s)
 
 	o := orm.NewOrm()
@@ -69,7 +71,9 @@ func DoInsertPriceTableItem(item *ZldPriceData) {
 		fmt.Printf("err=%v\n", err)
 		fmt.Println("mysql insert data have an ERROR!")
 		zllogs.WriteErrorLog("Insert a record to %s table ...... ERROR", ZLD_PRICE_TBL_NAME)
-	}		
+	}	
+
+	return err	
 }
 
 func AlreadyHavePriceItem(kind string) bool {
@@ -104,6 +108,7 @@ func SelectPriceTableItem(item *ZldPriceData) error{
 		item.Discount, _ = strconv.ParseFloat(discount, 64)
 
 		item.Name = (maps[0]["Name"]).(string)
+		item.Show = (maps[0]["Show"]).(string)
 		item.Comment = (maps[0]["Comment"]).(string)	
 		fmt.Println("SelectItem=", *item)
 	} else {
@@ -113,14 +118,17 @@ func SelectPriceTableItem(item *ZldPriceData) error{
 	return err	
 }
 
-func InsertPriceTableItem(item *ZldPriceData) {
+func InsertPriceTableItem(item *ZldPriceData) error {
+	var err error
 	// first, try to create the table
 	CreateZldPriceTable()
 
 	// No same sn item, do insert
 	if !AlreadyHavePriceItem(item.Kind) {
-		DoInsertPriceTableItem(item)
+		err = DoInsertPriceTableItem(item)
 	}
+
+	return err
 }
 
 func DecodePriceOrmParamsToData(para orm.Params) (item ZldPriceData){
@@ -135,6 +143,7 @@ func DecodePriceOrmParamsToData(para orm.Params) (item ZldPriceData){
 
 	item.Name = (para["Name"]).(string)
 	item.Kind = (para["Kind"]).(string)
+	item.Show = (para["Show"]).(string)
 	item.Comment = (para["Comment"]).(string)
 
 	return		
@@ -158,3 +167,54 @@ func QueryAllPriceTableItem() ([]ZldPriceData, error) {
 	fmt.Println("prices=", prices)
 	return prices, err
 }
+
+func QueryDisplayedPriceTableItem() ([]ZldPriceData, error) {
+	s := fmt.Sprintf("SELECT * FROM `%s` WHERE (`Show` = 'true');", ZLD_PRICE_TBL_NAME)
+	fmt.Println("s=", s)
+
+	var maps []orm.Params
+	o := orm.NewOrm()
+	num, err := o.Raw(s).Values(&maps)
+	//fmt.Printf("num=%d, maps=%v\n", num, maps)
+
+	prices := make([]ZldPriceData, num)
+	if err == nil && num > 0 {
+		for i, v := range maps {
+			prices[i] = DecodePriceOrmParamsToData(v)
+		}
+	}
+	fmt.Println("prices=", prices)
+	return prices, err
+}
+
+func DeletePriceItem(id string)(int64, error) {
+	s := fmt.Sprintf("DELETE FROM `%s`", ZLD_PRICE_TBL_NAME)
+	s = fmt.Sprintf("%s WHERE (`Kind` = '%s');", s, id)
+	fmt.Println("s=", s)
+
+	var maps []orm.Params
+	o := orm.NewOrm()
+	return o.Raw(s).Values(&maps)	
+}
+
+func UpdatePriceItem(item *ZldPriceData) error {
+	s := fmt.Sprintf("UPDATE `%s`", ZLD_PRICE_TBL_NAME)
+	s = fmt.Sprintf("%s SET ", s)
+	s = fmt.Sprintf("%s `Price` = '%v'", s, item.Price)
+	s = fmt.Sprintf("%s, `Discount` = '%v'", s, item.Discount)
+	s = fmt.Sprintf("%s, `Show` = '%s'", s, item.Show)
+	s = fmt.Sprintf("%s, `Comment` = '%s'", s, item.Comment)
+	s = fmt.Sprintf("%s WHERE (`Kind` = '%s');", s, item.Kind)
+	fmt.Println("s=", s)
+
+	o := orm.NewOrm()
+	_, err := o.Raw(s).Exec()
+	if err == nil {
+		zllogs.WriteDebugLog("Update record(Kind=%s) in table %s  ...... DONE", item.Kind, ZLD_PRICE_TBL_NAME)
+	} else {
+		zllogs.WriteErrorLog("Update record(Kind=%s) in table %s  ...... ERROR", item.Kind, ZLD_PRICE_TBL_NAME)
+	}
+
+	return err
+}
+

@@ -6,8 +6,6 @@ var KEY_WORKERS = "Workers";
 var KEY_WORKERID = "WorkerId";
 var KEY_TITLE = "Title";
 var KEY_NAME = "Name";
-var KEY_SEX = "Sex";
-var KEY_IDENTIFYNO = "IdentifyNo";
 var KEY_FARM = "Farm";
 var KEY_TASKS = "Tasks";
 var KEY_COMMAND = "Command";
@@ -15,7 +13,6 @@ var KEY_PASSWORD = "Password";
 var KEY_LOGS = "Logs";
 var KEY_CHECKINTIME = "CheckInTime";
 var KEY_CHECKOUTTIME = "CheckOutTime";
-var KEY_COMMENT = "Comment";
 var KEY_ERRCODE = "Errcode";
 
 var KEY_TASK_TASKID = "TaskId";
@@ -39,6 +36,9 @@ var KEY_LOG_ACTION = "Action";
 var KEY_LOG_OPERATORID = "OperatorId";
 var KEY_LOG_ACTIONTIME = "ActionTime";
 
+var KEY_PRICES = "Prices";
+
+///////////////////////////////////////////////////////////////////////////////
 // command
 var CMD_LOAD_PARA = "LoadPara";
 var CMD_LOAD_TASK = "LoadTask";
@@ -62,21 +62,24 @@ var CMD_BEGIN_TASK = "BeginTask";
 var CMD_SUBMIT_TASK = "SubmitTask";
 
 var CMD_LOAD_PRICE = "LoadPrice";
-var KEY_PRICES = "Prices"
 var CMD_ADD_RRICE = "AddPrice";
-var CMD_UPDATE_PRICE = "UpdatePrice"
-var CMD_DEL_PRICE = "DelPrice"
+var CMD_UPDATE_PRICE = "UpdatePrice";
+var CMD_DEL_PRICE = "DelPrice";
+
+///////////////////////////////////////////////////////////////////////////////
 // url
 var URL_LOGIN = "/land/login";
 var URL_WORKER = "/land/worker";
 var URL_TASK = "/land/task";
 var URL_PRICE = "/land/price";
 
+///////////////////////////////////////////////////////////////////////////////
 // event
 var EVT_HIDE_BTNADD = "HideBtnAdd";
 var EVT_PARA_LOADED = "ParaLoaded";
 var EVT_TASKS_LOADED = "TaskLoaded";
 
+///////////////////////////////////////////////////////////////////////////////
 // string
 var STR_DEFAULT_PWD = "888888";
 var STR_ADMIN = "Admin";
@@ -85,11 +88,14 @@ var STR_WORKER = "Worker";
 var STR_ON = "on";
 var STR_OFF = "off";
 
-//
+///////////////////////////////////////////////////////////////////////////////
 var gTaskStateDes = {Created:"已创建", Assigned:"已分配", Started:"进行中", Finished:"已完成", Checked:"已检查", Closed:"已关闭", Canceled:"已取消", Archived:"已归档"};
 var gTaskTypes = ["翻地", "播种", "浇水", "施肥", "搭架子", "移栽", "嫁接", "除草", "除虫", "收割", "快递"];
 var gRoleDes = {"Admin":"管理员", "Manager":"经理", "Worker":"职员"};
 var gLoginInfo = {workerId:"", title:""};
+
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 $(function() {
     var header = '<h1>Ziiland生产管理软件 <small>v1.0</small></h1>';

@@ -1,5 +1,14 @@
 var prices = new Array();
 ///////////////////////////////////////////////////////////////////////////////////////
+function PriceItemConstructor(name, kind, price, discount, show, comment) {
+    this.Name = name;
+    this.Kind = kind;
+    this.Show = show;
+    this.Price = price;
+    this.Discount = discount;
+    this.Comment = comment;
+}
+
 $(document).ready(function(){
     $.when(getDataFromBackend()).done(function(){
         LoadPriceInfo();
@@ -84,7 +93,10 @@ function saveChangePrice() {
     var discount = $("#discount").val();
     var comment = $("#comment").val();
     var errcode ="";
-    $.post(URL_PRICE,{Command:CMD_UPDATE_PRICE,Name:name,Kind:kind,Price:price,Discount:discount,Comment:comment},function (data) {
+
+    var item = new PriceItemConstructor(name, kind, price, discount, "true", comment);
+    var json = JSON.stringify(item);    
+    $.post(URL_PRICE,{Command:CMD_UPDATE_PRICE, CmdPara:json},function (data) {
         $.each(data, function(key,value){
             if (key == KEY_ERRCODE) {
                 errcode = value;
@@ -107,9 +119,11 @@ function saveAddPrice() {
     var price = $("#price").val();
     var discount = $("#discount").val();
     var comment = $("#comment").val();
-    var errcode ="";
+    var errcode = "";
 
-    $.post(URL_PRICE,{Command: CMD_ADD_RRICE,Name:name,Kind:kind,Price:price,Discount:discount,Comment:comment},function (data) {
+    var item = new PriceItemConstructor(name, kind, price, discount, "true", comment);
+    var json = JSON.stringify(item);
+    $.post(URL_PRICE,{Command: CMD_ADD_RRICE, CmdPara:json}, function (data) {
         $.each(data, function(key,value){
             if (key == KEY_ERRCODE) {
                 errcode = value;
@@ -127,10 +141,12 @@ function saveAddPrice() {
 }
 //删除
 function dellBtnAction(o) {
-    var index = $(o).parent().parent().children("td:eq(0)").text();
+    var kind = $(o).parent().parent().children("td:eq(2)").text();
     var errcode ="";
-    //根据id来删除
-    $.post(URL_PRICE,{Command: CMD_DEL_PRICE, Id:index},function (data) {
+
+    console.log("dellBtnAction: kind = " + kind);
+    //根据Kind来删除
+    $.post(URL_PRICE,{Command: CMD_DEL_PRICE, Kind:kind},function (data) {
         $.each(data, function(key,value){
             if (key == KEY_ERRCODE) {
                 errcode = value;
