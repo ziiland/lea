@@ -100,6 +100,9 @@ func handleAddPriceCmd(c *PriceController) {
 	price.Comment, _ = paraJSON.Get(common.ZLD_PARA_COMMENT).String()
 
 	if err := models.InsertPriceTableItem(price); err == nil {
+		// Add log
+		worker := (c.GetSession(common.ZLD_PARA_WORKER)).(string)
+		models.HandleStandardPriceLogItem(price.Kind, common.ZLD_CMD_ADD_RRICE, worker)
 		item.Errcode = 0
 	}
 	c.Data["json"] = item
@@ -128,6 +131,9 @@ func handleUpdatePriceCmd(c *PriceController) {
 	price.Comment, _ = paraJSON.Get(common.ZLD_PARA_COMMENT).String()
 
 	if err := models.UpdatePriceItem(price); err == nil {
+		// update log
+		worker := (c.GetSession(common.ZLD_PARA_WORKER)).(string)
+		models.HandleStandardPriceLogItem(price.Kind, common.ZLD_CMD_UPDATE_PRICE, worker)	
 		item.Errcode = 0		
 	}	
 
@@ -141,6 +147,9 @@ func handleDeletePriceCmd(c *PriceController) {
 
 	kind := c.GetString(common.ZLD_PARA_KIND)
 	if _, err := models.DeletePriceItem(kind); err == nil {
+		// delete log
+		worker := (c.GetSession(common.ZLD_PARA_WORKER)).(string)
+		models.HandleStandardPriceLogItem(kind, common.ZLD_CMD_DEL_PRICE, worker)			
 		item.Errcode = 0
 	}
 

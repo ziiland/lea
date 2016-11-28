@@ -67,6 +67,10 @@ const ZLD_STR_ADMIN string = "Admin"
 const ZLD_STR_MANAGER string = "Manager"
 const ZLD_STR_WORKER string = "Worker"
 
+const ZLD_ACTION_ADD string = "Add"
+const ZLD_ACTION_UPDATE string = "Update"
+const ZLD_ACTION_DEL string = "Delete"
+
 // task action
 const ZLD_TASK_ACTION_ADD string = "Add"
 const ZLD_TASK_ACTION_LIST string = "List"
