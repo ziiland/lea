@@ -28,6 +28,9 @@ func handleLoadParaCmd(c *beego.Controller) {
 	fmt.Println("handleLoadParaCmd")
 	item := new(CommonCmdJsonData)
 
+	sess := c.StartSession()
+	fmt.Printf("Session: id=%v, worker=%s\n", sess.SessionID(), sess.Get(common.ZLD_PARA_WORKER))
+
 	ip := c.Ctx.Request.RemoteAddr
 	fmt.Println("ip=", ip)
 	if c.GetSession(ip) == common.ZLD_STR_ON {
