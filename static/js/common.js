@@ -142,8 +142,17 @@ function getDataFromBackend() {
 }
 //退出登录
 function dropoutpage() {
-    $.post(URL_TASK, {Command:CMD_UNLOAD}, function(){
-        window.location.assign("./login.html");
+    $.get(URL_TASK, {Command:CMD_UNLOAD}, function(data){
+        var isExit="";
+        $.each(data, function(key, value){
+            if(key == "ACK") {
+                isExit = value;
+            }
+        });
+        console.log("islogin = ",islogin);
+        if(isExit == "ok"){
+            window.location.assign("./login.html");
+        }
     });
 }
 //毫秒转换为yyyy/mm/dd
