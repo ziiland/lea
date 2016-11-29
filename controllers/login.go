@@ -29,12 +29,16 @@ type LoginJsonData struct {
 
 ///////////////////////////////////////////////////////////////////////////////
 func setSessionContent(c *LoginController) {
-	ip := c.Ctx.Request.RemoteAddr
+	//ip := c.Ctx.Request.RemoteAddr
 	id := c.GetString(common.ZLD_PARA_WORKER)
 
-	fmt.Println("login: ip=", ip)
-	zllogs.WriteDebugLog("login: ip=%s, id=%s", ip, id)
-	c.SetSession(ip, common.ZLD_STR_ON)
+	//fmt.Println("login: ip=", ip)
+	//zllogs.WriteDebugLog("login: ip=%s, id=%s", ip, id)
+	sess := c.StartSession()
+	sessId := sess.SessionID()
+	fmt.Printf("Session: id=%v\n", sess.SessionID())
+	zllogs.WriteDebugLog("login: session=%s, worker=%s", sessId, id)
+	c.SetSession(sessId, common.ZLD_STR_ON)
 	c.SetSession(common.ZLD_PARA_WORKER, id)
 
 	worker := models.NewZldWorkerDBData()
