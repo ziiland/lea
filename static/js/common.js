@@ -149,7 +149,6 @@ function dropoutpage() {
                 isExit = value;
             }
         });
-        console.log("islogin = ",islogin);
         if(isExit == "ok"){
             window.location.assign("./login.html");
         }
