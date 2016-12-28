@@ -14,5 +14,6 @@ func init() {
     beego.Router(common.ZLD_PATH_WORKER, &controllers.WorkerController{})
     beego.Router(common.ZLD_PATH_TASK, &controllers.TaskController{})
     beego.Router(common.ZLD_PATH_PRICE, &controllers.PriceController{})
+    beego.Router(common.ZLD_PATH_CELL, &controllers.CellController{})
 
 }
