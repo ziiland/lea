@@ -69,12 +69,16 @@ var CMD_ADD_RRICE = "AddPrice";
 var CMD_UPDATE_PRICE = "UpdatePrice";
 var CMD_DEL_PRICE = "DelPrice";
 
+var CMD_GET_PACKET = "GetPacket";
+var CMD_SET_PACKET = "SetPacket";
+
 ///////////////////////////////////////////////////////////////////////////////
 // url
 var URL_LOGIN = "/land/login";
 var URL_WORKER = "/land/worker";
 var URL_TASK = "/land/task";
 var URL_PRICE = "/land/price";
+var URL_PACKET = "/land/packet";
 
 ///////////////////////////////////////////////////////////////////////////////
 // event

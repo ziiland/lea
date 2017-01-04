@@ -9,6 +9,7 @@ const ZLD_PATH_WORKER string = "/land/worker"
 const ZLD_PATH_TASK string = "/land/task"
 const ZLD_PATH_PRICE string = "/land/price"
 const ZLD_PATH_CELL string = "/land/cell"
+const ZLD_PATH_PACKET string = "/land/packet"
 
 const ZLD_CMD_LOGIN string = "Login"
 const ZLD_CMD_LOAD_PARA string = "LoadPara"
@@ -40,6 +41,9 @@ const ZLD_CMD_BEGIN_TASK string = "BeginTask"
 ///////////////////////////////////////////////////////////////////////////////
 const ZLD_CMD_CELL_BINDNFC string = "BindNFC"
 ///////////////////////////////////////////////////////////////////////////////
+const ZLD_CMD_ADD_PACKET string = "AddPacket"
+const ZLD_CMD_GET_PACKET string = "GetPacket"
+const ZLD_CMD_SET_PACKET string = "SetPacket"
 
 const ZLD_PARA_COMMAND string = "Command"
 const ZLD_PARA_WORKER string = "Worker"
@@ -63,6 +67,8 @@ const ZLD_PARA_SHOW string = "Show"
 const ZLD_PARA_PRICE string = "Price"
 const ZLD_PARA_DISCOUNT string = "Discount"
 const ZLD_PARA_NFC string = "NFC"
+const ZLD_PARA_EXPNO string = "ExpressNo"
+const ZLD_PARA_PACKEDID string = "PacketId"
 
 const ZLD_STR_ON string = "on"
 const ZLD_STR_OFF string = "off"

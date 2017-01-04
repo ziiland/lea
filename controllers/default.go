@@ -76,9 +76,9 @@ func handleUnloadCmd(c *beego.Controller) {
 	// dglogs.WriteDebugLog("%s is LOGOUT!", dbNode.Node)
 
 	// del session
-	//sess := c.StartSession()
-	//sessId := sess.SessionID()
-	c.DestroySession()
+	sess := c.StartSession()
+	sessId := sess.SessionID()
+	c.DelSession(sessId)
 
 	item := new(CommonCmdJsonData)
 	item.ACK = common.ZLD_STR_OK
