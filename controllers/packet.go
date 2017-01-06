@@ -110,6 +110,21 @@ func handleSetPacketCmd(c *PacketController) {
 	c.ServeJSON()	
 }
 
+func handleSetExpressNoCmd(c *PacketController) {
+	taskId := c.GetString("TaskId")
+	expNo := c.GetString("ExpressNo")
+	fmt.Printf("handleSetExpressNoCmd:taskId=%s, expNo=%s\n", taskId, expNo)	
+
+	item := new(PacketJsonData)
+	item.Errcode = 1	
+	if err := models.UpdatePacketExpressNo(taskId, expNo); err == nil {
+		item.Errcode = 0
+	}
+	c.Data["json"] = item 
+	c.ServeJSON()
+
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 func (c *PacketController) Get() {
 	// get the para
@@ -128,6 +143,8 @@ func (c *PacketController) Get() {
 		handleGetPacketCmd(c)
 	case common.ZLD_CMD_SET_PACKET:
 		handleSetPacketCmd(c)
+	case common.ZLD_CMD_SET_EXPNO:
+		handleSetExpressNoCmd(c)
 	}	
 }
 
@@ -148,5 +165,7 @@ func (c *PacketController) Post() {
 		handleGetPacketCmd(c)
 	case common.ZLD_CMD_SET_PACKET:
 		handleSetPacketCmd(c)
+	case common.ZLD_CMD_SET_EXPNO:
+		handleSetExpressNoCmd(c)
 	}	
 }

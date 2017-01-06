@@ -44,6 +44,7 @@ const ZLD_CMD_CELL_BINDNFC string = "BindNFC"
 const ZLD_CMD_ADD_PACKET string = "AddPacket"
 const ZLD_CMD_GET_PACKET string = "GetPacket"
 const ZLD_CMD_SET_PACKET string = "SetPacket"
+const ZLD_CMD_SET_EXPNO string = "SetExpressNo"
 
 const ZLD_PARA_COMMAND string = "Command"
 const ZLD_PARA_WORKER string = "Worker"

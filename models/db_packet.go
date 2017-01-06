@@ -239,3 +239,16 @@ func UpdatePacketJSONString(json *simplejson.Json) error {
 	return UpdatePacketTableItem(item)
 }
 
+func UpdatePacketExpressNo(taskId, expNo string) error{
+	item := NewZldPacketDBData()
+	item.Id = -1
+	item.TaskId = taskId
+
+	if err := SelectPacketTableItemWithTaskId(item); err == nil {
+		item.ExpressNo = expNo
+	}
+	fmt.Println("item=", item)
+
+	return UpdatePacketTableItem(item)
+}
+
